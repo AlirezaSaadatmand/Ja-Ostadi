@@ -1,16 +1,33 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	"sync"
 	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/joho/godotenv"
 )
+
+type ClassData struct {
+	Semester      string `json:"semester"`
+	Department    string `json:"department"`
+	CourseName    string `json:"course_name"`
+	CourseNumber  string `json:"course_number"`
+	Group         string `json:"group"`
+	Units         string `json:"units"`
+	ClassType     string `json:"class_type"`
+	Instructor    string `json:"instructor"`
+	TimeInWeek    string `json:"time_in_week"`
+	TimeRoom      string `json:"time_room"`
+	MidExamTime   string `json:"mid_exam_time"`
+	FinalExamTime string `json:"final_exam_time"`
+	Capacity      string `json:"capacity"`
+	StudentCount  string `json:"student_count"`
+}
 
 func main() {
 	fmt.Println("🔄 Loading environment variables...")
@@ -36,7 +53,7 @@ func main() {
 	fmt.Println("📋 Selecting semester and department...")
 	loadSemesterAndDepartment(page)
 	page.MustElement("#edDisplay").MustClick()
-	page.MustWaitLoad() // <-- ADD THIS!
+	page.MustWaitLoad()
 	page.MustElement("table tbody tr")
 	fmt.Println("✅ Semester and department loaded.")
 
@@ -47,27 +64,17 @@ func main() {
 	}
 	fmt.Printf("✅ Found %d rows to process.\n", len(rows)-3)
 
-	var wg sync.WaitGroup
 	for i := 3; i < len(rows); i++ {
-		wg.Add(1)
-		go func(index int) {
-			defer wg.Done()
-			fmt.Printf("🧵 [Row %d] Starting goroutine...\n", index)
-
-			newPage := browser.MustIncognito().MustPage("")
-			defer newPage.MustClose()
-
-			processRow(newPage, pageURL, index)
-		}(i)
+		fmt.Printf("🧵 [Row %d] Processing row sequentially...\n", i)
+		processRow(page, pageURL, i)
 	}
 
-	wg.Wait()
 	fmt.Println("🏁 All rows processed.")
 }
 
 func loginAndNavigate(browser *rod.Browser) *rod.Page {
 	fmt.Println("🌐 Opening login page...")
-	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/14504217983")
+	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/14867612264")
 	page.MustWaitLoad()
 
 	fmt.Println("🔑 Filling credentials...")
@@ -93,8 +100,8 @@ func loginAndNavigate(browser *rod.Browser) *rod.Page {
 
 func loadSemesterAndDepartment(page *rod.Page) {
 	fmt.Println("🎓 Selecting semester and department filters...")
-	page.MustElement("select#edSemester").MustSelect("دوم - 1403")
-	page.MustElement("select#edDepartment").MustSelect("بخش مهندسي کامپيوتر")
+	page.MustElement("select#edSemester").MustSelect(os.Getenv("EDSEMESTER"))
+	page.MustElement("select#edDepartment").MustSelect(os.Getenv("EDDEPARTMENT"))
 }
 
 func getTargetRows(page *rod.Page) []*rod.Element {
@@ -109,21 +116,13 @@ func getTargetRows(page *rod.Page) []*rod.Element {
 }
 
 func processRow(page *rod.Page, url string, index int) {
-	fmt.Printf("🔄 [Row %d] Navigating to target page...\n", index)
-	page.MustNavigate(url)
-	page.MustWaitLoad()
-
 	fmt.Printf("🎯 [Row %d] Setting filters...\n", index)
 
-	err := os.WriteFile("output.html", []byte(page.MustHTML()), 0644)
-	if err != nil {
-		log.Fatalf("❌ Failed to save HTML file: %v", err)
-	}
 	loadSemesterAndDepartment(page)
 
 	fmt.Printf("📤 [Row %d] Clicking display...\n", index)
 	page.MustElement("#edDisplay").MustClick()
-	page.MustWaitLoad() // or WaitElements if AJAX
+	page.MustWaitLoad()
 
 	fmt.Printf("🔍 [Row %d] Getting rows...\n", index)
 	rows := getTargetRows(page)
@@ -137,9 +136,53 @@ func processRow(page *rod.Page, url string, index int) {
 	row.MustScrollIntoView()
 	row.MustClick()
 
+	page.MustWaitLoad()
+
 	fmt.Printf("✅ [Row %d] Clicked row successfully\n", index)
 
-	html, _ := page.HTML()
-	fmt.Printf("📝 [Row %d] HTML content:\n", index)
-	fmt.Println(html)
+	data := ClassData{
+		Semester:      page.MustElement("#edSemester").MustText(),
+		Department:    page.MustElement("#edDepartment").MustText(),
+		CourseName:    page.MustElement("#edName").MustText(),
+		CourseNumber:  page.MustElement("#edSrl").MustText(),
+		Group:         page.MustElement("#edGroup").MustText(),
+		Units:         page.MustElement("#edTotalUnit").MustText(),
+		ClassType:     page.MustElement("#edClassType").MustText(),
+		Instructor:    page.MustElement("#edTch").MustText(),
+		TimeInWeek:    page.MustElement("#edTimeInWeek").MustText(),
+		TimeRoom:      page.MustElement("#edTimeRoom").MustText(),
+		MidExamTime:   page.MustElement("#edMidTime").MustText(),
+		FinalExamTime: page.MustElement("#edFinalTime").MustText(),
+		Capacity:      page.MustElement("#edCapacity").MustText(),
+		StudentCount:  page.MustElement("#edStdCount").MustText(),
+	}
+
+	var allData []ClassData
+	fileName := "data.json"
+	if _, err := os.Stat(fileName); err == nil {
+		file, err := os.ReadFile(fileName)
+		if err == nil {
+			_ = json.Unmarshal(file, &allData)
+		}
+	}
+
+	allData = append(allData, data)
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		log.Fatalf("Failed to create data.json: %v", err)
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(allData); err != nil {
+		log.Fatalf("Failed to write JSON: %v", err)
+	}
+
+	fmt.Println("✅ Data appended to data.json successfully.")
+
+	fmt.Printf("🔙 [Row %d] Going back to list...\n", index)
+	page.MustEval(`() => window.history.back()`)
+	page.MustWaitLoad()
 }
