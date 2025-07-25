@@ -19,7 +19,7 @@ var appConfig *Config
 
 func LoadConfig() *Config {
     if appConfig != nil {
-        return appConfig // already loaded
+        return appConfig
     }
 
     if err := godotenv.Load(); err != nil {
