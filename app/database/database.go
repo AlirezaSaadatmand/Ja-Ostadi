@@ -1,19 +1,20 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func ConnectDB() error {
 	cfg := config.GetConfig()
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&charset=utf8mb4&loc=Local",
 		cfg.DBUser,
 		cfg.DBPassword,
 		cfg.DBHost,
@@ -21,12 +22,20 @@ func ConnectDB() error {
 		cfg.DBName,
 	)
 
-	db, err := sql.Open("mysql", dsn)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
 	}
 
-	if err := db.Ping(); err != nil {
+	// Auto-migrate all models
+	err = db.AutoMigrate(
+		&models.Semester{},
+		&models.Department{},
+		&models.Instructor{},
+		&models.Course{},
+		&models.ClassTime{},
+	)
+	if err != nil {
 		return err
 	}
 
