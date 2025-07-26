@@ -109,7 +109,7 @@ func getOrCreateInstructorDepartment(instructorID, departmentID uint) (models.In
 	return rel, err
 }
 
-func createCourse(item types.CourseJSON, semester models.Semester, dept models.Department, instructor models.Instructor) error {
+func createCourse(item types.CourseJSON, semester models.Semester, dept models.Department, instructor models.Instructor) (models.Course, error) {
 	db := database.DB
 
 	units, _ := strconv.Atoi(item.Units)
@@ -133,7 +133,50 @@ func createCourse(item types.CourseJSON, semester models.Semester, dept models.D
 		InstructorID:  instructor.ID,
 	}
 
-	return db.Create(&course).Error
+	return course, db.Create(&course).Error
+}
+
+func createClassTime(item types.CourseJSON, course models.Course) error {
+	db := database.DB
+	
+	lines := strings.Split(item.TimeRoom, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+
+		parts := strings.SplitN(line, "-", 2)
+		if len(parts) != 2 {
+			continue
+		}
+		day := parts[0]
+		timeAndRoom := parts[1]
+
+		timeParts := strings.SplitN(timeAndRoom, "(", 2)
+		if len(timeParts) != 2 {
+			continue
+		}
+		room := strings.TrimRight(timeParts[1], ")")
+
+		times := strings.Split(timeParts[0], ":")
+		if len(times) < 4 {
+			continue
+		}
+		startTime := times[0] + ":" + times[1]
+		endTime := times[2] + ":" + times[3]
+
+		classTime := models.ClassTime{
+			Day:       day,
+			StartTime: startTime,
+			EndTime:   endTime,
+			Room:      room,
+			CourseID:  course.ID,
+		}
+
+		return db.Create(&classTime).Error
+	}
+	return nil
 }
 
 func ImportData() error {
@@ -168,10 +211,14 @@ func ImportData() error {
 
 		_, err = getOrCreateInstructorDepartment(instructor.ID, dept.ID)
 		if err != nil {
-			return err // or handle the error
+			return err
 		}
 
-		err = createCourse(item, semester, dept, instructor)
+		course, err := createCourse(item, semester, dept, instructor)
+		if err != nil {
+			return err
+		}
+		err = createClassTime(item, course)
 		if err != nil {
 			return err
 		}
