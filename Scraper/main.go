@@ -13,6 +13,7 @@ import (
 )
 
 type ClassData struct {
+	ID            int    `json:"id"`
 	Semester      string `json:"semester"`
 	Department    string `json:"department"`
 	CourseName    string `json:"course_name"`
@@ -43,15 +44,15 @@ func main() {
 
 	semester := os.Getenv("EDSEMESTER")
 	departments := page.MustElements("#edDepartment option")
-
+	var id = 0
 	for deptIndex := range departments {
 
 		departments := page.MustElements("#edDepartment option")
 
 		deptVal := departments[deptIndex].MustProperty("value").String()
 		deptText := departments[deptIndex].MustText()
-		
-		println(deptVal , deptText)
+
+		println(deptVal, deptText)
 		if deptVal == "" || deptVal == "0" {
 			continue
 		}
@@ -75,17 +76,19 @@ func main() {
 		// Process each course
 		for rowIndex := 3; rowIndex < len(rows); rowIndex++ {
 			fmt.Printf("📚 [Dept: %s] Processing row %d\n", deptText, rowIndex)
-			processRow(page, rowIndex)
+			ok := processRow(page, rowIndex, id)
+			if ok {
+				id++
+			}
 		}
 	}
 
 	fmt.Println("✅ All departments and courses processed.")
 }
 
-
 func loginAndNavigate(browser *rod.Browser) *rod.Page {
 	fmt.Println("🌐 Opening login page...")
-	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/14867612264")
+	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/10133249912")
 	page.MustWaitLoad()
 
 	fmt.Println("🔑 Filling credentials...")
@@ -126,11 +129,11 @@ func getTargetRows(page *rod.Page) []*rod.Element {
 	return trs[3].MustElements(":scope > td > table > tbody > tr")
 }
 
-func processRow(page *rod.Page, index int) {
+func processRow(page *rod.Page, index, id int) bool{
 	rows := getTargetRows(page)
 	if index >= len(rows) {
 		fmt.Printf("❌ Row %d not found (only %d rows)\n", index, len(rows))
-		return
+		return false
 	}
 
 	row := rows[index]
@@ -141,6 +144,7 @@ func processRow(page *rod.Page, index int) {
 	fmt.Printf("✅ [Row %d] Clicked row successfully\n", index)
 
 	data := ClassData{
+		ID:            id,
 		Semester:      page.MustElement("#edSemester").MustText(),
 		Department:    page.MustElement("#edDepartment").MustText(),
 		CourseName:    page.MustElement("#edName").MustText(),
@@ -185,4 +189,5 @@ func processRow(page *rod.Page, index int) {
 	fmt.Printf("🔙 [Row %d] Going back to list...\n", index)
 	page.MustEval(`() => window.history.back()`)
 	page.MustWaitLoad()
+	return true
 }
