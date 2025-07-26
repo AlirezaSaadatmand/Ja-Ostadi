@@ -1,16 +1,34 @@
 version: '3.8'
 
 services:
+  # app:
+  #   build:
+  #     context: ..
+  #     dockerfile: docker/Dockerfile
+  #   container_name: go-app
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     DB_HOST: mysql
+  #     DB_PORT: 3306
+  #     DB_USER: root
+  #     DB_PASS: ""
+  #     DB_NAME: mydatabase
+  #   depends_on:
+  #     - mysql
+  #   networks:
+  #     - project_network
+
   mysql:
     image: mysql:latest
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD:  
-      MYSQL_DATABASE: mydatabase
+      MYSQL_ROOT_PASSWORD: "my-secret-pw"
+      MYSQL_DATABASE: ja-ostadi
     ports:
       - "3306:3306"
     networks:
-      - mynet
+      - project_network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -18,13 +36,13 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_ROOT_PASSWORD: ""
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - mysql
     networks:
-      - mynet
+      - project_network
 
 networks:
-  mynet:
+  project_network:
