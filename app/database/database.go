@@ -25,16 +25,14 @@ func ConnectDB() error {
 		cfg.DBName,
 	)
 
-	// Configure logger first
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
-			IgnoreRecordNotFoundError: true,  // Skip logging record not found errors
-			LogLevel:                  logger.Error, // Only log actual errors
+			IgnoreRecordNotFoundError: true,
+			LogLevel:                  logger.Error,
 		},
 	)
 
-	// Initialize database connection with logger config
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
@@ -42,19 +40,18 @@ func ConnectDB() error {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	// Auto-migrate all models
 	err = db.AutoMigrate(
 		&models.Semester{},
 		&models.Department{},
 		&models.Instructor{},
 		&models.Course{},
 		&models.InstructorDepartment{},
+		&models.ClassTime{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to auto-migrate models: %w", err)
 	}
 
 	DB = db
-	log.Println("✅ Database connection established successfully")
 	return nil
 }
