@@ -1,16 +1,25 @@
 
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+import Home from "./pages/Home";
+import NotFoundPage from "./pages/NotFoundPage";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />
+  }
+]);
 
 const App = () => {
-
-  return (
-    <>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <h1 className="text-4xl font-bold text-blue-500">
-          Tailwind + React + TS
-        </h1>
-      </div>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
 export default App
