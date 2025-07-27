@@ -11,5 +11,13 @@ func Router(app *fiber.App) {
 	api.Get("/test", handlers.Test)
 
 	remove := api.Group("/remove")
-	remove.Post("/" , handlers.DeleteAllData)
+	remove.Post("/", handlers.DeleteAllData)
+
+	// Course Routes
+	courseRouter := api.Group("/courses")
+
+	courseRouter.Get("/semester/:semesterID", handlers.GetCoursesBySemester)
+	// courseRouter.Get("/semester/:semesterID/department/:departmentID", handlers.GetCoursesBySemesterAndDepartment)
+	// courseRouter.Get("/:id", handlers.GetCourseByID)     
 }
+
