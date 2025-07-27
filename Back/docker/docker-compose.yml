@@ -27,6 +27,8 @@ services:
       MYSQL_DATABASE: ja-ostadi
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - project_network
 
@@ -46,3 +48,6 @@ services:
 
 networks:
   project_network:
+
+volumes:
+  mysql_data:
