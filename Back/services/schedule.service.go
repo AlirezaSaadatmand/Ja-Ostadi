@@ -20,7 +20,7 @@ type ScheduleCourse struct {
 
 func GetCoursesSchedule() ([]ScheduleCourse, error) {
 
-	semesterID := 2
+	semesterID := 5
 
 	var courses []ScheduleCourse
 	err := database.DB.
@@ -60,15 +60,33 @@ type ScheduleTime struct {
 }
 
 func GetTimeSchedule(courseId int) ([]ScheduleTime, error) {
-	var instructor []ScheduleTime
+	var classTime []ScheduleTime
 
 	err := database.DB.
 		Model(&models.ClassTime{}).
 		Where("course_id = ?", courseId).
-		Find(&instructor).Error
+		Find(&classTime).Error
 	if err != nil {
 		return nil, errors.New("error getting data")
 	}
 
-	return instructor, nil
+	return classTime, nil
+}
+
+type ScheduleDepartment struct {
+	Name string `json:"name"`
+}
+
+func GetDepartmentSchedule(departmentId int) (ScheduleDepartment, error) {
+	var department ScheduleDepartment
+
+	err := database.DB.
+		Model(&models.Department{}).
+		Where("id = ?", departmentId).
+		Find(&department).Error
+	if err != nil {
+		return department, errors.New("error getting data")
+	}
+
+	return department, nil
 }
