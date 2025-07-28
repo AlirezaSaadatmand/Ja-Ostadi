@@ -22,66 +22,66 @@ const HomePage: React.FC = () => {
         </svg>
       ),
       link: "/schedule",
-    },
-    {
-      title: "دپارتمان‌ها",
-      description: "کاوش در دپارتمان‌های علمی مختلف.",
-      icon: (
-        <svg
-          className="w-12 h-12 text-green-600"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
-          <circle cx="12" cy="7" r="4" />
-        </svg>
-      ),
-      link: "/departments",
-    },
-    {
-      title: "اساتید",
-      description: "جزئیات درباره اساتید.",
-      icon: (
-        <svg
-          className="w-12 h-12 text-pink-600"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="7" r="4" />
-          <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
-        </svg>
-      ),
-      link: "/instructors",
-    },
-    {
-      title: "دروس",
-      description: "مشاهده و مدیریت دروس ارائه شده.",
-      icon: (
-        <svg
-          className="w-12 h-12 text-yellow-600"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M12 20h9" />
-          <path d="M12 4h9" />
-          <path d="M4 12h16" />
-          <path d="M4 12l5-8v16l-5-8z" />
-        </svg>
-      ),
-      link: "/courses",
-    },
+    }
+    // {
+    //   title: "دپارتمان‌ها",
+    //   description: "کاوش در دپارتمان‌های علمی مختلف.",
+    //   icon: (
+    //     <svg
+    //       className="w-12 h-12 text-green-600"
+    //       fill="none"
+    //       stroke="currentColor"
+    //       strokeWidth={2}
+    //       viewBox="0 0 24 24"
+    //       strokeLinecap="round"
+    //       strokeLinejoin="round"
+    //     >
+    //       <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
+    //       <circle cx="12" cy="7" r="4" />
+    //     </svg>
+    //   ),
+    //   link: "/departments",
+    // },
+    // {
+    //   title: "اساتید",
+    //   description: "جزئیات درباره اساتید.",
+    //   icon: (
+    //     <svg
+    //       className="w-12 h-12 text-pink-600"
+    //       fill="none"
+    //       stroke="currentColor"
+    //       strokeWidth={2}
+    //       viewBox="0 0 24 24"
+    //       strokeLinecap="round"
+    //       strokeLinejoin="round"
+    //     >
+    //       <circle cx="12" cy="7" r="4" />
+    //       <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
+    //     </svg>
+    //   ),
+    //   link: "/instructors",
+    // },
+    // {
+    //   title: "دروس",
+    //   description: "مشاهده و مدیریت دروس ارائه شده.",
+    //   icon: (
+    //     <svg
+    //       className="w-12 h-12 text-yellow-600"
+    //       fill="none"
+    //       stroke="currentColor"
+    //       strokeWidth={2}
+    //       viewBox="0 0 24 24"
+    //       strokeLinecap="round"
+    //       strokeLinejoin="round"
+    //     >
+    //       <path d="M12 20h9" />
+    //       <path d="M12 4h9" />
+    //       <path d="M4 12h16" />
+    //       <path d="M4 12l5-8v16l-5-8z" />
+    //     </svg>
+    //   ),
+    //   link: "/courses",
+    // },
   ];
 
   return (
