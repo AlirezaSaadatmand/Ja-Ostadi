@@ -22,6 +22,7 @@ func DeleteAllData(c *fiber.Ctx) error {
 		{model: &models.Instructor{}, table: "instructors"},
 		{model: &models.Department{}, table: "departments"},
 		{model: &models.Semester{}, table: "semesters"},
+		{model: &models.ClassTime{}, table: "class_times"},
 	}
 
 	for _, t := range tables {
