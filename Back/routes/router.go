@@ -27,6 +27,6 @@ func Router(app *fiber.App) {
 
 	// Schedule Routes
 	scheduleRouter := api.Group("/schedule")
-	scheduleRouter.Get("/get-courses", )
+	scheduleRouter.Get("/data", handlers.GetScheduleData)
 }
 

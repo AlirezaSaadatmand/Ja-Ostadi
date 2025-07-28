@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type Course struct {
 	gorm.Model
 	Name          string
-	Number        string 
+	Number        string
 	Group         string
 	Units         int
 	ClassType     string
