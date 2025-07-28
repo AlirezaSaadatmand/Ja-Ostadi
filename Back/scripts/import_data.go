@@ -137,46 +137,48 @@ func createCourse(item types.CourseJSON, semester models.Semester, dept models.D
 }
 
 func createClassTime(item types.CourseJSON, course models.Course) error {
-	db := database.DB
-	
-	lines := strings.Split(item.TimeRoom, "\n")
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
+    db := database.DB
+    
+    lines := strings.Split(item.TimeRoom, "\n")
+    for _, line := range lines {
+        line = strings.TrimSpace(line)
+        if line == "" {
+            continue
+        }
 
-		parts := strings.SplitN(line, "-", 2)
-		if len(parts) != 2 {
-			continue
-		}
-		day := parts[0]
-		timeAndRoom := parts[1]
+        parts := strings.SplitN(line, "-", 2)
+        if len(parts) != 2 {
+            continue
+        }
+        day := parts[0]
+        timeAndRoom := parts[1]
 
-		timeParts := strings.SplitN(timeAndRoom, "(", 2)
-		if len(timeParts) != 2 {
-			continue
-		}
-		room := strings.TrimRight(timeParts[1], ")")
+        timeParts := strings.SplitN(timeAndRoom, "(", 2)
+        if len(timeParts) != 2 {
+            continue
+        }
+        room := strings.TrimRight(timeParts[1], ")")
 
-		times := strings.Split(timeParts[0], ":")
-		if len(times) < 4 {
-			continue
-		}
-		startTime := times[0] + ":" + times[1]
-		endTime := times[2] + ":" + times[3]
+        times := strings.Split(timeParts[0], ":")
+        if len(times) < 4 {
+            continue
+        }
+        startTime := times[0] + ":" + times[1]
+        endTime := times[2] + ":" + times[3]
 
-		classTime := models.ClassTime{
-			Day:       day,
-			StartTime: startTime,
-			EndTime:   endTime,
-			Room:      room,
-			CourseID:  course.ID,
-		}
+        classTime := models.ClassTime{
+            Day:       day,
+            StartTime: startTime,
+            EndTime:   endTime,
+            Room:      room,
+            CourseID:  course.ID,
+        }
 
-		return db.Create(&classTime).Error
-	}
-	return nil
+        if err := db.Create(&classTime).Error; err != nil {
+            return err
+        }
+    }
+    return nil
 }
 
 func ImportData() error {
