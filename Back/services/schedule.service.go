@@ -38,7 +38,7 @@ type ScheduleInstructor struct {
 	Name string `json:"name"`
 }
 
-func GetCourseInstructor(instructorId int) (ScheduleInstructor, error) {
+func GetInstructorSchedule(instructorId int) (ScheduleInstructor, error) {
 	var instructor ScheduleInstructor
 
 	err := database.DB.
@@ -47,6 +47,27 @@ func GetCourseInstructor(instructorId int) (ScheduleInstructor, error) {
 		Find(&instructor).Error
 	if err != nil {
 		return instructor, errors.New("error getting data")
+	}
+
+	return instructor, nil
+}
+
+type ScheduleTime struct {
+	Day       string `json:"day"`
+	StartTime string `json:"start_time"`
+	EndTime   string `json:"end_time"`
+	Room      string `json:"room"`
+}
+
+func GetTimeSchedule(courseId int) ([]ScheduleTime, error) {
+	var instructor []ScheduleTime
+
+	err := database.DB.
+		Model(&models.ClassTime{}).
+		Where("course_id = ?", courseId).
+		Find(&instructor).Error
+	if err != nil {
+		return nil, errors.New("error getting data")
 	}
 
 	return instructor, nil
