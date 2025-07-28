@@ -3,8 +3,8 @@ import React from "react";
 const HomePage: React.FC = () => {
   const sections = [
     {
-      title: "ترم‌ها",
-      description: "مرور و مدیریت همه ترم‌ها.",
+      title: "برنامه هفتگی",
+      description: "مشاهده و تنظیم برنامه هفتگی دروس.",
       icon: (
         <svg
           className="w-12 h-12 text-indigo-600"
@@ -21,7 +21,7 @@ const HomePage: React.FC = () => {
           <line x1="3" y1="10" x2="21" y2="10" />
         </svg>
       ),
-      link: "/semesters",
+      link: "/schedule",
     },
     {
       title: "دپارتمان‌ها",
