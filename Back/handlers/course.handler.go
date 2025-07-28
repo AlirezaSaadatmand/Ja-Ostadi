@@ -21,7 +21,7 @@ func GetCoursesBySemester(c *fiber.Ctx) error {
 
 	courses, err := services.GetCoursesBySemester(id)
 	if err != nil {
-		return utils.Error(c, fiber.StatusBadRequest, err.Error())
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return utils.Success(c, fiber.StatusOK, courses, "Data fetched successfully")
