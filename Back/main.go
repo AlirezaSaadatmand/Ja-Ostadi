@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
@@ -31,5 +32,7 @@ func main() {
 
 	routes.Router(app)
 
-	app.Listen(":3000")
+	if err := app.Listen(fmt.Sprintf(":%s", config.GetConfig().PORT)); err != nil {
+		log.Fatal("❌ Failed to start server:", err)
+	}
 }
