@@ -6,11 +6,16 @@ import {
 
 import Home from "./pages/Home";
 import NotFoundPage from "./pages/NotFoundPage";
+import WeeklySchedulePage from "./pages/WeeklySchedulePage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/schedule",
+    element: <WeeklySchedulePage />
   },
   {
     path: "*",
