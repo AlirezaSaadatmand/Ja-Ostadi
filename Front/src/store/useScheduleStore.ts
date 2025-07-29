@@ -21,7 +21,6 @@ export const useDepartmentStore = create<DepartmentStore>((set) => ({
 
     try {
       const response = await axios.get(`${config.apiUrl}/departments`);
-      console.log(response.data);
       
       set({ departments: response.data.data || [] });
     } catch (error) {
