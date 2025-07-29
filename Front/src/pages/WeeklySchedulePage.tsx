@@ -1,64 +1,115 @@
-import React, { useEffect, useState } from "react";
-import { useDepartmentStore } from "../store/useScheduleStore";
-import DepartmentList from "../components/Schedule/DepartmentList";
-import CourseList from "../components/Schedule/CourseList";
-import WeeklyTable from "../components/Schedule/WeeklyTable";
+"use client"
 
-const fakeCourses = {
-  cs: [
-    { id: "cs1", name: "برنامه‌نویسی پیشرفته" },
-    { id: "cs2", name: "ساختمان داده‌ها" },
-  ],
-  math: [
-    { id: "math1", name: "ریاضی ۱" },
-    { id: "math2", name: "آمار و احتمال" },
-  ],
-  phys: [
-    { id: "phys1", name: "مکانیک" },
-    { id: "phys2", name: "حرارت" },
-  ],
-};
+import type React from "react"
+import { useEffect, useState } from "react"
+import { useDepartmentStore } from "../store/useScheduleStore"
+import { useCourseStore } from "../store/useScheduleCourseStore"
+import DepartmentList from "../components/Schedule/DepartmentList"
+import CourseList from "../components/Schedule/CourseList"
+import WeeklyTable from "../components/Schedule/WeeklyTable"
 
 const WeeklySchedulePage: React.FC = () => {
-  const { departments, isLoading, fetchDepartments } = useDepartmentStore();
-  const [selectedDept, setSelectedDept] = useState<string | null>(null);
+  const { departments, isLoading: depLoading, fetchDepartments } = useDepartmentStore()
+  const { isLoading: courseLoading, fetchCourses, getCoursesByDepartment } = useCourseStore()
+
+  const [selectedDept, setSelectedDept] = useState<number | null>(null)
 
   useEffect(() => {
-    fetchDepartments();
-  }, []);
+    fetchDepartments()
+    fetchCourses()
+  }, [fetchCourses, fetchDepartments])
 
-  const courses = selectedDept
-    ? fakeCourses[selectedDept as keyof typeof fakeCourses] || []
-    : [];
+  const filteredCourses = selectedDept ? getCoursesByDepartment(selectedDept) : []
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-4 sm:p-6 font-sans" dir="rtl">
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-center text-gray-900 mb-4">
-        برنامه هفتگی دانشجو
-      </h1>
-      <p className="text-center text-gray-600 mb-6 text-sm sm:text-base">
-        دپارتمان را انتخاب کرده و از دروس موجود برای برنامه‌ریزی استفاده کنید.
-      </p>
+    <div className="min-h-screen bg-gray-50" dir="rtl">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="flex items-center justify-between">
+            <a
+              href="/"
+              className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 font-medium"
+            >
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              بازگشت
+            </a>
+            <div className="text-center flex-1">
+              <h1 className="text-3xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
+              <p className="text-gray-600 mt-3 text-lg">دپارتمان و درس مورد نظر خود را انتخاب کنید</p>
+            </div>
+            <div className="w-24"></div> {/* Spacer for balance */}
+          </div>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Department Selection */}
+        <div className="mb-8">
           <DepartmentList
             departments={Array.isArray(departments) ? departments : []}
             selectedDept={selectedDept}
             onSelect={setSelectedDept}
-            isLoading={isLoading}
+            isLoading={depLoading}
           />
-          {selectedDept && <CourseList courses={courses} />}
         </div>
 
-        {/* Schedule Table */}
-        <div className="lg:col-span-3">
-          <WeeklyTable />
+        {/* Main Content Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Course List - Left Side */}
+          <div className="lg:col-span-1 order-2 lg:order-1">
+            {selectedDept && (
+              <div className="sticky top-6">
+                {courseLoading ? (
+                  <div className="bg-white rounded-lg shadow-sm p-8">
+                    <div className="animate-pulse space-y-4">
+                      <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className="h-12 bg-gray-200 rounded"></div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <CourseList
+                    courses={filteredCourses.map((c) => ({
+                      id: c.course.id.toString(),
+                      name: c.course.name,
+                    }))}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Weekly Table - Right Side */}
+          <div className="lg:col-span-3 order-1 lg:order-2">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              {!selectedDept ? (
+                <div className="p-16 text-center">
+                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6m-6 0l-.5 8.5A2 2 0 0011.5 21h1a2 2 0 002-1.5L14.5 11"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-medium text-gray-900 mb-3">دپارتمان خود را انتخاب کنید</h3>
+                  <p className="text-gray-500 text-lg">برای مشاهده برنامه هفتگی، ابتدا یک دپارتمان انتخاب کنید</p>
+                </div>
+              ) : (
+                <WeeklyTable />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default WeeklySchedulePage;
+export default WeeklySchedulePage
