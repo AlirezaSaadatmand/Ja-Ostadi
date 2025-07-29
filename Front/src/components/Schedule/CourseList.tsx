@@ -1,17 +1,14 @@
 "use client"
 
 import type React from "react"
-
-interface Course {
-  id: string
-  name: string
-}
+import type { CourseResponse } from "../../types"
 
 interface CourseListProps {
-  courses: Course[]
+  courses: CourseResponse[]
+  onCourseClick: (course: CourseResponse) => void
 }
 
-const CourseList: React.FC<CourseListProps> = ({ courses }) => {
+const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick }) => {
   return (
     <div className="bg-white rounded-lg shadow-sm flex flex-col" style={{ height: "fit-content" }}>
       <div className="p-5 border-b border-gray-200">
@@ -43,14 +40,22 @@ const CourseList: React.FC<CourseListProps> = ({ courses }) => {
           </div>
         ) : (
           <div className="p-3">
-            {courses.map((course, index) => (
+            {courses.map((course) => (
               <div
-                key={course.id}
+                key={course.course.id}
                 className="p-4 m-2 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer"
+                onClick={() => onCourseClick(course)}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-800">{course.name}</span>
-                  <span className="text-sm bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">{index + 1}</span>
+                  <div className="flex-1">
+                    <span className="font-medium text-gray-800 block">{course.course.name}</span>
+                    <div className="flex items-center space-x-2 space-x-reverse mt-1">
+                      <span className="text-xs text-gray-500">استاد: {course.instructor.name}</span>
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                        {course.course.units} واحد
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
