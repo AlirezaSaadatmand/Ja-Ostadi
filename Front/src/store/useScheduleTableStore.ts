@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import type { CourseResponse } from "../types"
 
-export const days = ["شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه"]
+export const days = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"] // Updated days as per your input
 
 export const timeSlots = [
   { label: "8:00 - 10:00", key: "8-10", start: "08:00", end: "10:00" },
@@ -11,28 +11,97 @@ export const timeSlots = [
   { label: "17:30 - 19:15", key: "17_30-19_15", start: "17:30", end: "19:15" },
 ]
 
-interface ScheduleTableStore {
-  scheduledCourses: CourseResponse[]
-  addCourseToSchedule: (course: CourseResponse) => void
-  removeCourseFromSchedule: (courseId: number) => void
+export interface TableCell {
+  day: string
+  slotKey: string
+  course: CourseResponse | null
 }
 
-export const useScheduleTableStore = create<ScheduleTableStore>((set) => ({
-  scheduledCourses: [],
-  addCourseToSchedule: (course) => {
-      
-    set((state) => {
-      console.log(state.scheduledCourses);
-      const isAlreadyScheduled = state.scheduledCourses.some((c) => c.course.id === course.course.id)
-      if (!isAlreadyScheduled) {
-        return { scheduledCourses: [...state.scheduledCourses, course] }
-      }
-      return state
+interface ScheduleTableStore {
+  scheduledCourses: CourseResponse[]
+  table: Record<string, TableCell>
+  addCourseToSchedule: (course: CourseResponse) => boolean
+  removeCourseFromSchedule: (courseId: number) => void
+  clearSchedule: () => void
+}
+
+// Helper to generate empty table
+const generateEmptyTable = () => {
+  const table: Record<string, TableCell> = {}
+  days.forEach((day) => {
+    timeSlots.forEach((slot) => {
+      const key = `${day}-${slot.key}`
+      table[key] = { day, slotKey: slot.key, course: null }
     })
+  })
+  return table
+}
+
+// Helper: match a course time to a slot key
+const findMatchingSlotKey = (start: string, end: string) => {
+  const normalizedStart = start.padStart(5, "0")
+  const normalizedEnd = end.padStart(5, "0")
+  return timeSlots.find((slot) => slot.start === normalizedStart && slot.end === normalizedEnd)?.key
+}
+
+export const useScheduleTableStore = create<ScheduleTableStore>((set, get) => ({
+  scheduledCourses: [],
+  table: generateEmptyTable(),
+
+  addCourseToSchedule: (course) => {
+    const { scheduledCourses, table } = get()
+
+    // Check conflicts: if any course time is already occupied
+    for (const t of course.time) {
+      const slotKey = findMatchingSlotKey(t.start_time, t.end_time)
+      const key = `${t.day}-${slotKey}`
+
+      if (!slotKey || !table[key]) {
+        console.warn(`Could not find slot key for time: ${t.start_time}-${t.end_time} on ${t.day}`)
+        return false // Invalid time slot or key
+      }
+      if (table[key].course) {
+        // Slot already occupied
+        console.warn(`Conflict detected: Slot ${key} is already occupied by ${table[key].course?.course.name}`)
+        return false
+      }
+    }
+
+    // No conflicts: update table and course list
+    const newTable = { ...table }
+    for (const t of course.time) {
+      const slotKey = findMatchingSlotKey(t.start_time, t.end_time)
+      if (slotKey) {
+        const key = `${t.day}-${slotKey}`
+        newTable[key] = { ...newTable[key], course }
+      }
+    }
+
+    set({
+      scheduledCourses: [...scheduledCourses, course],
+      table: newTable,
+    })
+    console.log(`Course '${course.course.name}' added to schedule.`)
+    return true
   },
+
   removeCourseFromSchedule: (courseId) => {
-    set((state) => ({
-      scheduledCourses: state.scheduledCourses.filter((c) => c.course.id !== courseId),
-    }))
+    const { scheduledCourses, table } = get()
+    const updatedCourses = scheduledCourses.filter((c) => c.course.id !== courseId)
+
+    // Clear course from table
+    const newTable = { ...table }
+    Object.keys(newTable).forEach((key) => {
+      if (newTable[key].course?.course.id === courseId) {
+        newTable[key] = { ...newTable[key], course: null }
+      }
+    })
+    set({ scheduledCourses: updatedCourses, table: newTable })
+    console.log(`Course with ID '${courseId}' removed from schedule.`)
+  },
+
+  clearSchedule: () => {
+    set({ scheduledCourses: [], table: generateEmptyTable() })
+    console.log("Schedule cleared.")
   },
 }))
