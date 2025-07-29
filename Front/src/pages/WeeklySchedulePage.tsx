@@ -5,20 +5,20 @@ import { useEffect, useState } from "react"
 import { useDepartmentStore } from "../store/useScheduleStore"
 import { useCourseStore } from "../store/useScheduleCourseStore"
 import DepartmentList from "../components/Schedule/DepartmentList"
-import CourseList from "../components/Schedule/CourseList"
 import WeeklyTable from "../components/Schedule/WeeklyTable"
 import CourseModal from "../components/Schedule/CourseModal"
+import ScheduledCourseSummary from "../components/Schedule/ScheduledCourseSummary"
 import type { CourseResponse } from "../types"
-import { useScheduleTableStore, days, timeSlots } from "../store/useScheduleTableStore" // Import from Zustand store
+import { useScheduleTableStore, days, timeSlots } from "../store/useScheduleTableStore"
+import toast, { Toaster } from "react-hot-toast"
 
 const WeeklySchedulePage: React.FC = () => {
   const { departments, isLoading: depLoading, fetchDepartments } = useDepartmentStore()
   const { isLoading: courseLoading, fetchCourses, getCoursesByDepartment } = useCourseStore()
-  // Use the Zustand store for schedule table logic
   const scheduledCourses = useScheduleTableStore((state) => state.scheduledCourses)
   const addCourseToSchedule = useScheduleTableStore((state) => state.addCourseToSchedule)
   const removeCourseFromSchedule = useScheduleTableStore((state) => state.removeCourseFromSchedule)
-  const table = useScheduleTableStore((state) => state.table) // Get the table state
+  const table = useScheduleTableStore((state) => state.table)
 
   const [selectedDept, setSelectedDept] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -39,6 +39,22 @@ const WeeklySchedulePage: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false)
     setSelectedCourse(null)
+  }
+
+  const handleAddToSchedule = (course: CourseResponse) => {
+    const success = addCourseToSchedule(course)
+    if (!success) {
+      toast.error("این درس با برنامه فعلی شما تداخل دارد و اضافه نشد.")
+    } else {
+      toast.success(`درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`)
+    }
+    closeModal()
+  }
+
+  const handleRemoveCourse = (courseId: number) => {
+    const courseName = scheduledCourses.find((c) => c.course.id === courseId)?.course.name || "درس"
+    removeCourseFromSchedule(courseId)
+    toast.success(`${courseName} با موفقیت از برنامه حذف شد.`)
   }
 
   return (
@@ -76,51 +92,105 @@ const WeeklySchedulePage: React.FC = () => {
           />
         </div>
 
-        {/* Main Content Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Course List - Left Side */}
-          <div className="lg:col-span-1 order-2 lg:order-1">
-            {selectedDept && ( // Only show CourseList if a department is selected
-              <div className="sticky top-6">
-                {courseLoading ? (
-                  <div className="bg-white rounded-lg shadow-sm p-8">
-                    <div className="animate-pulse space-y-4">
-                      <div className="h-5 bg-gray-200 rounded w-1/2"></div>
-                      {[...Array(5)].map((_, i) => (
-                        <div key={i} className="h-12 bg-gray-200 rounded"></div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} />
-                )}
-              </div>
-            )}
+        {/* Main Schedule & Summary Area */}
+        <div className="flex flex-col lg:flex-row gap-8 items-stretch min-h-[600px]">
+          {/* Left Side Column: Summary */}
+          <div className="lg:w-1/4 flex-shrink-0">
+            <div className="sticky top-6 h-full">
+              <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />
+            </div>
           </div>
 
-          {/* Weekly Table - Right Side */}
-          <div className="lg:col-span-3 order-1 lg:order-2">
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              {/* WeeklyTable is always rendered */}
+          {/* Right Side Column: Weekly Table */}
+          <div className="lg:w-3/4 flex-grow">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden h-full">
               <WeeklyTable
                 days={days}
                 timeSlots={timeSlots}
-                table={table} // Pass the table state
-                scheduledCourses={scheduledCourses} // Still needed for remove logic
-                onRemoveCourse={removeCourseFromSchedule}
+                table={table}
+                scheduledCourses={scheduledCourses}
+                onRemoveCourse={handleRemoveCourse}
               />
             </div>
           </div>
         </div>
-      </div>
 
+        {/* Course List at the bottom */}
+        {selectedDept && (
+          <div className="mt-8 bg-white rounded-lg shadow-sm p-5">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center justify-center">
+              <svg className="w-5 h-5 ml-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
+              </svg>
+              دروس موجود ({filteredCourses.length})
+            </h3>
+            {courseLoading ? (
+              <div className="animate-pulse space-y-4">
+                <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                <div className="flex overflow-x-auto gap-4 pb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="h-24 w-48 bg-gray-200 rounded flex-shrink-0"></div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-flow-col grid-rows-2 gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
+                {filteredCourses.length === 0 ? (
+                  <div className="p-8 text-center col-span-full">
+                    <svg
+                      className="w-16 h-16 text-gray-300 mx-auto mb-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      />
+                    </svg>
+                    <p className="text-gray-500">هیچ درسی یافت نشد</p>
+                  </div>
+                ) : (
+                  filteredCourses.map((course) => (
+                    <div
+                      key={course.course.id}
+                      className="p-4 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer w-64"
+                      onClick={() => handleCourseClick(course)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <span className="font-medium text-gray-800 block">{course.course.name}</span>
+                          <div className="flex items-center space-x-2 space-x-reverse mt-1">
+                            <span className="text-xs text-gray-500">استاد: {course.instructor.name}</span>
+                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                              {course.course.units} واحد
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
       {/* Course Modal */}
       <CourseModal
         isOpen={isModalOpen}
         onClose={closeModal}
         course={selectedCourse}
-        onAddToSchedule={addCourseToSchedule}
+        onAddToSchedule={handleAddToSchedule}
       />
+      <Toaster />
     </div>
   )
 }
