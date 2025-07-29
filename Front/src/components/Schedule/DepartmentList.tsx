@@ -16,9 +16,11 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="animate-pulse">
           <div className="h-5 bg-gray-200 rounded w-32 mb-6"></div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-200 rounded-lg"></div>
+          <div className="flex overflow-x-auto gap-4 pb-2">
+            {" "}
+            {/* Changed to flex for horizontal scroll */}
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-12 w-32 bg-gray-200 rounded-lg flex-shrink-0"></div>
             ))}
           </div>
         </div>
@@ -53,11 +55,13 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
           <p className="text-gray-500">هیچ دپارتمانی یافت نشد</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide">
+          {" "}
+          {/* Horizontal scroll container */}
           {departments.map((dept) => (
             <button
               key={dept.id}
-              className={`p-4 rounded-lg text-center transition-all duration-200 border-2 ${
+              className={`p-4 rounded-lg text-center transition-all duration-200 border-2 flex-shrink-0 ${
                 selectedDept === dept.id
                   ? "bg-indigo-600 text-white border-indigo-600 shadow-lg transform scale-105"
                   : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-md"
