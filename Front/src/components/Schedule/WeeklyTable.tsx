@@ -2,18 +2,17 @@
 
 import type React from "react"
 import type { CourseResponse } from "../../types"
-import type { TableCell } from "../../store/useScheduleTableStore" // Import TableCell
+import type { TableCell } from "../../store/useScheduleTableStore"
 
 interface WeeklyTableProps {
   days: string[]
   timeSlots: { label: string; key: string; start: string; end: string }[]
-  table: Record<string, TableCell> // Now receives the table directly
-  scheduledCourses: CourseResponse[] // Still needed for remove logic, but not for rendering cells
+  table: Record<string, TableCell>
+  scheduledCourses: CourseResponse[]
   onRemoveCourse: (courseId: number) => void
 }
 
 const WeeklyTable: React.FC<WeeklyTableProps> = ({ days, timeSlots, table, onRemoveCourse }) => {
-  // Function to get the course for a specific time slot and day from the table state
   const getCourseForSlot = (day: string, timeSlotKey: string) => {
     const key = `${day}-${timeSlotKey}`
     return table[key]?.course || null
@@ -46,11 +45,11 @@ const WeeklyTable: React.FC<WeeklyTableProps> = ({ days, timeSlots, table, onRem
                   {slot.label}
                 </td>
                 {days.map((day) => {
-                  const course = getCourseForSlot(day, slot.key) // Get course directly from table
+                  const course = getCourseForSlot(day, slot.key)
                   return (
                     <td
                       key={day + slot.key}
-                      className="border-b border-gray-200 h-20 transition-colors relative border-l border-gray-100"
+                      className="border-b border-gray-200 h-20 transition-colors relative border-l"
                       data-day={day}
                       data-slot={slot.key}
                     >
@@ -74,7 +73,6 @@ const WeeklyTable: React.FC<WeeklyTableProps> = ({ days, timeSlots, table, onRem
                           </button>
                         </div>
                       ) : (
-                        // Empty cell, no hover shape
                         <div className="absolute inset-0"></div>
                       )}
                     </td>
