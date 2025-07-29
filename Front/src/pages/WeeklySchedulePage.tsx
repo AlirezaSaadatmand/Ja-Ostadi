@@ -7,12 +7,21 @@ import { useCourseStore } from "../store/useScheduleCourseStore"
 import DepartmentList from "../components/Schedule/DepartmentList"
 import CourseList from "../components/Schedule/CourseList"
 import WeeklyTable from "../components/Schedule/WeeklyTable"
+import CourseModal from "../components/Schedule/CourseModal"
+import type { CourseResponse } from "../types"
+import { useScheduleTableStore, days, timeSlots } from "../store/useScheduleTableStore"
 
 const WeeklySchedulePage: React.FC = () => {
   const { departments, isLoading: depLoading, fetchDepartments } = useDepartmentStore()
   const { isLoading: courseLoading, fetchCourses, getCoursesByDepartment } = useCourseStore()
 
+  const scheduledCourses = useScheduleTableStore((state) => state.scheduledCourses)
+  const addCourseToSchedule = useScheduleTableStore((state) => state.addCourseToSchedule)
+  const removeCourseFromSchedule = useScheduleTableStore((state) => state.removeCourseFromSchedule)
+
   const [selectedDept, setSelectedDept] = useState<number | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState<CourseResponse | null>(null)
 
   useEffect(() => {
     fetchDepartments()
@@ -20,6 +29,16 @@ const WeeklySchedulePage: React.FC = () => {
   }, [fetchCourses, fetchDepartments])
 
   const filteredCourses = selectedDept ? getCoursesByDepartment(selectedDept) : []
+
+  const handleCourseClick = (course: CourseResponse) => {
+    setSelectedCourse(course)
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setSelectedCourse(null)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
@@ -72,12 +91,7 @@ const WeeklySchedulePage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <CourseList
-                    courses={filteredCourses.map((c) => ({
-                      id: c.course.id.toString(),
-                      name: c.course.name,
-                    }))}
-                  />
+                  <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} />
                 )}
               </div>
             )}
@@ -102,12 +116,25 @@ const WeeklySchedulePage: React.FC = () => {
                   <p className="text-gray-500 text-lg">برای مشاهده برنامه هفتگی، ابتدا یک دپارتمان انتخاب کنید</p>
                 </div>
               ) : (
-                <WeeklyTable />
+                <WeeklyTable
+                  days={days}
+                  timeSlots={timeSlots}
+                  scheduledCourses={scheduledCourses}
+                  onRemoveCourse={removeCourseFromSchedule}
+                />
               )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Course Modal */}
+      <CourseModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        course={selectedCourse}
+        onAddToSchedule={addCourseToSchedule}
+      />
     </div>
   )
 }
