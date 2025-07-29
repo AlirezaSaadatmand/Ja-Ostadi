@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import type { CourseResponse } from "../types"
 
-export const days = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"] // Updated days as per your input
+export const days = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"]
 
 export const timeSlots = [
   { label: "8:00 - 10:00", key: "8-10", start: "08:00", end: "10:00" },

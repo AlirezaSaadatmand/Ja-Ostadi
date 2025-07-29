@@ -2,51 +2,21 @@
 
 import type React from "react"
 import type { CourseResponse } from "../../types"
+import type { TableCell } from "../../store/useScheduleTableStore" // Import TableCell
 
 interface WeeklyTableProps {
   days: string[]
   timeSlots: { label: string; key: string; start: string; end: string }[]
-  scheduledCourses: CourseResponse[]
+  table: Record<string, TableCell> // Now receives the table directly
+  scheduledCourses: CourseResponse[] // Still needed for remove logic, but not for rendering cells
   onRemoveCourse: (courseId: number) => void
 }
 
-const WeeklyTable: React.FC<WeeklyTableProps> = ({ days, timeSlots, scheduledCourses, onRemoveCourse }) => {
-  // Helper to normalize time strings to "HH:MM" format (e.g., "8:00" -> "08:00")
-  const normalizeTime = (timeStr: string) => {
-    const [hours, minutes] = timeStr.split(":")
-    return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`
-  }
-
-  // Function to check if a course should be displayed in a specific time slot and day
-  const getCourseForSlot = (day: string, timeSlot: (typeof timeSlots)[0]) => {
-    const normalizedSlotStart = normalizeTime(timeSlot.start)
-    const normalizedSlotEnd = normalizeTime(timeSlot.end)
-
-    console.log(`Checking slot: ${day} ${timeSlot.label}`)
-    console.log(`Normalized slot times: ${normalizedSlotStart} - ${normalizedSlotEnd}`)
-
-    return scheduledCourses.find((course) =>
-      course.time.some((time) => {
-        const normalizedCourseStart = normalizeTime(time.start_time)
-        const normalizedCourseEnd = normalizeTime(time.end_time)
-
-        console.log(`  Course time: ${time.day} ${time.start_time} - ${time.end_time}`)
-        console.log(`  Normalized course time: ${normalizedCourseStart} - ${normalizedCourseEnd}`)
-        console.log(
-          `  Comparison: Day match=${time.day === day}, Start match=${normalizedCourseStart === normalizedSlotStart}, End match=${normalizedCourseEnd === normalizedSlotEnd}`,
-        )
-
-        const isMatch =
-          time.day === day && normalizedCourseStart === normalizedSlotStart && normalizedCourseEnd === normalizedSlotEnd
-
-        if (isMatch) {
-          console.log(`  Match found for course: ${course.course.name}`)
-        } else {
-          console.log(`  No match for this course in this slot.`)
-        }
-        return isMatch
-      }),
-    )
+const WeeklyTable: React.FC<WeeklyTableProps> = ({ days, timeSlots, table, onRemoveCourse }) => {
+  // Function to get the course for a specific time slot and day from the table state
+  const getCourseForSlot = (day: string, timeSlotKey: string) => {
+    const key = `${day}-${timeSlotKey}`
+    return table[key]?.course || null
   }
 
   return (
@@ -76,11 +46,11 @@ const WeeklyTable: React.FC<WeeklyTableProps> = ({ days, timeSlots, scheduledCou
                   {slot.label}
                 </td>
                 {days.map((day) => {
-                  const course = getCourseForSlot(day, slot)
+                  const course = getCourseForSlot(day, slot.key) // Get course directly from table
                   return (
                     <td
                       key={day + slot.key}
-                      className="border-b border-gray-200 h-20 transition-colors cursor-pointer relative group border-l border-gray-100"
+                      className="border-b border-gray-200 h-20 transition-colors relative border-l border-gray-100"
                       data-day={day}
                       data-slot={slot.key}
                     >
@@ -104,18 +74,8 @@ const WeeklyTable: React.FC<WeeklyTableProps> = ({ days, timeSlots, scheduledCou
                           </button>
                         </div>
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="w-8 h-8 border-2 border-dashed border-blue-300 rounded-lg flex items-center justify-center">
-                            <svg
-                              className="w-4 h-4 text-blue-400"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                          </div>
-                        </div>
+                        // Empty cell, no hover shape
+                        <div className="absolute inset-0"></div>
                       )}
                     </td>
                   )
