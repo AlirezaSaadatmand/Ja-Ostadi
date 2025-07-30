@@ -139,7 +139,7 @@ const WeeklySchedulePage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-flow-col grid-rows-2 gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
+              <>
                 {filteredCourses.length === 0 ? (
                   <div className="p-8 text-center col-span-full">
                     <svg
@@ -158,27 +158,29 @@ const WeeklySchedulePage: React.FC = () => {
                     <p className="text-gray-500">هیچ درسی یافت نشد</p>
                   </div>
                 ) : (
-                  filteredCourses.map((course) => (
-                    <div
-                      key={course.course.id}
-                      className="p-4 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer w-64"
-                      onClick={() => handleCourseClick(course)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <span className="font-medium text-gray-800 block">{course.course.name}</span>
-                          <div className="flex items-center space-x-2 space-x-reverse mt-1">
-                            <span className="text-xs text-gray-500">استاد: {course.instructor.name}</span>
-                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
-                              {course.course.units} واحد
-                            </span>
+                  <div className="grid grid-flow-col grid-rows-2 gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
+                    {filteredCourses.map((course) => (
+                      <div
+                        key={course.course.id}
+                        className="p-4 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer"
+                        onClick={() => handleCourseClick(course)}
+                      >
+                        <div className="flex items-center justify-between">
+                          {/* Course Name and Instructor (will be on the right in RTL) */}
+                          <div className="flex-1 text-right ml-2">
+                            <span className="font-medium text-gray-800 block">{course.course.name}</span>
+                            <span className="text-xs text-gray-500 block mt-1">استاد: {course.instructor.name}</span>
                           </div>
+                          {/* Units (will be on the left in RTL) */}
+                          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded flex-shrink-0">
+                            {course.course.units} واحد
+                          </span>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 )}
-              </div>
+              </>
             )}
           </div>
         )}
