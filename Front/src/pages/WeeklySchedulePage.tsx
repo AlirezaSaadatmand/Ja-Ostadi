@@ -8,7 +8,7 @@ import DepartmentList from "../components/Schedule/DepartmentList"
 import WeeklyTable from "../components/Schedule/WeeklyTable"
 import CourseModal from "../components/Schedule/CourseModal"
 import ScheduledCourseSummary from "../components/Schedule/ScheduledCourseSummary"
-import CourseList from "../components/Schedule/CourseList" // Ensure CourseList is imported
+import CourseList from "../components/Schedule/CourseList"
 import type { CourseResponse } from "../types"
 import { useScheduleTableStore, days, timeSlots } from "../store/useScheduleTableStore"
 import toast, { Toaster } from "react-hot-toast"
@@ -24,6 +24,7 @@ const WeeklySchedulePage: React.FC = () => {
   const [selectedDept, setSelectedDept] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedCourse, setSelectedCourse] = useState<CourseResponse | null>(null)
+  const [isScheduledCourseInModal, setIsScheduledCourseInModal] = useState(false)
 
   useEffect(() => {
     fetchDepartments()
@@ -34,12 +35,14 @@ const WeeklySchedulePage: React.FC = () => {
 
   const handleCourseClick = (course: CourseResponse) => {
     setSelectedCourse(course)
+    setIsScheduledCourseInModal(scheduledCourses.some((c) => c.course.id === course.course.id))
     setIsModalOpen(true)
   }
 
   const closeModal = () => {
-    setIsModalOpen(false) // Corrected variable name
+    setIsModalOpen(false)
     setSelectedCourse(null)
+    setIsScheduledCourseInModal(false)
   }
 
   const handleAddToSchedule = (course: CourseResponse) => {
@@ -56,6 +59,7 @@ const WeeklySchedulePage: React.FC = () => {
     const courseName = scheduledCourses.find((c) => c.course.id === courseId)?.course.name || "درس"
     removeCourseFromSchedule(courseId)
     toast.success(`${courseName} با موفقیت از برنامه حذف شد.`)
+    closeModal()
   }
 
   return (
@@ -101,9 +105,6 @@ const WeeklySchedulePage: React.FC = () => {
               <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />
             </div>
           </div>
-
-
-
           {/* Right Side Column: Weekly Table */}
           <div className="lg:w-3/4 flex-grow">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden h-full">
@@ -124,7 +125,7 @@ const WeeklySchedulePage: React.FC = () => {
             <CourseList
               courses={filteredCourses}
               onCourseClick={handleCourseClick}
-              isLoading={courseLoading} // Pass the isLoading prop
+              isLoading={courseLoading}
             />
           </div>
         )}
@@ -135,6 +136,8 @@ const WeeklySchedulePage: React.FC = () => {
         onClose={closeModal}
         course={selectedCourse}
         onAddToSchedule={handleAddToSchedule}
+        onRemoveFromSchedule={handleRemoveCourse}
+        isScheduledCourse={isScheduledCourseInModal}
       />
       <Toaster />
     </div>
