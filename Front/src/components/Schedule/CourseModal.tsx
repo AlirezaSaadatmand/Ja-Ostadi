@@ -8,14 +8,30 @@ interface CourseModalProps {
   onClose: () => void
   course: CourseResponse | null
   onAddToSchedule: (course: CourseResponse) => void
+  onRemoveFromSchedule?: (courseId: number) => void
+  isScheduledCourse?: boolean
 }
 
-const CourseModal: React.FC<CourseModalProps> = ({ isOpen, onClose, course, onAddToSchedule }) => {
+const CourseModal: React.FC<CourseModalProps> = ({
+  isOpen,
+  onClose,
+  course,
+  onAddToSchedule,
+  onRemoveFromSchedule,
+  isScheduledCourse,
+}) => {
   if (!isOpen || !course) return null
 
   const handleAddToSchedule = () => {
     onAddToSchedule(course)
     onClose()
+  }
+
+  const handleRemoveFromSchedule = () => {
+    if (onRemoveFromSchedule) {
+      onRemoveFromSchedule(course.course.id)
+      onClose()
+    }
   }
 
   return (
@@ -118,12 +134,21 @@ const CourseModal: React.FC<CourseModalProps> = ({ isOpen, onClose, course, onAd
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 bg-gray-50">
           <div className="flex space-x-3 space-x-reverse">
-            <button
-              onClick={handleAddToSchedule}
-              className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-            >
-              افزودن به برنامه
-            </button>
+            {isScheduledCourse ? (
+              <button
+                onClick={handleRemoveFromSchedule}
+                className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium"
+              >
+                حذف از برنامه
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToSchedule}
+                className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+              >
+                افزودن به برنامه
+              </button>
+            )}
             <button
               onClick={onClose}
               className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium"
