@@ -1,11 +1,8 @@
-"use client"
-
 import { forwardRef } from "react"
 import type { CourseResponse } from "../../types"
 import type { TableCell } from "../../store/useScheduleTableStore"
-import jsPDF from "jspdf" // Import jsPDF
-import html2canvas from "html2canvas" // Import html2canvas
-import toast from "react-hot-toast" // Import toast
+import toast from "react-hot-toast"
+import html2pdf from "html2pdf.js"
 
 interface WeeklyTableProps {
   days: string[]
@@ -21,54 +18,64 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(({ days, timeSl
     return table[key]?.course || null
   }
 
-  // Handle PDF export
-const handleExportPdf = async () => {
-  try {
-    if (!ref || typeof ref === "function" || !ref.current) {
-      toast.error("خطا: عنصر جدول یافت نشد.")
-      return
+  // Handle PDF export with html2pdf.js
+  const handleExportPdf = async () => {
+    try {
+      if (!ref || typeof ref === "function" || !ref.current) {
+        toast.error("خطا: عنصر جدول یافت نشد.")
+        return
+      }
+
+      const containerElement = ref.current
+      const tableElement = containerElement.querySelector("table")
+
+      if (!tableElement) {
+        toast.error("خطا: عنصر جدول داخلی یافت نشد.")
+        return
+      }
+
+      // Store original styles and classes
+      const originalContainerClassList = Array.from(containerElement.classList)
+      const originalTableStyle = tableElement.style.cssText
+
+      // Temporarily adjust styles for PDF capture
+      // Remove overflow-x-auto from the container to ensure full content is rendered
+      containerElement.classList.remove("overflow-x-auto")
+      // Set a sufficiently large min-width for the table to ensure all columns are visible
+      // tableElement.style.minWidth = "1200px" // Adjust this value if your table is wider
+      // tableElement.style.width = "auto" // Allow table to expand based on content and min-width
+
+      const opt = {
+        margin: 20,
+        filename: "برنامه_هفتگی.pdf",
+        image: { type: "jpeg", quality: 2 },
+        html2canvas: {
+          scale: 2, // Increased scale for better resolution
+          useCORS: true,
+          foreignObjectRendering: true,
+          backgroundColor: "#fff",
+          scrollX: 0, // Capture from the beginning of the element
+          scrollY: 0, // Capture from the beginning of the element
+        },
+        jsPDF: { unit: "pt", format: "a3", orientation: "landscape" }, // A3 landscape for more space
+      }
+
+      await html2pdf().set(opt).from(containerElement).save()
+
+      // Restore original styles and classes
+      containerElement.className = "" // Clear existing classes
+      originalContainerClassList.forEach((cls) => containerElement.classList.add(cls)) // Add back original classes
+      tableElement.style.cssText = originalTableStyle // Restore original table styles
+
+      toast.success("برنامه هفتگی با موفقیت به PDF تبدیل شد.")
+    } catch (error) {
+      console.error("Error generating PDF:", error)
+      toast.error("خطا در تولید فایل PDF")
     }
-
-    const element = ref.current
-    const canvas = await html2canvas(element, {
-      scale: 2,       // 2 is enough; 4 creates huge blurry image
-      useCORS: true,
-      logging: false,
-      scrollX: 0,
-      scrollY: -window.scrollY,
-      // foreignObjectRendering: true
-    })
-
-    const imgData = canvas.toDataURL("image/png")
-    const pdf = new jsPDF({
-      orientation: "landscape",
-      unit: "pt",
-      format: "a4",
-    })
-
-    const pageWidth = pdf.internal.pageSize.getWidth()
-    const pageHeight = pdf.internal.pageSize.getHeight()
-
-    // Scale to fit page
-    const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height)
-    const imgWidth = canvas.width * ratio
-    const imgHeight = canvas.height * ratio
-
-    pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
-    pdf.save("برنامه_هفتگی.pdf")
-    toast.success("برنامه هفتگی با موفقیت به PDF تبدیل شد.")
-  } catch (error) {
-    console.error("Error generating PDF:", error)
-    toast.error("خطا در تولید فایل PDF")
   }
-}
-
 
   return (
     <div className="p-6 relative">
-      {" "}
-      {/* Added relative for absolute positioning of button */}
-      {/* PDF Export Button - now responsive and positioned */}
       <button
         onClick={handleExportPdf}
         className="mb-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 w-full justify-center
@@ -89,7 +96,7 @@ const handleExportPdf = async () => {
         <p className="text-gray-600 mt-1">برنامه کلاس‌های هفتگی شما</p>
       </div>
       {/* Table for all screen sizes - apply ref here */}
-      <div ref={ref} className="overflow-x-auto">
+      <div ref={ref} className="overflow-x-auto" dir="rtl">
         <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm min-w-[600px]">
           <thead>
             <tr className="bg-gray-50">
@@ -118,7 +125,7 @@ const handleExportPdf = async () => {
                       data-slot={slot.key}
                     >
                       {course ? (
-                        <div className="absolute inset-1 bg-indigo-100 border border-indigo-300 rounded p-2 flex flex-col justify-center">
+                        <div className="absolute inset-1 bg-indigo-100 border border-indigo-300 rounded-xl p-2 flex flex-col justify-center">
                           <div className="text-xs font-medium text-indigo-900 truncate">{course.course.name}</div>
                           <div className="text-xs text-indigo-700 truncate">{course.instructor.name}</div>
                           <button
@@ -154,5 +161,4 @@ const handleExportPdf = async () => {
 })
 
 WeeklyTable.displayName = "WeeklyTable"
-
 export default WeeklyTable
