@@ -1,7 +1,5 @@
-"use client"
-
 import type React from "react"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useDepartmentStore } from "../store/useScheduleStore"
 import { useCourseStore } from "../store/useScheduleCourseStore"
 import DepartmentList from "../components/Schedule/DepartmentList"
@@ -12,6 +10,7 @@ import CourseList from "../components/Schedule/CourseList"
 import type { CourseResponse } from "../types"
 import { useScheduleTableStore, days, timeSlots } from "../store/useScheduleTableStore"
 import toast, { Toaster } from "react-hot-toast"
+import { usePdfExportStore } from "../store/usePdfExportStore"
 
 const WeeklySchedulePage: React.FC = () => {
   const { departments, isLoading: depLoading, fetchDepartments } = useDepartmentStore()
@@ -21,13 +20,12 @@ const WeeklySchedulePage: React.FC = () => {
   const removeCourseFromSchedule = useScheduleTableStore((state) => state.removeCourseFromSchedule)
   const table = useScheduleTableStore((state) => state.table)
 
+  const { isExporting, exportPdf } = usePdfExportStore()
+
   const [selectedDept, setSelectedDept] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedCourse, setSelectedCourse] = useState<CourseResponse | null>(null)
   const [isScheduledCourseInModal, setIsScheduledCourseInModal] = useState(false)
-
-  // Create a ref for the WeeklyTable component
-  const weeklyTableRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetchDepartments()
@@ -67,10 +65,8 @@ const WeeklySchedulePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
-          {/* Back button */}
           <a
             href="/"
             className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
@@ -81,20 +77,16 @@ const WeeklySchedulePage: React.FC = () => {
             بازگشت
           </a>
 
-          {/* Title */}
           <div className="text-center flex-1">
             <h1 className="text-3xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
             <p className="text-gray-600 mt-3 text-lg">دپارتمان و درس مورد نظر خود را انتخاب کنید</p>
           </div>
 
-          <div className="flex items-center gap-2 justify-end min-w-fit">
-            {/* The PDF export button is now inside WeeklyTable */}
-          </div>
+          <div className="flex items-center gap-2 justify-end min-w-fit"></div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Department Selection */}
         <div className="mb-8">
           <DepartmentList
             departments={Array.isArray(departments) ? departments : []}
@@ -104,31 +96,29 @@ const WeeklySchedulePage: React.FC = () => {
           />
         </div>
 
-        {/* Schedule and Summary */}
-        <div id="schedule-container" className="flex flex-col lg:flex-row gap-8 items-stretch min-h-[600px]">
-          {/* Summary (Left Column) */}
+        <div className="flex flex-col lg:flex-row gap-10 items-stretch min-h-[600px]">
+          {" "}
+          {/* Increased gap */}
           <div className="lg:w-1/4 flex-shrink-0">
             <div className="sticky top-6">
               <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />
             </div>
           </div>
-
-          {/* Weekly Table (Right Column) */}
           <div className="lg:w-3/4 flex-grow">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden h-full">
               <WeeklyTable
-                ref={weeklyTableRef} // Pass the ref here
                 days={days}
                 timeSlots={timeSlots}
                 table={table}
                 scheduledCourses={scheduledCourses}
                 onRemoveCourse={handleRemoveCourse}
+                onExportPdf={() => exportPdf({ scheduledCourses, table, days, timeSlots })}
+                isExporting={isExporting}
               />
             </div>
           </div>
         </div>
 
-        {/* Course List */}
         {selectedDept && (
           <div className="mt-8">
             <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={courseLoading} />
@@ -136,7 +126,6 @@ const WeeklySchedulePage: React.FC = () => {
         )}
       </div>
 
-      {/* Course Modal */}
       <CourseModal
         isOpen={isModalOpen}
         onClose={closeModal}
