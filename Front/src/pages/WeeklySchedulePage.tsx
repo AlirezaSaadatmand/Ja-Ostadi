@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useDepartmentStore } from "../store/useScheduleStore"
 import { useCourseStore } from "../store/useScheduleCourseStore"
 import DepartmentList from "../components/Schedule/DepartmentList"
@@ -25,6 +25,9 @@ const WeeklySchedulePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedCourse, setSelectedCourse] = useState<CourseResponse | null>(null)
   const [isScheduledCourseInModal, setIsScheduledCourseInModal] = useState(false)
+
+  // Create a ref for the WeeklyTable component
+  const weeklyTableRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetchDepartments()
@@ -66,22 +69,26 @@ const WeeklySchedulePage: React.FC = () => {
     <div className="min-h-screen bg-gray-50" dir="rtl">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
-            <a
-              href="/"
-              className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 font-medium"
-            >
-              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              بازگشت
-            </a>
-            <div className="text-center flex-1">
-              <h1 className="text-3xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
-              <p className="text-gray-600 mt-3 text-lg">دپارتمان و درس مورد نظر خود را انتخاب کنید</p>
-            </div>
-            <div className="w-24"></div> {/* Spacer for balance */}
+        <div className="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
+          {/* Back button */}
+          <a
+            href="/"
+            className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
+          >
+            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            بازگشت
+          </a>
+
+          {/* Title */}
+          <div className="text-center flex-1">
+            <h1 className="text-3xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
+            <p className="text-gray-600 mt-3 text-lg">دپارتمان و درس مورد نظر خود را انتخاب کنید</p>
+          </div>
+
+          <div className="flex items-center gap-2 justify-end min-w-fit">
+            {/* The PDF export button is now inside WeeklyTable */}
           </div>
         </div>
       </div>
@@ -97,18 +104,20 @@ const WeeklySchedulePage: React.FC = () => {
           />
         </div>
 
-        {/* Main Schedule & Summary Area */}
-        <div className="flex flex-col lg:flex-row gap-8 items-stretch min-h-[600px]">
-          {/* Left Side Column: Summary */}
+        {/* Schedule and Summary */}
+        <div id="schedule-container" className="flex flex-col lg:flex-row gap-8 items-stretch min-h-[600px]">
+          {/* Summary (Left Column) */}
           <div className="lg:w-1/4 flex-shrink-0">
             <div className="sticky top-6">
               <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />
             </div>
           </div>
-          {/* Right Side Column: Weekly Table */}
+
+          {/* Weekly Table (Right Column) */}
           <div className="lg:w-3/4 flex-grow">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden h-full">
               <WeeklyTable
+                ref={weeklyTableRef} // Pass the ref here
                 days={days}
                 timeSlots={timeSlots}
                 table={table}
@@ -119,17 +128,14 @@ const WeeklySchedulePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Course List at the bottom */}
+        {/* Course List */}
         {selectedDept && (
           <div className="mt-8">
-            <CourseList
-              courses={filteredCourses}
-              onCourseClick={handleCourseClick}
-              isLoading={courseLoading}
-            />
+            <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={courseLoading} />
           </div>
         )}
       </div>
+
       {/* Course Modal */}
       <CourseModal
         isOpen={isModalOpen}
@@ -139,6 +145,7 @@ const WeeklySchedulePage: React.FC = () => {
         onRemoveFromSchedule={handleRemoveCourse}
         isScheduledCourse={isScheduledCourseInModal}
       />
+
       <Toaster />
     </div>
   )

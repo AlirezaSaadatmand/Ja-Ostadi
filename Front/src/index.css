@@ -1,3 +1,7 @@
-@import "tailwindcss/preflight";
+@tailwind base;
+@tailwind components;
 @tailwind utilities;
-@import "tailwindcss"
+
+body {
+  font-family: 'Inter', sans-serif;
+}
