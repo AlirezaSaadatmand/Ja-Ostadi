@@ -1,3 +1,5 @@
+"use client"
+
 import { forwardRef } from "react"
 import type { CourseResponse } from "../../types"
 import type { TableCell } from "../../store/useScheduleTableStore"
@@ -26,29 +28,30 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(({ days, timeSl
         return
       }
 
-      const containerElement = ref.current
-      const tableElement = containerElement.querySelector("table")
+      const originalElement = ref.current
 
-      if (!tableElement) {
-        toast.error("خطا: عنصر جدول داخلی یافت نشد.")
-        return
-      }
+      // Create a deep clone of the original element
+      const clonedElement = originalElement.cloneNode(true) as HTMLElement
 
-      // Store original styles and classes
-      const originalContainerClassList = Array.from(containerElement.classList)
-      const originalTableStyle = tableElement.style.cssText
+      // Apply temporary styles to the cloned element for PDF generation
+      // Position it far off-screen but still in the rendering flow
+      clonedElement.style.position = "relative"
+      clonedElement.style.top = "20%"
+      clonedElement.style.left = "34%"
+      // clonedElement.style.transform = "translate(-50% , -50%)"
+      clonedElement.style.width = "1200px" // Set a fixed width for the cloned container
+      clonedElement.style.height = "800px" // Set a fixed width for the cloned container
+      clonedElement.style.overflow = "visible" // Crucial: ensure content is not clipped
+      clonedElement.style.direction = "rtl" // Ensure RTL for the clone
 
-      // Temporarily adjust styles for PDF capture
-      // Remove overflow-x-auto from the container to ensure full content is rendered
-      containerElement.classList.remove("overflow-x-auto")
-      // Set a sufficiently large min-width for the table to ensure all columns are visible
-      // tableElement.style.minWidth = "1200px" // Adjust this value if your table is wider
-      // tableElement.style.width = "auto" // Allow table to expand based on content and min-width
+
+      // Append the cloned element to the body temporarily
+      document.body.appendChild(clonedElement)
 
       const opt = {
         margin: 20,
         filename: "برنامه_هفتگی.pdf",
-        image: { type: "jpeg", quality: 2 },
+        image: { type: "jpeg", quality: 1 }, // Set quality to 1 for best image quality
         html2canvas: {
           scale: 2, // Increased scale for better resolution
           useCORS: true,
@@ -57,15 +60,13 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(({ days, timeSl
           scrollX: 0, // Capture from the beginning of the element
           scrollY: 0, // Capture from the beginning of the element
         },
-        jsPDF: { unit: "pt", format: "a3", orientation: "landscape" }, // A3 landscape for more space
+        jsPDF: { unit: "pt", format: [1200, 700], orientation: "landscape" }, // A3 landscape for more space
       }
 
-      await html2pdf().set(opt).from(containerElement).save()
+      await html2pdf().set(opt).from(clonedElement).save()
 
-      // Restore original styles and classes
-      containerElement.className = "" // Clear existing classes
-      originalContainerClassList.forEach((cls) => containerElement.classList.add(cls)) // Add back original classes
-      tableElement.style.cssText = originalTableStyle // Restore original table styles
+      // Remove the cloned element from the DOM after generation
+      document.body.removeChild(clonedElement)
 
       toast.success("برنامه هفتگی با موفقیت به PDF تبدیل شد.")
     } catch (error) {
