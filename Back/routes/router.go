@@ -23,6 +23,7 @@ func Router(app *fiber.App) {
 	// Department Routes
 	departmentRouter := api.Group("/departments")
 	departmentRouter.Get("/", handlers.GetDepartments)
+	departmentRouter.Get("/data", handlers.GetDepartmentsData)
 
 
 	// Schedule Routes
