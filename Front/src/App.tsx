@@ -1,12 +1,9 @@
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
-import Home from "./pages/Home";
-import NotFoundPage from "./pages/NotFoundPage";
-import WeeklySchedulePage from "./pages/WeeklySchedulePage";
+import Home from "./pages/Home"
+import NotFoundPage from "./pages/NotFoundPage"
+import WeeklySchedulePage from "./pages/WeeklySchedulePage"
+import DepartmentsPage from "./pages/DepartmentsPage"
 
 const router = createBrowserRouter([
   {
@@ -15,16 +12,20 @@ const router = createBrowserRouter([
   },
   {
     path: "/schedule",
-    element: <WeeklySchedulePage />
+    element: <WeeklySchedulePage />,
+  },
+  {
+    path: "/departments",
+    element: <DepartmentsPage />,
   },
   {
     path: "*",
-    element: <NotFoundPage />
-  }
-]);
+    element: <NotFoundPage />,
+  },
+])
 
 const App = () => {
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />
 }
 
 export default App
