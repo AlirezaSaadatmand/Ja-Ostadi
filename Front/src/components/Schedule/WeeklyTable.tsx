@@ -1,3 +1,5 @@
+"use client"
+
 import { forwardRef } from "react"
 import type { CourseResponse } from "../../types"
 import type { TableCell } from "../../store/useScheduleTableStore"
@@ -25,13 +27,13 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
     }
 
     return (
-      <div className="p-6 relative">
+      <div className="p-8 relative">
         <button
           onClick={() => onExportPdf({ scheduledCourses, table, days, timeSlots })}
           disabled={isExporting}
           data-pdf-exclude
-          className="mb-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 w-full justify-center
-                   md:absolute md:top-6 md:left-6 md:w-auto md:justify-start md:mb-0"
+          className="mb-4 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg text-base font-medium flex items-center gap-2 w-full justify-center
+                 md:absolute md:top-6 md:left-6 md:w-auto md:justify-start md:mb-0"
         >
           {isExporting ? (
             <svg
@@ -60,7 +62,7 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
           {isExporting ? "در حال تولید..." : "ذخیره PDF"}
         </button>
         <div className="mb-6 text-center">
-          <h3 className="text-xl font-semibold text-gray-900">برنامه هفتگی</h3>
+          <h3 className="text-2xl font-semibold text-gray-900">برنامه هفتگی</h3>
           <p className="text-gray-600 mt-1">برنامه کلاس‌های هفتگی شما</p>
         </div>
         <div ref={ref} className="overflow-x-auto" dir="rtl">
@@ -68,10 +70,10 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
             {/* Increased min-width */}
             <thead>
               <tr className="bg-gray-50">
-                <th className="p-4 text-right font-semibold text-gray-700 border-b border-gray-200 w-36">ساعت</th>
+                <th className="p-5 text-right font-semibold text-gray-700 border-b border-gray-200 w-40">ساعت</th>
                 {/* Increased width */}
                 {days.map((day) => (
-                  <th key={day} className="p-4 text-center font-semibold text-gray-700 border-b border-gray-200 w-48">
+                  <th key={day} className="p-5 text-center font-semibold text-gray-700 border-b border-gray-200 w-56">
                     {/* Increased width */}
                     {day}
                   </th>
@@ -81,7 +83,7 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
             <tbody>
               {timeSlots.map((slot) => (
                 <tr key={slot.key} className="hover:bg-gray-50 transition-colors">
-                  <td className="p-4 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-sm">
+                  <td className="p-5 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-base">
                     {slot.label}
                   </td>
                   {days.map((day) => {
@@ -89,21 +91,21 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                     return (
                       <td
                         key={day + slot.key}
-                        className="border-b border-gray-200 h-20 transition-colors relative border-l group w-48" /* Increased width */
+                        className="border-b border-gray-200 h-24 transition-colors relative border-l group w-56" /* Increased width */
                         data-day={day}
                         data-slot={slot.key}
                       >
                         {course ? (
                           <div className="absolute inset-1 bg-indigo-100 border border-indigo-300 rounded-xl p-2 flex flex-col justify-center">
-                            <div className="text-xs font-medium text-indigo-900 truncate">{course.course.name}</div>
-                            <div className="text-xs text-indigo-700 truncate">{course.instructor.name}</div>
+                            <div className="text-sm font-semibold text-indigo-900 truncate">{course.course.name}</div>
+                            <div className="text-sm text-indigo-700 truncate">{course.instructor.name}</div>
                             <button
                               onClick={() => onRemoveCourse(course.course.id)}
                               data-pdf-exclude
-                              className="absolute top-1 left-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-opacity duration-200 opacity-0 group-hover:opacity-100"
+                              className="absolute top-1 left-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-opacity duration-200 opacity-0 group-hover:opacity-100"
                               title="حذف درس"
                             >
-                              <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
                                   strokeLinecap="round"
                                   strokeLinejoin="round"

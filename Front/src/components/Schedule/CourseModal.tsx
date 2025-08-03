@@ -45,9 +45,9 @@ const CourseModal: React.FC<CourseModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-7 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">جزئیات درس</h2>
+            <h2 className="text-2xl font-bold text-gray-900">جزئیات درس</h2>
             <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -57,21 +57,21 @@ const CourseModal: React.FC<CourseModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-7">
           <div className="space-y-4">
             {/* Course Name */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{course.course.name}</h3>
-              <div className="flex items-center space-x-4 space-x-reverse text-sm text-gray-600">
-                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">کد: {course.course.number}</span>
-                <span className="bg-green-100 text-green-800 px-2 py-1 rounded">گروه: {course.course.group}</span>
-                <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded">{course.course.units} واحد</span>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">{course.course.name}</h3>
+              <div className="flex items-center space-x-4 space-x-reverse text-base text-gray-600">
+                <span className="bg-blue-100 text-blue-800 px-3 py-1.5 rounded">کد: {course.course.number}</span>
+                <span className="bg-green-100 text-green-800 px-3 py-1.5 rounded">گروه: {course.course.group}</span>
+                <span className="bg-purple-100 text-purple-800 px-3 py-1.5 rounded">{course.course.units} واحد</span>
               </div>
             </div>
 
             {/* Department */}
             <div className="flex items-center">
-              <svg className="w-5 h-5 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -79,14 +79,14 @@ const CourseModal: React.FC<CourseModalProps> = ({
                   d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                 />
               </svg>
-              <span className="text-gray-700">
+              <span className="text-gray-800">
                 <strong>دپارتمان:</strong> {course.department.name}
               </span>
             </div>
 
             {/* Instructor */}
             <div className="flex items-center">
-              <svg className="w-5 h-5 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -94,7 +94,7 @@ const CourseModal: React.FC<CourseModalProps> = ({
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
-              <span className="text-gray-700">
+              <span className="text-gray-800">
                 <strong>استاد:</strong> {course.instructor.name}
               </span>
             </div>
@@ -102,7 +102,7 @@ const CourseModal: React.FC<CourseModalProps> = ({
             {/* Schedule Times */}
             <div>
               <div className="flex items-center mb-3">
-                <svg className="w-5 h-5 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -114,15 +114,17 @@ const CourseModal: React.FC<CourseModalProps> = ({
               </div>
               <div className="space-y-2">
                 {course.time.map((timeSlot, index) => (
-                  <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                  <div key={index} className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 space-x-reverse">
-                        <span className="font-medium text-gray-900">{timeSlot.day}</span>
+                        <span className="font-semibold text-gray-900">{timeSlot.day}</span>
                         <span className="text-gray-600">
                           {timeSlot.start_time} - {timeSlot.end_time}
                         </span>
                       </div>
-                      <span className="text-sm bg-indigo-100 text-indigo-800 px-2 py-1 rounded">{timeSlot.room}</span>
+                      <span className="text-base bg-indigo-100 text-indigo-800 px-3 py-1.5 rounded">
+                        {timeSlot.room}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -132,26 +134,26 @@ const CourseModal: React.FC<CourseModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
+        <div className="p-7 border-t border-gray-200 bg-gray-50">
           <div className="flex space-x-3 space-x-reverse">
             {isScheduledCourse ? (
               <button
                 onClick={handleRemoveFromSchedule}
-                className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium"
+                className="flex-1 bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold"
               >
                 حذف از برنامه
               </button>
             ) : (
               <button
                 onClick={handleAddToSchedule}
-                className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                className="flex-1 bg-indigo-600 text-white px-5 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
               >
                 افزودن به برنامه
               </button>
             )}
             <button
               onClick={onClose}
-              className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              className="flex-1 bg-gray-200 text-gray-800 px-5 py-3 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
             >
               انصراف
             </button>

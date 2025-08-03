@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useDepartmentStore } from "../store/useScheduleStore"
@@ -66,7 +68,14 @@ const WeeklySchedulePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 py-10 flex items-center justify-between">
+          <div className="text-center flex-1">
+            <h1 className="text-4xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
+            <p className="text-gray-600 mt-3 text-xl">دپارتمان و درس مورد نظر خود را انتخاب کنید</p>
+          </div>
+
+          <div className="flex items-center gap-2 justify-end min-w-fit"></div>
+
           <a
             href="/"
             className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
@@ -76,13 +85,6 @@ const WeeklySchedulePage: React.FC = () => {
             </svg>
             بازگشت
           </a>
-
-          <div className="text-center flex-1">
-            <h1 className="text-3xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
-            <p className="text-gray-600 mt-3 text-lg">دپارتمان و درس مورد نظر خود را انتخاب کنید</p>
-          </div>
-
-          <div className="flex items-center gap-2 justify-end min-w-fit"></div>
         </div>
       </div>
 
@@ -96,7 +98,7 @@ const WeeklySchedulePage: React.FC = () => {
           />
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-10 items-stretch min-h-[600px]">
+        <div className="flex flex-col lg:flex-row gap-12 items-stretch min-h-[600px]">
           {" "}
           {/* Increased gap */}
           <div className="lg:w-1/4 flex-shrink-0">

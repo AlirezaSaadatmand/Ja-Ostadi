@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react"
 
 const HomePage: React.FC = () => {
   const sections = [
@@ -22,26 +22,26 @@ const HomePage: React.FC = () => {
         </svg>
       ),
       link: "/schedule",
-    }
-    // {
-    //   title: "دپارتمان‌ها",
-    //   description: "کاوش در دپارتمان‌های علمی مختلف.",
-    //   icon: (
-    //     <svg
-    //       className="w-12 h-12 text-green-600"
-    //       fill="none"
-    //       stroke="currentColor"
-    //       strokeWidth={2}
-    //       viewBox="0 0 24 24"
-    //       strokeLinecap="round"
-    //       strokeLinejoin="round"
-    //     >
-    //       <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
-    //       <circle cx="12" cy="7" r="4" />
-    //     </svg>
-    //   ),
-    //   link: "/departments",
-    // },
+    },
+    {
+      title: "دپارتمان‌ها",
+      description: "کاوش در دپارتمان‌های علمی مختلف.",
+      icon: (
+        <svg
+          className="w-12 h-12 text-green-600"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      ),
+      link: "/departments",
+    },
     // {
     //   title: "اساتید",
     //   description: "جزئیات درباره اساتید.",
@@ -82,19 +82,16 @@ const HomePage: React.FC = () => {
     //   ),
     //   link: "/courses",
     // },
-  ];
+  ]
 
   return (
     <div
       className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center p-8 font-sans"
       dir="rtl"
     >
-      <h1 className="text-5xl font-extrabold mb-12 text-gray-900 text-center">
-        خوش آمدید به داشبورد دانشگاه شما
-      </h1>
-      <p className="max-w-xl mb-10 text-center text-gray-600 text-lg">
-        در ترم‌ها، دپارتمان‌ها، اساتید و دروس حرکت کنید.
-        برای شروع روی هر بخش کلیک کنید.
+      <h1 className="text-6xl font-extrabold mb-12 text-gray-900 text-center">خوش آمدید به داشبورد دانشگاه شما</h1>
+      <p className="max-w-xl mb-10 text-center text-gray-600 text-xl">
+        در ترم‌ها، دپارتمان‌ها، اساتید و دروس حرکت کنید. برای شروع روی هر بخش کلیک کنید.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl w-full">
@@ -102,21 +99,19 @@ const HomePage: React.FC = () => {
           <a
             key={title}
             href={link}
-            className="group bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+            className="group bg-white rounded-xl shadow-lg p-10 flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 cursor-pointer"
           >
             <div className="mb-6">{icon}</div>
-            <h2 className="text-xl font-semibold mb-2 group-hover:text-indigo-600 transition-colors duration-300">
+            <h2 className="text-2xl font-semibold mb-2 group-hover:text-indigo-600 transition-colors duration-300">
               {title}
             </h2>
-            <p className="text-gray-500">{description}</p>
-            <span className="mt-4 inline-block text-indigo-600 group-hover:underline font-medium">
-              مشاهده →
-            </span>
+            <p className="text-gray-600 text-base">{description}</p>
+            <span className="mt-6 inline-block text-indigo-600 group-hover:underline font-semibold">مشاهده →</span>
           </a>
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default HomePage;
+export default HomePage

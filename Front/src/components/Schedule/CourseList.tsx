@@ -16,7 +16,7 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
         <div className="h-5 bg-gray-200 rounded w-1/2 mb-4"></div>
         <div className="grid grid-flow-col grid-rows-2 gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-24 w-48 bg-gray-200 rounded flex-shrink-0"></div>
+            <div key={i} className="h-28 w-56 bg-gray-200 rounded flex-shrink-0"></div>
           ))}
         </div>
       </div>
@@ -25,7 +25,7 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-5">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center justify-center">
+      <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center justify-center">
         <svg className="w-5 h-5 ml-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
@@ -53,17 +53,17 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
           {courses.map((course) => (
             <div
               key={course.course.id}
-              className="p-4 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer"
+              className="p-5 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer"
               onClick={() => onCourseClick(course)}
             >
               <div className="flex items-center justify-between">
                 {/* Course Name and Instructor (will be on the right in RTL) */}
                 <div className="flex-1 text-right ml-2">
-                  <span className="font-medium text-gray-800 block">{course.course.name}</span>
-                  <span className="text-xs text-gray-500 block mt-1">استاد: {course.instructor.name}</span>
+                  <span className="font-semibold text-gray-900 text-base block">{course.course.name}</span>
+                  <span className="text-sm text-gray-500 block mt-1">استاد: {course.instructor.name}</span>
                 </div>
                 {/* Units (will be on the left in RTL) */}
-                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded flex-shrink-0">
+                <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded flex-shrink-0">
                   {course.course.units} واحد
                 </span>
               </div>

@@ -18,7 +18,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
           <div className="h-5 bg-gray-200 rounded w-32 mb-6"></div>
           <div className="flex overflow-x-auto gap-4 pb-2">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-12 w-36 bg-gray-200 rounded-lg flex-shrink-0\"></div>
+              <div key={i} className="h-12 w-36 bg-gray-200 rounded-lg flex-shrink-0"></div>
             ))}
           </div>
         </div>
@@ -28,7 +28,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center justify-center">
+      <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center justify-center">
         <svg className="w-6 h-6 ml-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
@@ -57,14 +57,14 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
           {departments.map((dept) => (
             <button
               key={dept.id}
-              className={`p-4 rounded-lg text-center transition-all duration-200 border-2 flex-shrink-0 ${
+              className={`p-5 rounded-lg text-center transition-all duration-200 border-2 flex-shrink-0 ${
                 selectedDept === dept.id
                   ? "bg-indigo-600 text-white border-indigo-600 shadow-lg transform scale-105"
                   : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-md"
-              } w-36`}
+              } w-40`}
               onClick={() => onSelect(dept.id)}
             >
-              <div className="font-medium text-sm leading-tight">{dept.name}</div>
+              <div className="font-medium text-base leading-tight">{dept.name}</div>
             </button>
           ))}
         </div>
