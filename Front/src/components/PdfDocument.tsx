@@ -18,7 +18,6 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
 
   return (
     <div className="p-8 bg-white text-gray-900" dir="rtl" style={{ width: "100%", minHeight: "100vh" }}>
-      {/* Re-added max-w-screen-xl mx-auto for responsive centering */}
       <div className="max-w-screen-xl mx-auto">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">برنامه هفتگی دانشجو</h1>

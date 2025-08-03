@@ -18,10 +18,8 @@ func GetDepartments(c *fiber.Ctx) error {
 func GetDepartmentsData(c *fiber.Ctx) error {
     departments, err := services.GetDepartmentsDataService()
     if err != nil {
-        return c.Status(500).JSON(fiber.Map{
-            "error": "Failed to fetch departments data",
-        })
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
     }
 
-    return c.JSON(departments)
+	return utils.Success(c, fiber.StatusOK, departments, "Data fetched successfully")
 }

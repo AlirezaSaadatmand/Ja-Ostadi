@@ -3,9 +3,9 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useDepartmentDetailStore } from "../store/useDepartmentDetailStore"
-import DepartmentDetailModal from "../components/Department/DepartmentDetailModal" // Import the new modal
+import DepartmentDetailModal from "../components/Department/DepartmentDetailModal"
 import type { DepartmentDetail } from "../types"
-import { Building2 } from "lucide-react" // Add this import
+import { Building2 } from "lucide-react"
 
 const DepartmentsPage: React.FC = () => {
   const { departments, isLoading, error, fetchDepartmentsDetail } = useDepartmentDetailStore()
@@ -86,11 +86,11 @@ const DepartmentsPage: React.FC = () => {
             {departments.map((dept) => (
               <div
                 key={dept.id}
-                onClick={() => handleDepartmentClick(dept)} // Open modal on click
+                onClick={() => handleDepartmentClick(dept)}
                 className="bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center hover:shadow-lg hover:border-indigo-300 border border-gray-200 transition-all duration-200 cursor-pointer"
               >
                 <div className="mb-6">
-                  <Building2 className="w-16 h-16 text-green-600 mx-auto" /> {/* Replaced SVG with Building2 icon */}
+                  <Building2 className="w-14 h-14 text-green-600 mx-auto" />
                 </div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">{dept.name}</h2>
                 <div className="text-gray-700 text-lg space-y-2">
