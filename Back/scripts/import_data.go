@@ -91,17 +91,18 @@ func getOrCreateInstructor(item types.CourseJSON) (models.Instructor, error) {
 	return instructor, err
 }
 
-func getOrCreateInstructorDepartment(instructorID, departmentID uint) (models.InstructorDepartment, error) {
+func getOrCreateInstructorDepartment(instructorID, departmentID, semesterID uint) (models.InstructorDepartment, error) {
 	db := database.DB
 
 	var rel models.InstructorDepartment
-	err := db.Where("instructor_id = ? AND department_id = ?", instructorID, departmentID).First(&rel).Error
+	err := db.Where("instructor_id = ? AND department_id = ? AND semester_id = ?", instructorID, departmentID, semesterID).First(&rel).Error
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			rel = models.InstructorDepartment{
 				InstructorID: instructorID,
 				DepartmentID: departmentID,
+				SemesterID: semesterID,
 			}
 			err = db.Create(&rel).Error
 		}
@@ -211,7 +212,7 @@ func ImportData() error {
 			return err
 		}
 
-		_, err = getOrCreateInstructorDepartment(instructor.ID, dept.ID)
+		_, err = getOrCreateInstructorDepartment(instructor.ID, dept.ID, semester.ID)
 		if err != nil {
 			return err
 		}

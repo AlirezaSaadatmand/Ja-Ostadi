@@ -20,7 +20,7 @@ type ScheduleCourse struct {
 
 func GetCoursesSchedule() ([]ScheduleCourse, error) {
 
-	semesterID := 5
+	semesterID := 1
 
 	var courses []ScheduleCourse
 	err := database.DB.
