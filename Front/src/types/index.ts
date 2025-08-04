@@ -40,3 +40,31 @@ export interface DepartmentDetail {
   instructors_count: number
   courses_count: number
 }
+
+// New interface for the initial instructor list data
+export interface InstructorListItem {
+  instructor: {
+    name: string
+    field: string // e.g., "رياضي", "فيزيك", "علوم كامپيوتر"
+  }
+  relations: {
+    instructor_id: number
+    department_id: number
+    semester_id: number
+  }
+}
+
+export interface InstructorDetail {
+  id: number
+  name: string
+  email: string
+  office_location: string
+  office_hours: string
+  departments: { id: number; name: string }[]
+  courses: { id: number; name: string; semester_id: number; department_id: number }[]
+}
+
+export interface Semester {
+  id: number
+  name: string
+}
