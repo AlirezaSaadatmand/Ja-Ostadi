@@ -17,6 +17,11 @@ func Router(app *fiber.App) {
 	semesterRouter := api.Group("/semesters")
 	semesterRouter.Get("/", handlers.GetSemesters)
 
+	// Instructor Routes
+	instructorRouter := api.Group("/instructors")
+	instructorRouter.Get("/data", handlers.GetInstructorData)
+	// instructorRouter.Get("/department/:departmentID", )
+
 	// Course Routes
 	courseRouter := api.Group("/courses")
 	courseRouter.Get("/semester/:semesterID", handlers.GetCoursesBySemester)
