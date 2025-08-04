@@ -87,7 +87,7 @@ const DepartmentsPage: React.FC = () => {
               <div
                 key={dept.id}
                 onClick={() => handleDepartmentClick(dept)}
-                className="bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center hover:shadow-lg hover:border-indigo-300 border border-gray-200 transition-all duration-200 cursor-pointer"
+                className="group bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-indigo-400 hover:bg-gradient-to-br from-white to-indigo-50"
               >
                 <div className="mb-6">
                   <Building2 className="w-14 h-14 text-green-600 mx-auto" />

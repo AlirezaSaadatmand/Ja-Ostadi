@@ -4,6 +4,7 @@ import Home from "./pages/Home"
 import NotFoundPage from "./pages/NotFoundPage"
 import WeeklySchedulePage from "./pages/WeeklySchedulePage"
 import DepartmentsPage from "./pages/DepartmentsPage"
+import InstructorsPage from "./pages/InstructorsPage" // New import
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/departments",
     element: <DepartmentsPage />,
+  },
+  {
+    path: "/instructors", // New route
+    element: <InstructorsPage />,
   },
   {
     path: "*",
