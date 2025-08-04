@@ -3,6 +3,7 @@
 import type React from "react"
 import type { DepartmentDetail } from "../../types"
 import { useNavigate } from "react-router-dom"
+import { Building2 } from "lucide-react"
 
 interface DepartmentDetailModalProps {
   isOpen: boolean
@@ -51,18 +52,7 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
         {/* Content */}
         <div className="p-7 text-center">
           <div className="mb-6">
-            <svg
-              className="w-20 h-20 text-green-600 mx-auto mb-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              viewBox="0 0 24 24"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
+            <Building2 className="w-20 h-20 text-green-600 mx-auto mb-4" />
             <h3 className="text-3xl font-bold text-gray-900">{department.name}</h3>
           </div>
 

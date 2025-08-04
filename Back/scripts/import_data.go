@@ -74,12 +74,11 @@ func getOrCreateInstructor(item types.CourseJSON) (models.Instructor, error) {
 	db := database.DB
 	raw := item.Instructor
 	name, field := parseInstructorNameAndField(raw)
-
+	
 	var instructor models.Instructor
-	err := db.Where("name = ?", name).First(&instructor).Error
+	err := db.Where("name = ? AND field = ?", name, field).First(&instructor).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			// Create new instructor if not found
 			instructor = models.Instructor{
 				Name:  name,
 				Field: field,
