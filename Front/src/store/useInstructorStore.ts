@@ -3,7 +3,7 @@
 import { create } from "zustand"
 import axios from "axios"
 import config from "../config/config"
-import type { InstructorListItem, InstructorDetail } from "../types"
+import type { InstructorListItem, InstructorDetail, Department } from "../types" // Import Department type
 
 interface InstructorStore {
   instructors: InstructorListItem[]
@@ -13,12 +13,14 @@ interface InstructorStore {
   error: string | null
   selectedDepartmentId: number | null
   selectedSemesterId: number | null
+  filterByMode: "department" | "semester"
 
   fetchInstructors: () => Promise<void>
   fetchInstructorDetail: (id: number) => Promise<void>
-  getFilteredInstructors: () => InstructorListItem[]
+  getFilteredInstructors: (allDepartments: Department[]) => InstructorListItem[]
   setSelectedDepartmentId: (id: number | null) => void
   setSelectedSemesterId: (id: number | null) => void
+  setFilterByMode: (mode: "department" | "semester") => void
 }
 
 export const useInstructorStore = create<InstructorStore>((set, get) => ({
@@ -29,6 +31,7 @@ export const useInstructorStore = create<InstructorStore>((set, get) => ({
   error: null,
   selectedDepartmentId: null,
   selectedSemesterId: null,
+  filterByMode: "department",
 
   fetchInstructors: async () => {
     set({ isLoading: true, error: null })
@@ -61,23 +64,34 @@ export const useInstructorStore = create<InstructorStore>((set, get) => ({
     }
   },
 
-  getFilteredInstructors: () => {
-    const { instructors, selectedDepartmentId, selectedSemesterId } = get()
+  getFilteredInstructors: (allDepartments: Department[]) => {
+    const { instructors, selectedDepartmentId, selectedSemesterId, filterByMode } = get()
+    let filtered = instructors
 
-    if (selectedDepartmentId === null || selectedSemesterId === null) {
-      return []
+    if (filterByMode === "semester") {
+      if (selectedSemesterId !== null) {
+        filtered = filtered.filter((item) => item.relations.semester_id === selectedSemesterId)
+      }
+      if (selectedDepartmentId !== null) {
+        filtered = filtered.filter((item) => item.relations.department_id === selectedDepartmentId)
+      }
+    } else {
+      if (selectedDepartmentId !== null) {
+        const selectedDept = allDepartments.find((dept) => dept.id === selectedDepartmentId)
+        if (selectedDept) {
+          filtered = filtered.filter((item) => item.instructor.field === selectedDept.name)
+        } else {
+          filtered = []
+        }
+      }
+      if (selectedSemesterId !== null) {
+        filtered = filtered.filter((item) => item.relations.semester_id === selectedSemesterId)
+      }
     }
-
-    const filtered = instructors.filter((item) => {
-        
-        const matchesDepartment = item.relations.department_id === selectedDepartmentId
-        const matchesSemester = item.relations.semester_id === selectedSemesterId
-        return matchesDepartment && matchesSemester
-    })
-    console.log(filtered);
     return filtered
   },
 
   setSelectedDepartmentId: (id: number | null) => set({ selectedDepartmentId: id }),
   setSelectedSemesterId: (id: number | null) => set({ selectedSemesterId: id }),
+  setFilterByMode: (mode: "department" | "semester") => set({ filterByMode: mode }),
 }))
