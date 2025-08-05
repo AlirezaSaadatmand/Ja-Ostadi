@@ -3,7 +3,7 @@
 import { create } from "zustand"
 import axios from "axios"
 import config from "../config/config"
-import type { InstructorListItem, InstructorDetail, Department } from "../types" // Import Department type
+import type { InstructorListItem, InstructorDetail, Department } from "../types"
 
 interface InstructorStore {
   instructors: InstructorListItem[]
@@ -87,6 +87,14 @@ export const useInstructorStore = create<InstructorStore>((set, get) => ({
       if (selectedSemesterId !== null) {
         filtered = filtered.filter((item) => item.relations.semester_id === selectedSemesterId)
       }
+      const seenInstructorIds = new Set<number>()
+      filtered = filtered.filter((item) => {
+        if (seenInstructorIds.has(item.relations.instructor_id)) {
+          return false
+        }
+        seenInstructorIds.add(item.relations.instructor_id)
+        return true
+      })
     }
     return filtered
   },
