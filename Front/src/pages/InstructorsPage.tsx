@@ -6,10 +6,18 @@ import { useInstructorStore } from "../store/useInstructorStore"
 import { useDepartmentStore } from "../store/useScheduleStore"
 import { useSemesterStore } from "../store/useSemesterStore"
 import InstructorList from "../components/Instructor/InstructorList"
+import ToggleFilter from "../components/common/ToggleFilter"
 
 const InstructorsPage: React.FC = () => {
-  const { fetchInstructors, selectedDepartmentId, setSelectedDepartmentId, selectedSemesterId, setSelectedSemesterId } =
-    useInstructorStore()
+  const {
+    fetchInstructors,
+    selectedDepartmentId,
+    setSelectedDepartmentId,
+    selectedSemesterId,
+    setSelectedSemesterId,
+    filterByMode,
+    setFilterByMode,
+  } = useInstructorStore()
   const { departments, fetchDepartments } = useDepartmentStore()
   const { semesters, fetchSemesters } = useSemesterStore()
 
@@ -86,8 +94,12 @@ const InstructorsPage: React.FC = () => {
               ))}
             </select>
           </div>
+
+          <div className="w-full sm:w-auto flex items-center justify-center mt-4 sm:mt-0">
+            <ToggleFilter value={filterByMode} onValueChange={setFilterByMode} />
+          </div>
         </div>
-        <InstructorList />
+        <InstructorList departments={departments} />
       </div>
     </div>
   )
