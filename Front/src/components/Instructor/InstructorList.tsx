@@ -1,14 +1,21 @@
 "use client"
 
+import type React from "react"
+
 import { UserRound, GraduationCap } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useInstructorStore } from "../../store/useInstructorStore"
+import type { Department } from "../../types"
 
-const InstructorList = () => {
+interface InstructorListProps {
+  departments: Department[]
+}
+
+const InstructorList: React.FC<InstructorListProps> = ({ departments }) => {
   const navigate = useNavigate()
   const { isLoading, error, getFilteredInstructors } = useInstructorStore()
 
-  const instructors = getFilteredInstructors()
+  const instructors = getFilteredInstructors(departments)
 
   const handleInstructorClick = (instructorId: number) => {
     navigate(`/instructors/${instructorId}`)
