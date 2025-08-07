@@ -4,7 +4,8 @@ import Home from "./pages/Home"
 import NotFoundPage from "./pages/NotFoundPage"
 import WeeklySchedulePage from "./pages/WeeklySchedulePage"
 import DepartmentsPage from "./pages/DepartmentsPage"
-import InstructorsPage from "./pages/InstructorsPage" // New import
+import InstructorsPage from "./pages/InstructorsPage"
+import InstructorDetailPage from "./pages/InstructorDetailPage"
 
 const router = createBrowserRouter([
   {
@@ -20,8 +21,12 @@ const router = createBrowserRouter([
     element: <DepartmentsPage />,
   },
   {
-    path: "/instructors", // New route
+    path: "/instructors",
     element: <InstructorsPage />,
+  },
+  {
+    path: "/instructors/:instructorId",
+    element: <InstructorDetailPage />,
   },
   {
     path: "*",
