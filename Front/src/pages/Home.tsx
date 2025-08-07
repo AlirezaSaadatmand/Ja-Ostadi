@@ -1,4 +1,5 @@
 import type React from "react"
+import { Building2 } from 'lucide-react'
 
 const HomePage: React.FC = () => {
   const sections = [
@@ -26,20 +27,7 @@ const HomePage: React.FC = () => {
     {
       title: "دپارتمان‌ها",
       description: "کاوش در دپارتمان‌های علمی مختلف.",
-      icon: (
-        <svg
-          className="w-12 h-12 text-green-600"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
-          <circle cx="12" cy="7" r="4" />
-        </svg>
-      ),
+      icon: <Building2 className="w-12 h-12 text-green-600" />,
       link: "/departments",
     },
     {
