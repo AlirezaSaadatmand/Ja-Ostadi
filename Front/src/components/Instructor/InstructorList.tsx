@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { UserRound, GraduationCap } from "lucide-react"
+import { GraduationCap, BookUser } from 'lucide-react' // Re-added BookUser import
 import { useNavigate } from "react-router-dom"
 import { useInstructorStore } from "../../store/useInstructorStore"
 import type { Department } from "../../types"
@@ -18,7 +18,7 @@ const InstructorList: React.FC<InstructorListProps> = ({ departments }) => {
   const instructors = getFilteredInstructors(departments)
 
   const handleInstructorClick = (instructorId: number) => {
-    navigate(`/instructors/${instructorId}`)
+    navigate(`/instructors/${instructorId}`) // Keep navigation to the detail page
   }
 
   if (isLoading) {
@@ -48,7 +48,7 @@ const InstructorList: React.FC<InstructorListProps> = ({ departments }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {instructors.length === 0 ? (
         <div className="col-span-full text-center py-12">
-          <UserRound className="w-20 h-20 text-gray-300 mx-auto mb-4" />
+          <GraduationCap className="w-20 h-20 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 text-lg">هیچ استادی یافت نشد.</p>
         </div>
       ) : (
@@ -59,7 +59,7 @@ const InstructorList: React.FC<InstructorListProps> = ({ departments }) => {
             className="group bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-blue-400 hover:bg-gradient-to-br from-white to-blue-50"
           >
             <div className="mb-6">
-              <GraduationCap className="w-14 h-14 text-blue-600 mx-auto" />
+              <BookUser className="w-14 h-14 text-blue-600 mx-auto" /> {/* Changed icon to BookUser */}
             </div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">{item.instructor.name}</h2>
             <div className="text-gray-700 text-lg space-y-2">
