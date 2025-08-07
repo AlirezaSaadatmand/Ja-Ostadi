@@ -53,7 +53,7 @@ func GetInstructorCourses(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
-	
+
 	var result []InstructorCoursesData
 
 	for _, semester := range semesters {
@@ -73,4 +73,8 @@ func GetInstructorCourses(c *fiber.Ctx) error {
 	}
 
 	return utils.Success(c, fiber.StatusOK, result, "Data fetched successfully")
+}
+
+func GetInstructorDetail(c *fiber.Ctx) error {
+	return utils.Success(c, fiber.StatusOK, nil, "Data fetched successfully")
 }
