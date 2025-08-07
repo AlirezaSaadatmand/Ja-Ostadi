@@ -3,20 +3,20 @@
 import { create } from "zustand"
 import axios from "axios"
 import config from "../config/config"
-import type { InstructorListItem, InstructorDetail, Department } from "../types"
+import type { InstructorListItem, InstructorDetail, Department } from "../types" // Restored InstructorDetail import
 
 interface InstructorStore {
   instructors: InstructorListItem[]
-  instructorDetail: InstructorDetail | null
+  instructorDetail: InstructorDetail | null // Restored instructorDetail
   isLoading: boolean
-  isLoadingDetail: boolean
+  isLoadingDetail: boolean // Restored isLoadingDetail
   error: string | null
   selectedDepartmentId: number | null
   selectedSemesterId: number | null
   filterByMode: "department" | "semester"
 
   fetchInstructors: () => Promise<void>
-  fetchInstructorDetail: (id: number) => Promise<void>
+  fetchInstructorDetail: (id: number) => Promise<void> // Restored fetchInstructorDetail
   getFilteredInstructors: (allDepartments: Department[]) => InstructorListItem[]
   setSelectedDepartmentId: (id: number | null) => void
   setSelectedSemesterId: (id: number | null) => void
@@ -25,9 +25,9 @@ interface InstructorStore {
 
 export const useInstructorStore = create<InstructorStore>((set, get) => ({
   instructors: [],
-  instructorDetail: null,
+  instructorDetail: null, // Initial state
   isLoading: false,
-  isLoadingDetail: false,
+  isLoadingDetail: false, // Initial state
   error: null,
   selectedDepartmentId: null,
   selectedSemesterId: null,
@@ -43,9 +43,9 @@ export const useInstructorStore = create<InstructorStore>((set, get) => ({
       console.error("Error fetching instructors:", error)
       set({
         error: error instanceof Error ? error.message : String(error),
-      })
+      });
     } finally {
-      set({ isLoading: false })
+      set({ isLoading: false });
     }
   },
 
