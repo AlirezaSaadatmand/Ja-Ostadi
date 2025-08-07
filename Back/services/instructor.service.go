@@ -47,3 +47,23 @@ func GetInstructorRelations() ([]InstructorRelations, error) {
 
 	return relations, nil
 }
+
+type InstructorCourse struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+func GetInstructorCourses (instructorId, semesterId int) ([]InstructorCourse, error){
+
+	var courses []InstructorCourse
+	err := database.DB.
+		Model(&models.Course{}).
+		Select("ID, Name").
+		Where("instructor_id = ? AND semester_id = ?", instructorId, semesterId).
+		Find(&courses).Error
+	if err != nil {
+		return nil, errors.New("error getting data")
+	}
+
+	return courses, nil
+}
