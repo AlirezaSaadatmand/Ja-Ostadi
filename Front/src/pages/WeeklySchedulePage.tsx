@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react" // Removed useState
 import { useDepartmentStore } from "../store/useScheduleStore"
 import { useCourseStore } from "../store/useScheduleCourseStore"
 import DepartmentList from "../components/Schedule/DepartmentList"
@@ -13,9 +13,10 @@ import type { CourseResponse } from "../types"
 import { useScheduleTableStore, days, timeSlots } from "../store/useScheduleTableStore"
 import toast, { Toaster } from "react-hot-toast"
 import { usePdfExportStore } from "../store/usePdfExportStore"
+import { useCourseModalStore } from "../store/useCourseModalStore" // New import
 
 const WeeklySchedulePage: React.FC = () => {
-  const { departments, isLoading: depLoading, fetchDepartments } = useDepartmentStore()
+  const { departments, isLoading: depLoading, fetchDepartments, selectedDept, setSelectedDept } = useDepartmentStore() // Destructured selectedDept and setSelectedDept
   const { isLoading: courseLoading, fetchCourses, getCoursesByDepartment } = useCourseStore()
   const scheduledCourses = useScheduleTableStore((state) => state.scheduledCourses)
   const addCourseToSchedule = useScheduleTableStore((state) => state.addCourseToSchedule)
@@ -24,10 +25,8 @@ const WeeklySchedulePage: React.FC = () => {
 
   const { isExporting, exportPdf } = usePdfExportStore()
 
-  const [selectedDept, setSelectedDept] = useState<number | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedCourse, setSelectedCourse] = useState<CourseResponse | null>(null)
-  const [isScheduledCourseInModal, setIsScheduledCourseInModal] = useState(false)
+  // Replaced useState with useCourseModalStore
+  const { isOpen: isModalOpen, selectedCourse, isScheduledCourseInModal, openModal, closeModal } = useCourseModalStore()
 
   useEffect(() => {
     fetchDepartments()
@@ -37,15 +36,8 @@ const WeeklySchedulePage: React.FC = () => {
   const filteredCourses = selectedDept ? getCoursesByDepartment(selectedDept) : []
 
   const handleCourseClick = (course: CourseResponse) => {
-    setSelectedCourse(course)
-    setIsScheduledCourseInModal(scheduledCourses.some((c) => c.course.id === course.course.id))
-    setIsModalOpen(true)
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false)
-    setSelectedCourse(null)
-    setIsScheduledCourseInModal(false)
+    const isScheduled = scheduledCourses.some((c) => c.course.id === course.course.id)
+    openModal(course, isScheduled) // Use openModal from store
   }
 
   const handleAddToSchedule = (course: CourseResponse) => {
@@ -55,14 +47,14 @@ const WeeklySchedulePage: React.FC = () => {
     } else {
       toast.success(`درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`)
     }
-    closeModal()
+    closeModal() // Use closeModal from store
   }
 
   const handleRemoveCourse = (courseId: number) => {
     const courseName = scheduledCourses.find((c) => c.course.id === courseId)?.course.name || "درس"
     removeCourseFromSchedule(courseId)
     toast.success(`${courseName} با موفقیت از برنامه حذف شد.`)
-    closeModal()
+    closeModal() // Use closeModal from store
   }
 
   return (
@@ -93,7 +85,7 @@ const WeeklySchedulePage: React.FC = () => {
           <DepartmentList
             departments={Array.isArray(departments) ? departments : []}
             selectedDept={selectedDept}
-            onSelect={setSelectedDept}
+            onSelect={setSelectedDept} // Use setSelectedDept from store
             isLoading={depLoading}
           />
         </div>
