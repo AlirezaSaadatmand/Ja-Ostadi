@@ -7,14 +7,16 @@ interface DepartmentStore {
   departments: Department[];
   isLoading: boolean;
   error: string | null;
-
+  selectedDept: number | null;
   fetchDepartments: () => Promise<void>;
+  setSelectedDept: (id: number | null) => void;
 }
 
 export const useDepartmentStore = create<DepartmentStore>((set) => ({
   departments: [],
   isLoading: false,
   error: null,
+  selectedDept: null,
 
   fetchDepartments: async () => {
     set({ isLoading: true, error: null });
@@ -33,4 +35,5 @@ export const useDepartmentStore = create<DepartmentStore>((set) => ({
       set({ isLoading: false });
     }
   },
+  setSelectedDept: (id) => set({ selectedDept: id }),
 }));
