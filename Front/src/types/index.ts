@@ -85,3 +85,52 @@ export interface CourseInList {
   id: number
   name: string
 }
+
+
+export interface CourseDetailCourse {
+  id: number
+  name: string
+  number: string
+  group: string
+  units: number
+  class_type: string
+  time_in_week: string
+  mid_exam_time: string
+  final_exam_time: string
+  capacity: number
+  student_count: number
+  semester_id: number
+  department_id: number
+  instructor_id: number
+}
+
+export interface CourseDetailInstructor {
+  id: number
+  name: string
+  field: string
+}
+
+export interface CourseDetailDepartment {
+  id: number
+  name: string
+}
+
+export interface CourseDetailClassTime {
+  day: string
+  start_time: string
+  end_time: string
+  room: string
+}
+
+export interface CourseDetailSemester {
+  id: number
+  name: string
+}
+
+export interface CourseDetailResponseData {
+  Course: CourseDetailCourse
+  Instructor: CourseDetailInstructor
+  Department: CourseDetailDepartment
+  ClassTime: CourseDetailClassTime[]
+  Semeter: CourseDetailSemester
+}
