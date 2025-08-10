@@ -41,3 +41,34 @@ func GetCoursesBySemesterAndDepartment(semesterID, departmentID int) ([]CourseMi
 
 	return courses, nil
 }
+
+type CourseDetail struct {
+	ID            uint   `json:"id"`
+	Name          string `json:"name"`
+	Number        string `json:"number"`
+	Group         string `json:"group"`
+	Units         int    `json:"units"`
+	ClassType     string `json:"class_type"`
+	TimeInWeek    string `json:"time_in_week"`
+	MidExamTime   string `json:"mid_exam_time"`
+	FinalExamTime string `json:"final_exam_time"`
+	Capacity      int    `json:"capacity"`
+	StudentCount  int    `json:"student_count"`
+	SemesterID    uint   `json:"semester_id"`
+	DepartmentID  uint   `json:"department_id"`
+	InstructorID  uint   `json:"instructor_id"`
+}
+
+func GetCourseByID(courseID int) (CourseDetail, error) {
+
+	var course CourseDetail
+	err := database.DB.
+		Model(&models.Course{}).
+		Where("ID = ?", courseID).
+		Find(&course).Error
+	if err != nil {
+		return course, errors.New("error getting data")
+	}
+
+	return course, nil
+}
