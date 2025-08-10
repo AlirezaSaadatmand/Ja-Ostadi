@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import type { CourseResponse } from "../types"
+import type { CourseResponse } from "../../types"
 
 export const days = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"]
 

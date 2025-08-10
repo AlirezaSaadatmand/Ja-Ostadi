@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import axios from "axios"
-import config from "../config/config"
-import type { Semester } from "../types"
+import config from "../../config/config"
+import type { Semester } from "../../types"
 
 interface SemesterStore {
   semesters: Semester[]

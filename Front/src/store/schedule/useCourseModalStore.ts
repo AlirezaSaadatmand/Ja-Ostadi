@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import type { CourseResponse } from "../types"
+import type { CourseResponse } from "../../types"
 
 interface CourseModalStore {
   isOpen: boolean

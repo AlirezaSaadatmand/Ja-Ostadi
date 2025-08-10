@@ -1,23 +1,32 @@
 "use client"
 
 import type React from "react"
-import { useEffect } from "react" // Removed useState
-import { useDepartmentStore } from "../store/useScheduleStore"
-import { useCourseStore } from "../store/useScheduleCourseStore"
+import { useEffect } from "react"
+import { useScheduleDataStore } from "../store/schedule/useScheduleDataStore" // Updated import
+import { useScheduleTableStore, days, timeSlots } from "../store/schedule/useScheduleTableStore" // Updated import
+import { useCourseModalStore } from "../store/schedule/useCourseModalStore" // Updated import
+import { usePdfExportStore } from "../store/common/usePdfExportStore" // Updated import
+
 import DepartmentList from "../components/Schedule/DepartmentList"
 import WeeklyTable from "../components/Schedule/WeeklyTable"
 import CourseModal from "../components/Schedule/CourseModal"
 import ScheduledCourseSummary from "../components/Schedule/ScheduledCourseSummary"
 import CourseList from "../components/Schedule/CourseList"
 import type { CourseResponse } from "../types"
-import { useScheduleTableStore, days, timeSlots } from "../store/useScheduleTableStore"
 import toast, { Toaster } from "react-hot-toast"
-import { usePdfExportStore } from "../store/usePdfExportStore"
-import { useCourseModalStore } from "../store/useCourseModalStore" // New import
 
 const WeeklySchedulePage: React.FC = () => {
-  const { departments, isLoading: depLoading, fetchDepartments, selectedDept, setSelectedDept } = useDepartmentStore() // Destructured selectedDept and setSelectedDept
-  const { isLoading: courseLoading, fetchCourses, getCoursesByDepartment } = useCourseStore()
+  const {
+    departments,
+    isLoadingDepartments,
+    isLoadingCourses,
+    fetchDepartments,
+    fetchCourses,
+    selectedDept,
+    setSelectedDept,
+    getCoursesByDepartment,
+  } = useScheduleDataStore() // Updated store
+
   const scheduledCourses = useScheduleTableStore((state) => state.scheduledCourses)
   const addCourseToSchedule = useScheduleTableStore((state) => state.addCourseToSchedule)
   const removeCourseFromSchedule = useScheduleTableStore((state) => state.removeCourseFromSchedule)
@@ -25,7 +34,6 @@ const WeeklySchedulePage: React.FC = () => {
 
   const { isExporting, exportPdf } = usePdfExportStore()
 
-  // Replaced useState with useCourseModalStore
   const { isOpen: isModalOpen, selectedCourse, isScheduledCourseInModal, openModal, closeModal } = useCourseModalStore()
 
   useEffect(() => {
@@ -37,7 +45,7 @@ const WeeklySchedulePage: React.FC = () => {
 
   const handleCourseClick = (course: CourseResponse) => {
     const isScheduled = scheduledCourses.some((c) => c.course.id === course.course.id)
-    openModal(course, isScheduled) // Use openModal from store
+    openModal(course, isScheduled)
   }
 
   const handleAddToSchedule = (course: CourseResponse) => {
@@ -47,14 +55,14 @@ const WeeklySchedulePage: React.FC = () => {
     } else {
       toast.success(`درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`)
     }
-    closeModal() // Use closeModal from store
+    closeModal()
   }
 
   const handleRemoveCourse = (courseId: number) => {
     const courseName = scheduledCourses.find((c) => c.course.id === courseId)?.course.name || "درس"
     removeCourseFromSchedule(courseId)
     toast.success(`${courseName} با موفقیت از برنامه حذف شد.`)
-    closeModal() // Use closeModal from store
+    closeModal()
   }
 
   return (
@@ -85,14 +93,12 @@ const WeeklySchedulePage: React.FC = () => {
           <DepartmentList
             departments={Array.isArray(departments) ? departments : []}
             selectedDept={selectedDept}
-            onSelect={setSelectedDept} // Use setSelectedDept from store
-            isLoading={depLoading}
+            onSelect={setSelectedDept}
+            isLoading={isLoadingDepartments}
           />
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12 items-stretch min-h-[600px]">
-          {" "}
-          {/* Increased gap */}
           <div className="lg:w-1/4 flex-shrink-0">
             <div className="sticky top-6">
               <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />
@@ -115,7 +121,7 @@ const WeeklySchedulePage: React.FC = () => {
 
         {selectedDept && (
           <div className="mt-8">
-            <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={courseLoading} />
+            <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={isLoadingCourses} />
           </div>
         )}
       </div>

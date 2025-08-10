@@ -1,7 +1,7 @@
 import type React from "react"
 import type { CourseResponse } from "../types"
-import type { TableCell } from "../store/useScheduleTableStore"
-import { days, timeSlots } from "../store/useScheduleTableStore"
+import type { TableCell } from "../store/schedule/useScheduleTableStore"
+import { days, timeSlots } from "../store/schedule/useScheduleTableStore"
 
 interface PdfDocumentProps {
   scheduledCourses: CourseResponse[]

@@ -3,9 +3,9 @@
 import type React from "react"
 import { useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
-import { useInstructorStore } from "../store/useInstructorStore"
-import { useDepartmentStore } from "../store/useScheduleStore"
-import { useSemesterStore } from "../store/useSemesterStore"
+import { useInstructorListStore } from "../store/instructors/useInstructorListStore" // Updated import
+import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore" // Updated import
+import { useSemesterStore } from "../store/common/useSemesterStore" // Updated import
 import InstructorList from "../components/Instructor/InstructorList"
 import ToggleFilter from "../components/common/ToggleFilter"
 
@@ -20,15 +20,15 @@ const InstructorsPage: React.FC = () => {
     setSelectedSemesterId,
     filterByMode,
     setFilterByMode,
-  } = useInstructorStore()
-  const { departments, fetchDepartments } = useDepartmentStore()
-  const { semesters, fetchSemesters } = useSemesterStore()
+  } = useInstructorListStore() // Updated store
+  const { departments, fetchDepartmentsDetail } = useDepartmentsPageStore() // Updated store
+  const { semesters, fetchSemesters } = useSemesterStore() // Updated store
 
   useEffect(() => {
     fetchInstructors()
-    fetchDepartments()
+    fetchDepartmentsDetail() // Fetch detailed departments for filter
     fetchSemesters()
-  }, [fetchInstructors, fetchDepartments, fetchSemesters])
+  }, [fetchInstructors, fetchDepartmentsDetail, fetchSemesters])
 
   useEffect(() => {
     const urlDeptId = searchParams.get("deptId")
@@ -72,7 +72,7 @@ const InstructorsPage: React.FC = () => {
     }
     newSearchParams.set("mode", filterByMode)
     setSearchParams(newSearchParams, { replace: true })
-  }, [selectedDepartmentId, selectedSemesterId, filterByMode, setSearchParams])
+  }, [selectedDepartmentId, selectedSemesterId, filterByMode, setSearchParams, searchParams])
 
   const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newDeptId = e.target.value ? Number(e.target.value) : null
@@ -154,7 +154,7 @@ const InstructorsPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <InstructorList departments={departments} />
+        <InstructorList departments={departments} semesters={semesters} />
       </div>
     </div>
   )

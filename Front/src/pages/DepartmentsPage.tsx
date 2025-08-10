@@ -2,13 +2,13 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { useDepartmentDetailStore } from "../store/useDepartmentDetailStore"
+import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore" // Updated import
 import DepartmentDetailModal from "../components/Department/DepartmentDetailModal"
 import type { DepartmentDetail } from "../types"
 import { Building2 } from "lucide-react"
 
 const DepartmentsPage: React.FC = () => {
-  const { departments, isLoading, error, fetchDepartmentsDetail } = useDepartmentDetailStore()
+  const { departments, isLoading, error, fetchDepartmentsDetail } = useDepartmentsPageStore() // Updated store
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedDepartment, setSelectedDepartment] = useState<DepartmentDetail | null>(null)

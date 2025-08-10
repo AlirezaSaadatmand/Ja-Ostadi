@@ -2,9 +2,9 @@ import { create } from "zustand"
 import html2pdf from "html2pdf.js"
 import toast from "react-hot-toast"
 import { createRoot } from "react-dom/client"
-import PdfDocument from "../components/PdfDocument"
-import type { CourseResponse } from "../types"
-import type { TableCell } from "./useScheduleTableStore"
+import PdfDocument from "../../components/PdfDocument"
+import type { CourseResponse } from "../../types"
+import type { TableCell } from "../schedule/useScheduleTableStore"
 
 interface PdfExportData {
   scheduledCourses: CourseResponse[]

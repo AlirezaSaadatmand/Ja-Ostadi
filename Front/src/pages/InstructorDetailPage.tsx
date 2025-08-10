@@ -3,27 +3,34 @@
 import type React from "react"
 import { useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { useInstructorCoursesStore } from "../store/useInstructorCoursesStore"
-import { BookOpen, CalendarDays } from 'lucide-react'
+import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore" // Updated import
+import { BookOpen, CalendarDays } from "lucide-react"
 
 const InstructorDetailPage: React.FC = () => {
   const { instructorId } = useParams<{ instructorId: string }>()
   const id = Number(instructorId)
 
   const {
+    instructorDetail, // Now fetched here
     instructorCoursesBySemester,
-    isLoading: coursesLoading,
-    error: coursesError,
+    isLoading, // Combined loading state
+    error,
+    fetchInstructorDetail, // Now fetched here
     fetchInstructorCoursesBySemester,
-  } = useInstructorCoursesStore()
+    clearInstructorData,
+  } = useInstructorDetailStore() // Updated store
 
   useEffect(() => {
     if (id) {
+      fetchInstructorDetail(id)
       fetchInstructorCoursesBySemester(id)
     }
-  }, [id, fetchInstructorCoursesBySemester])
+    return () => {
+      clearInstructorData() // Clear data on unmount
+    }
+  }, [id, fetchInstructorDetail, fetchInstructorCoursesBySemester, clearInstructorData])
 
-  if (coursesLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8" dir="rtl">
         <div className="animate-pulse bg-white rounded-xl shadow-lg p-10 w-full max-w-3xl">
@@ -43,10 +50,21 @@ const InstructorDetailPage: React.FC = () => {
     )
   }
 
-  if (coursesError || instructorCoursesBySemester.length === 0) {
+  if (error || !instructorDetail) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-8" dir="rtl">
-        {/* This div will be the "black space" */}
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8" dir="rtl">
+        <div className="text-center py-12 text-red-600">
+          <p className="text-lg">خطا در بارگذاری جزئیات استاد یا استاد یافت نشد: {error}</p>
+          <Link
+            to="/instructors"
+            className="mt-4 inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
+          >
+            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            بازگشت به لیست اساتید
+          </Link>
+        </div>
       </div>
     )
   }
@@ -57,7 +75,7 @@ const InstructorDetailPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 py-10 flex items-center justify-between">
           <div className="text-center flex-1">
             <h1 className="text-4xl font-bold text-gray-900">جزئیات استاد</h1>
-            <p className="text-gray-600 mt-3 text-xl">اطلاعات مربوط به استاد با شناسه {id}</p>
+            <p className="text-gray-600 mt-3 text-xl">اطلاعات مربوط به استاد {instructorDetail.name}</p>
           </div>
 
           <Link
@@ -73,7 +91,7 @@ const InstructorDetailPage: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-10">
+        <div className="bg-white rounded-xl shadow-lg p-10 mb-8">
           <h3 className="text-3xl font-bold text-gray-900 mb-6 text-center flex items-center justify-center">
             <BookOpen className="w-8 h-8 text-emerald-600 ml-3" />
             دروس ارائه شده
@@ -98,7 +116,7 @@ const InstructorDetailPage: React.FC = () => {
                       {semesterData.courses.map((course) => (
                         <li key={course.id} className="text-gray-700 text-base">
                           <Link
-                            to={`/courses/${course.id}`} // Make the course name clickable
+                            to={`/courses/${course.id}`}
                             className="text-blue-600 hover:underline hover:text-blue-800 transition-colors"
                           >
                             {course.name}
@@ -111,6 +129,34 @@ const InstructorDetailPage: React.FC = () => {
               ))}
             </div>
           )}
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-10">
+          <h3 className="text-3xl font-bold text-gray-900 mb-6 text-center flex items-center justify-center">
+            <svg className="w-8 h-8 text-blue-600 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+            اطلاعات تماس
+          </h3>
+          <div className="space-y-4 text-lg text-gray-700 text-center">
+            <p>
+              <strong>ایمیل:</strong> {instructorDetail.email}
+            </p>
+            <p>
+              <strong>محل دفتر:</strong> {instructorDetail.office_location}
+            </p>
+            <p>
+              <strong>ساعات کاری:</strong> {instructorDetail.office_hours}
+            </p>
+            <p>
+              <strong>دپارتمان‌ها:</strong> {instructorDetail.departments.map((dept) => dept.name).join(", ")}
+            </p>
+          </div>
         </div>
       </div>
     </div>

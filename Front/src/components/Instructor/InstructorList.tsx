@@ -2,23 +2,24 @@
 
 import type React from "react"
 
-import { GraduationCap, BookUser } from 'lucide-react' // Re-added BookUser import
+import { GraduationCap, BookUser } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { useInstructorStore } from "../../store/useInstructorStore"
-import type { Department } from "../../types"
+import { useInstructorListStore } from "../../store/instructors/useInstructorListStore" // Updated import
+import type { Department, Semester } from "../../types" // Added Semester import
 
 interface InstructorListProps {
   departments: Department[]
+  semesters: Semester[] // Added semesters prop
 }
 
-const InstructorList: React.FC<InstructorListProps> = ({ departments }) => {
+const InstructorList: React.FC<InstructorListProps> = ({ departments, semesters }) => {
   const navigate = useNavigate()
-  const { isLoading, error, getFilteredInstructors } = useInstructorStore()
+  const { isLoading, error, getFilteredInstructors } = useInstructorListStore() // Updated store
 
-  const instructors = getFilteredInstructors(departments)
+  const instructors = getFilteredInstructors(departments, semesters) // Pass semesters
 
   const handleInstructorClick = (instructorId: number) => {
-    navigate(`/instructors/${instructorId}`) // Keep navigation to the detail page
+    navigate(`/instructors/${instructorId}`)
   }
 
   if (isLoading) {
@@ -59,7 +60,7 @@ const InstructorList: React.FC<InstructorListProps> = ({ departments }) => {
             className="group bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-blue-400 hover:bg-gradient-to-br from-white to-blue-50"
           >
             <div className="mb-6">
-              <BookUser className="w-14 h-14 text-blue-600 mx-auto" /> {/* Changed icon to BookUser */}
+              <BookUser className="w-14 h-14 text-blue-600 mx-auto" />
             </div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">{item.instructor.name}</h2>
             <div className="text-gray-700 text-lg space-y-2">
