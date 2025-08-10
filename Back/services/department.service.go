@@ -66,3 +66,19 @@ func GetDepartmentsDataService() ([]DepartmentDataResponse, error) {
 
     return result, nil
 }
+
+
+func GetDepartmentByID(departmentID int) (DepartmentMinimal, error) {
+
+	var department DepartmentMinimal
+	err := database.DB.
+		Model(&models.Department{}).
+		Select("id, name").
+        Where("id = ?", departmentID).
+		Find(&department).Error
+	if err != nil {
+		return department, errors.New("error getting data")
+	}
+
+	return department, nil
+}
