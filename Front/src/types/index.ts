@@ -80,3 +80,8 @@ export interface InstructorCoursesBySemester {
   }
   courses: CourseInSemester[]
 }
+
+export interface CourseInList {
+  id: number
+  name: string
+}
