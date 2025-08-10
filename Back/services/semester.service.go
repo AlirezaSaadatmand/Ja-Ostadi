@@ -25,3 +25,17 @@ func GetSemesters() ([]SemesterData, error) {
 
 	return semesters, nil
 }
+
+func GetSemesterByID(semeterID int) (SemesterData, error) {
+	var semester SemesterData
+	err := database.DB.
+		Model(&models.Semester{}).
+		Select("ID, Name").
+		Where("id = ?", semeterID).
+		Find(&semester).Error
+	if err != nil {
+		return semester, errors.New("error getting data")
+	}
+
+	return semester, nil
+}
