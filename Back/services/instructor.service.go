@@ -27,7 +27,6 @@ func GetInstructorData(instructorId int) (InstructorMinimal, error) {
 	return instructor, nil
 }
 
-
 type InstructorRelations struct {
 	InstructorID uint `json:"instructor_id"`
 	DepartmentID uint `json:"department_id"`
@@ -53,7 +52,7 @@ type InstructorCourse struct {
 	Name string `json:"name"`
 }
 
-func GetInstructorCourses (instructorId, semesterId int) ([]InstructorCourse, error){
+func GetInstructorCourses(instructorId, semesterId int) ([]InstructorCourse, error) {
 
 	var courses []InstructorCourse
 	err := database.DB.
@@ -66,4 +65,25 @@ func GetInstructorCourses (instructorId, semesterId int) ([]InstructorCourse, er
 	}
 
 	return courses, nil
+}
+
+type InstructorByID struct {
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Field string `json:"field"`
+}
+
+func GetInstructorByID(instructorId int) (InstructorByID, error) {
+
+	var instructor InstructorByID
+	err := database.DB.
+		Model(&models.Instructor{}).
+		Select("ID, Name, field").
+		Where("id = ?", instructorId).
+		Find(&instructor).Error
+	if err != nil {
+		return instructor, errors.New("error getting data")
+	}
+
+	return instructor, nil
 }
