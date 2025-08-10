@@ -47,3 +47,58 @@ func GetCoursesBySemesterAndDepartment(c *fiber.Ctx) error {
 
 	return utils.Success(c, fiber.StatusOK, courses, "Data fetched successfully")
 }
+
+type CourseDetail struct {
+	Course     services.CourseDetail
+	Instructor services.InstructorByID
+	Department services.DepartmentMinimal
+	ClassTime  []services.ScheduleTime
+	Semeter    services.SemesterData
+}
+
+func GetCourseByID(c *fiber.Ctx) error {
+	courseID := c.Params("courseID")
+	if courseID == "" {
+		return utils.Error(c, fiber.StatusBadRequest, "courseID is required")
+	}
+
+	courseInt, err := strconv.Atoi(courseID)
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "courseID must be a valid number")
+	}
+
+	courseDetail, err := services.GetCourseByID(courseInt)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	classTimeDetail, err := services.GetTimeSchedule(courseInt)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	instructor, err := services.GetInstructorByID(int(courseDetail.InstructorID))
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	department, err := services.GetDepartmentByID(int(courseDetail.DepartmentID))
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	semeter, err := services.GetSemesterByID(int(courseDetail.SemesterID))
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	response := CourseDetail{
+		Course:     courseDetail,
+		Instructor: instructor,
+		Department: department,
+		ClassTime:  classTimeDetail,
+		Semeter:    semeter,
+	}
+
+	return utils.Success(c, fiber.StatusOK, response, "Data fetched successfully")
+}
