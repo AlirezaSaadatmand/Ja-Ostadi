@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react"
 import type { CourseResponse } from "../../types"
-import type { TableCell } from "../../store/useScheduleTableStore"
+import type { TableCell } from "../../store/schedule/useScheduleTableStore"
 
 interface WeeklyTableProps {
   days: string[]

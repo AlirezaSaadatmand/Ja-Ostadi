@@ -6,7 +6,7 @@ import type { CourseResponse } from "../../types"
 interface CourseListProps {
   courses: CourseResponse[]
   onCourseClick: (course: CourseResponse) => void
-  isLoading: boolean // Added isLoading prop
+  isLoading: boolean
 }
 
 const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoading }) => {
@@ -57,12 +57,10 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
               onClick={() => onCourseClick(course)}
             >
               <div className="flex items-center justify-between">
-                {/* Course Name and Instructor (will be on the right in RTL) */}
                 <div className="flex-1 text-right ml-2">
                   <span className="font-semibold text-gray-900 text-base block">{course.course.name}</span>
                   <span className="text-sm text-gray-500 block mt-1">استاد: {course.instructor.name}</span>
                 </div>
-                {/* Units (will be on the left in RTL) */}
                 <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded flex-shrink-0">
                   {course.course.units} واحد
                 </span>

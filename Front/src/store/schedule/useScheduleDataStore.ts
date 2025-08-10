@@ -31,7 +31,6 @@ export const useScheduleDataStore = create<ScheduleDataStore>((set, get) => ({
       const response = await axios.get(`${config.apiUrl}/departments`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
       set({ departments: data })
-      // Set initial selected department if none is selected
       if (data.length > 0 && get().selectedDept === null) {
         set({ selectedDept: data[0].id })
       }

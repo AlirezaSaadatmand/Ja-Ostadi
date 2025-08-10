@@ -4,19 +4,19 @@ import type React from "react"
 
 import { GraduationCap, BookUser } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { useInstructorListStore } from "../../store/instructors/useInstructorListStore" // Updated import
-import type { Department, Semester } from "../../types" // Added Semester import
+import { useInstructorListStore } from "../../store/instructors/useInstructorListStore" 
+import type { Department, Semester } from "../../types"
 
 interface InstructorListProps {
   departments: Department[]
-  semesters: Semester[] // Added semesters prop
+  semesters: Semester[]
 }
 
 const InstructorList: React.FC<InstructorListProps> = ({ departments, semesters }) => {
   const navigate = useNavigate()
-  const { isLoading, error, getFilteredInstructors } = useInstructorListStore() // Updated store
+  const { isLoading, error, getFilteredInstructors } = useInstructorListStore()  
 
-  const instructors = getFilteredInstructors(departments, semesters) // Pass semesters
+  const instructors = getFilteredInstructors(departments, semesters)
 
   const handleInstructorClick = (instructorId: number) => {
     navigate(`/instructors/${instructorId}`)

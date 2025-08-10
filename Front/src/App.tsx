@@ -6,6 +6,7 @@ import WeeklySchedulePage from "./pages/WeeklySchedulePage"
 import DepartmentsPage from "./pages/DepartmentsPage"
 import InstructorsPage from "./pages/InstructorsPage"
 import InstructorDetailPage from "./pages/InstructorDetailPage"
+import CoursesPage from "./pages/CoursesPage" // Import the new CoursesPage
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/instructors/:instructorId",
     element: <InstructorDetailPage />,
+  },
+  {
+    path: "/courses", // Add the new route for CoursesPage
+    element: <CoursesPage />,
   },
   {
     path: "*",

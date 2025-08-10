@@ -22,7 +22,6 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
   }
 
   const handleViewInstructors = () => {
-    // Navigate to the instructors page with the department ID and filter mode in the URL
     navigate(`/instructors?deptId=${department.id}&mode=department`)
     onClose()
   }

@@ -18,7 +18,6 @@ export const useSemesterStore = create<SemesterStore>((set) => ({
   fetchSemesters: async () => {
     set({ isLoading: true, error: null })
     try {
-      // Assuming an API endpoint for semesters, e.g., /api/semesters
       const response = await axios.get(`${config.apiUrl}/semesters`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
       set({ semesters: data })
