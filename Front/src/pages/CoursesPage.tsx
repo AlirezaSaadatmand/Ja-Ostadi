@@ -185,16 +185,16 @@ const CoursesPage: React.FC = () => {
         {!isLoading && !error && courses.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {courses.map((course) => (
-              <div
+              <Link
                 key={course.id}
+                to={`/courses/${course.id}`} // Link to the new CourseDetailPage
                 className="group bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-emerald-400 hover:bg-gradient-to-br from-white to-emerald-50"
               >
                 <div className="mb-6">
                   <BookOpen className="w-14 h-14 text-emerald-600 mx-auto" />
                 </div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-2">{course.name}</h2>
-                {/* Removed the line that displays course.id */}
-              </div>
+              </Link>
             ))}
           </div>
         )}

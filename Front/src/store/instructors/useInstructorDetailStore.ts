@@ -23,7 +23,9 @@ export const useInstructorDetailStore = create<InstructorDetailStore>((set) => (
   fetchInstructorDetail: async (id: number) => {
     set({ isLoading: true, error: null, instructorDetail: null })
     try {
-      const response = await axios.get(`${config.apiUrl}/instructors/${id}`)
+      const response = await axios.get(`${config.apiUrl}/instructors/${id}/detail`)
+      console.log(response.data.data);
+      
       set({ instructorDetail: response.data.data })
     } catch (error) {
       console.error(`Error fetching instructor detail for ID ${id}:`, error)

@@ -17,7 +17,7 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
   if (!isOpen || !department) return null
 
   const handleViewCourses = () => {
-    navigate(`/departments/${department.id}/courses`)
+    navigate(`/courses?deptId=${department.id}`)
     onClose()
   }
 
