@@ -3,9 +3,9 @@
 import type React from "react"
 import { useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
-import { useInstructorListStore } from "../store/instructors/useInstructorListStore" // Updated import
-import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore" // Updated import
-import { useSemesterStore } from "../store/common/useSemesterStore" // Updated import
+import { useInstructorListStore } from "../store/instructors/useInstructorListStore"
+import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore"
+import { useSemesterStore } from "../store/common/useSemesterStore"
 import InstructorList from "../components/Instructor/InstructorList"
 import ToggleFilter from "../components/common/ToggleFilter"
 
@@ -20,13 +20,13 @@ const InstructorsPage: React.FC = () => {
     setSelectedSemesterId,
     filterByMode,
     setFilterByMode,
-  } = useInstructorListStore() // Updated store
-  const { departments, fetchDepartmentsDetail } = useDepartmentsPageStore() // Updated store
-  const { semesters, fetchSemesters } = useSemesterStore() // Updated store
+  } = useInstructorListStore()
+  const { departments, fetchDepartmentsDetail } = useDepartmentsPageStore()
+  const { semesters, fetchSemesters } = useSemesterStore()
 
   useEffect(() => {
     fetchInstructors()
-    fetchDepartmentsDetail() // Fetch detailed departments for filter
+    fetchDepartmentsDetail()
     fetchSemesters()
   }, [fetchInstructors, fetchDepartmentsDetail, fetchSemesters])
 

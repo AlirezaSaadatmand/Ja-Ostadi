@@ -2,10 +2,10 @@
 
 import type React from "react"
 import { useEffect } from "react"
-import { useScheduleDataStore } from "../store/schedule/useScheduleDataStore" // Updated import
-import { useScheduleTableStore, days, timeSlots } from "../store/schedule/useScheduleTableStore" // Updated import
-import { useCourseModalStore } from "../store/schedule/useCourseModalStore" // Updated import
-import { usePdfExportStore } from "../store/common/usePdfExportStore" // Updated import
+import { useScheduleDataStore } from "../store/schedule/useScheduleDataStore"
+import { useScheduleTableStore, days, timeSlots } from "../store/schedule/useScheduleTableStore"
+import { useCourseModalStore } from "../store/schedule/useCourseModalStore"
+import { usePdfExportStore } from "../store/common/usePdfExportStore"
 
 import DepartmentList from "../components/Schedule/DepartmentList"
 import WeeklyTable from "../components/Schedule/WeeklyTable"
@@ -25,7 +25,7 @@ const WeeklySchedulePage: React.FC = () => {
     selectedDept,
     setSelectedDept,
     getCoursesByDepartment,
-  } = useScheduleDataStore() // Updated store
+  } = useScheduleDataStore()
 
   const scheduledCourses = useScheduleTableStore((state) => state.scheduledCourses)
   const addCourseToSchedule = useScheduleTableStore((state) => state.addCourseToSchedule)

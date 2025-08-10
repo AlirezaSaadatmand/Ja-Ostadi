@@ -1,5 +1,6 @@
 import type React from "react"
-import { Building2 } from 'lucide-react'
+import { Building2 } from "lucide-react"
+import { BookOpen } from "lucide-react"
 
 const HomePage: React.FC = () => {
   const sections = [
@@ -49,27 +50,12 @@ const HomePage: React.FC = () => {
       ),
       link: "/instructors",
     },
-    // {
-    //   title: "دروس",
-    //   description: "مشاهده و مدیریت دروس ارائه شده.",
-    //   icon: (
-    //     <svg
-    //       className="w-12 h-12 text-yellow-600"
-    //       fill="none"
-    //       stroke="currentColor"
-    //       strokeWidth={2}
-    //       viewBox="0 0 24 24"
-    //       strokeLinecap="round"
-    //       strokeLinejoin="round"
-    //     >
-    //       <path d="M12 20h9" />
-    //       <path d="M12 4h9" />
-    //       <path d="M4 12h16" />
-    //       <path d="M4 12l5-8v16l-5-8z" />
-    //     </svg>
-    //   ),
-    //   link: "/courses",
-    // },
+    {
+      title: "دروس",
+      description: "مشاهده و مدیریت دروس ارائه شده.",
+      icon: <BookOpen className="w-12 h-12 text-emerald-600" />,
+      link: "/courses",
+    },
   ]
 
   return (

@@ -3,7 +3,7 @@
 import type React from "react"
 import { useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore" // Updated import
+import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore"
 import { BookOpen, CalendarDays } from "lucide-react"
 
 const InstructorDetailPage: React.FC = () => {
@@ -11,14 +11,14 @@ const InstructorDetailPage: React.FC = () => {
   const id = Number(instructorId)
 
   const {
-    instructorDetail, // Now fetched here
+    instructorDetail,
     instructorCoursesBySemester,
-    isLoading, // Combined loading state
+    isLoading,
     error,
-    fetchInstructorDetail, // Now fetched here
+    fetchInstructorDetail,
     fetchInstructorCoursesBySemester,
     clearInstructorData,
-  } = useInstructorDetailStore() // Updated store
+  } = useInstructorDetailStore()
 
   useEffect(() => {
     if (id) {
@@ -26,7 +26,7 @@ const InstructorDetailPage: React.FC = () => {
       fetchInstructorCoursesBySemester(id)
     }
     return () => {
-      clearInstructorData() // Clear data on unmount
+      clearInstructorData()
     }
   }, [id, fetchInstructorDetail, fetchInstructorCoursesBySemester, clearInstructorData])
 
