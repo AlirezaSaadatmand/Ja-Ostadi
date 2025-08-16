@@ -8,6 +8,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// GetCoursesBySemester returns all courses for a given semester
+// @Summary Get courses by semester
+// @Description Returns all courses for a specific semester
+// @Tags courses
+// @Produce json
+// @Param semesterID path int true "Semester ID"
+// @Success 200 {object} utils.APIResponse{data=[]services.CourseMinimal}
+// @Failure 400 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /courses/semester/{semesterID} [get]
 func GetCoursesBySemester(c *fiber.Ctx) error {
 	semesterID := c.Params("semesterID")
 	if semesterID == "" {
@@ -27,6 +37,17 @@ func GetCoursesBySemester(c *fiber.Ctx) error {
 	return utils.Success(c, fiber.StatusOK, courses, "Data fetched successfully")
 }
 
+// GetCoursesBySemesterAndDepartment returns courses for a semester and department
+// @Summary Get courses by semester and department
+// @Description Returns all courses for a specific semester and department
+// @Tags courses
+// @Produce json
+// @Param semesterID path int true "Semester ID"
+// @Param departmentID path int true "Department ID"
+// @Success 200 {object} utils.APIResponse{data=[]services.CourseMinimal}
+// @Failure 400 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /courses/semester/{semesterID}/department/{departmentID} [get]
 func GetCoursesBySemesterAndDepartment(c *fiber.Ctx) error {
 	semesterID := c.Params("semesterID")
 	departmentID := c.Params("departmentID")
@@ -56,6 +77,16 @@ type CourseDetail struct {
 	Semeter    services.SemesterData
 }
 
+// GetCourseByID returns detailed information for a specific course
+// @Summary Get course detail
+// @Description Returns course details including instructor, department, class time, and semester
+// @Tags courses
+// @Produce json
+// @Param courseId path int true "Course ID"
+// @Success 200 {object} utils.APIResponse{data=handlers.CourseDetail}
+// @Failure 400 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /courses/{courseId}/detail [get]
 func GetCourseByID(c *fiber.Ctx) error {
 	courseID := c.Params("courseID")
 	if courseID == "" {

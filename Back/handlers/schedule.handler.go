@@ -13,6 +13,15 @@ type ScheduleData struct {
 	Department services.ScheduleDepartment `json:"department"`
 }
 
+// GetScheduleData returns the schedule data for all courses
+// @Summary Get schedule data
+// @Description Returns schedule information including courses, instructors, times, and departments
+// @Tags schedule
+// @Produce json
+// @Success 200 {object} utils.APIResponse{data=[]handlers.ScheduleData}
+// @Failure 400 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /schedule/data [get]
 func GetScheduleData(c *fiber.Ctx) error {
 	courses, err := services.GetCoursesSchedule()
 	if err != nil {
