@@ -1,0 +1,480 @@
+definitions:
+  handlers.CourseDetail:
+    properties:
+      classTime:
+        items:
+          $ref: '#/definitions/services.ScheduleTime'
+        type: array
+      course:
+        $ref: '#/definitions/services.CourseDetail'
+      department:
+        $ref: '#/definitions/services.DepartmentMinimal'
+      instructor:
+        $ref: '#/definitions/services.InstructorByID'
+      semeter:
+        $ref: '#/definitions/services.SemesterData'
+    type: object
+  handlers.InstructorCoursesData:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/services.InstructorCourse'
+        type: array
+      semester:
+        $ref: '#/definitions/services.SemesterData'
+    type: object
+  handlers.InstructorsData:
+    properties:
+      instructor:
+        $ref: '#/definitions/services.InstructorMinimal'
+      relations:
+        $ref: '#/definitions/services.InstructorRelations'
+    type: object
+  handlers.ScheduleData:
+    properties:
+      course:
+        $ref: '#/definitions/services.ScheduleCourse'
+      department:
+        $ref: '#/definitions/services.ScheduleDepartment'
+      instructor:
+        $ref: '#/definitions/services.ScheduleInstructor'
+      time:
+        items:
+          $ref: '#/definitions/services.ScheduleTime'
+        type: array
+    type: object
+  services.CourseDetail:
+    properties:
+      capacity:
+        type: integer
+      class_type:
+        type: string
+      department_id:
+        type: integer
+      final_exam_time:
+        type: string
+      group:
+        type: string
+      id:
+        type: integer
+      instructor_id:
+        type: integer
+      mid_exam_time:
+        type: string
+      name:
+        type: string
+      number:
+        type: string
+      semester_id:
+        type: integer
+      student_count:
+        type: integer
+      time_in_week:
+        type: string
+      units:
+        type: integer
+    type: object
+  services.CourseMinimal:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  services.DepartmentDataResponse:
+    properties:
+      courses_count:
+        type: integer
+      id:
+        type: integer
+      instructors_count:
+        type: integer
+      name:
+        type: string
+    type: object
+  services.DepartmentMinimal:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  services.InstructorByID:
+    properties:
+      field:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  services.InstructorCourse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  services.InstructorMinimal:
+    properties:
+      field:
+        type: string
+      name:
+        type: string
+    type: object
+  services.InstructorRelations:
+    properties:
+      department_id:
+        type: integer
+      instructor_id:
+        type: integer
+      semester_id:
+        type: integer
+    type: object
+  services.ScheduleCourse:
+    properties:
+      department_id:
+        type: integer
+      group:
+        type: string
+      id:
+        type: integer
+      instructor_id:
+        type: integer
+      name:
+        type: string
+      number:
+        type: string
+      semester_id:
+        type: integer
+      units:
+        type: integer
+    type: object
+  services.ScheduleDepartment:
+    properties:
+      name:
+        type: string
+    type: object
+  services.ScheduleInstructor:
+    properties:
+      name:
+        type: string
+    type: object
+  services.ScheduleTime:
+    properties:
+      day:
+        type: string
+      end_time:
+        type: string
+      room:
+        type: string
+      start_time:
+        type: string
+    type: object
+  services.SemesterData:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  utils.APIResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /courses/{courseId}/detail:
+    get:
+      description: Returns course details including instructor, department, class
+        time, and semester
+      parameters:
+      - description: Course ID
+        in: path
+        name: courseId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.CourseDetail'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get course detail
+      tags:
+      - courses
+  /courses/semester/{semesterID}:
+    get:
+      description: Returns all courses for a specific semester
+      parameters:
+      - description: Semester ID
+        in: path
+        name: semesterID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/services.CourseMinimal'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get courses by semester
+      tags:
+      - courses
+  /courses/semester/{semesterID}/department/{departmentID}:
+    get:
+      description: Returns all courses for a specific semester and department
+      parameters:
+      - description: Semester ID
+        in: path
+        name: semesterID
+        required: true
+        type: integer
+      - description: Department ID
+        in: path
+        name: departmentID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/services.CourseMinimal'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get courses by semester and department
+      tags:
+      - courses
+  /departments/:
+    get:
+      description: Returns all departments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/services.DepartmentMinimal'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get departments
+      tags:
+      - departments
+  /departments/data:
+    get:
+      description: Returns all departments with additional details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/services.DepartmentDataResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get detailed department data
+      tags:
+      - departments
+  /instructors/{instructorID}/detail:
+    get:
+      description: Returns detailed information about an instructor
+      parameters:
+      - description: Instructor ID
+        in: path
+        name: instructorID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get instructor detail
+      tags:
+      - instructors
+  /instructors/courses/{instructorID}:
+    get:
+      description: Returns courses of an instructor per semester
+      parameters:
+      - description: Instructor ID
+        in: path
+        name: instructorID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/handlers.InstructorCoursesData'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get instructor courses
+      tags:
+      - instructors
+  /instructors/data:
+    get:
+      description: Returns instructors along with their relations
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/handlers.InstructorsData'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get instructors data
+      tags:
+      - instructors
+  /schedule/data:
+    get:
+      description: Returns schedule information including courses, instructors, times,
+        and departments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/handlers.ScheduleData'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get schedule data
+      tags:
+      - schedule
+  /semesters/:
+    get:
+      description: Returns all semesters
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/services.SemesterData'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get semesters
+      tags:
+      - semesters
+swagger: "2.0"
