@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"github.com/AlirezaSaadatmand/Ja-Ostadi/services"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,8 +13,8 @@ import (
 // @Success 200 {object} utils.APIResponse{data=[]services.SemesterData}
 // @Failure 500 {object} utils.APIResponse
 // @Router /semesters/ [get]
-func GetSemesters(c *fiber.Ctx) error {
-	semesters, err := services.GetSemesters()
+func (h *Handler) GetSemesters(c *fiber.Ctx) error {
+	semesters, err := h.Services.GetSemesters()
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
