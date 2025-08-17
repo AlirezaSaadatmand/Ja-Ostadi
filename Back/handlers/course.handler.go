@@ -18,7 +18,7 @@ import (
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
 // @Router /courses/semester/{semesterID} [get]
-func GetCoursesBySemester(c *fiber.Ctx) error {
+func (h *Handler) GetCoursesBySemester(c *fiber.Ctx) error {
 	semesterID := c.Params("semesterID")
 	if semesterID == "" {
 		return utils.Error(c, fiber.StatusBadRequest, "semesterID is required")
@@ -29,7 +29,7 @@ func GetCoursesBySemester(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusBadRequest, "semesterID must be a valid number")
 	}
 
-	courses, err := services.GetCoursesBySemester(id)
+	courses, err := h.Services.GetCoursesBySemester(id)
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -48,7 +48,7 @@ func GetCoursesBySemester(c *fiber.Ctx) error {
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
 // @Router /courses/semester/{semesterID}/department/{departmentID} [get]
-func GetCoursesBySemesterAndDepartment(c *fiber.Ctx) error {
+func (h *Handler) GetCoursesBySemesterAndDepartment(c *fiber.Ctx) error {
 	semesterID := c.Params("semesterID")
 	departmentID := c.Params("departmentID")
 	if semesterID == "" || departmentID == "" {
@@ -61,7 +61,7 @@ func GetCoursesBySemesterAndDepartment(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusBadRequest, "semesterID and departmentID must be a valid number")
 	}
 
-	courses, err := services.GetCoursesBySemesterAndDepartment(semester, department)
+	courses, err := h.Services.GetCoursesBySemesterAndDepartment(semester, department)
 	if err != nil {
 		return utils.Error(c, fiber.StatusBadRequest, err.Error())
 	}
@@ -87,7 +87,7 @@ type CourseDetail struct {
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
 // @Router /courses/{courseId}/detail [get]
-func GetCourseByID(c *fiber.Ctx) error {
+func (h *Handler) GetCourseByID(c *fiber.Ctx) error {
 	courseID := c.Params("courseID")
 	if courseID == "" {
 		return utils.Error(c, fiber.StatusBadRequest, "courseID is required")
@@ -98,27 +98,27 @@ func GetCourseByID(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusBadRequest, "courseID must be a valid number")
 	}
 
-	courseDetail, err := services.GetCourseByID(courseInt)
+	courseDetail, err := h.Services.GetCourseByID(courseInt)
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	classTimeDetail, err := services.GetTimeSchedule(courseInt)
+	classTimeDetail, err := h.Services.GetTimeSchedule(courseInt)
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	instructor, err := services.GetInstructorByID(int(courseDetail.InstructorID))
+	instructor, err := h.Services.GetInstructorByID(int(courseDetail.InstructorID))
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	department, err := services.GetDepartmentByID(int(courseDetail.DepartmentID))
+	department, err := h.Services.GetDepartmentByID(int(courseDetail.DepartmentID))
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	semeter, err := services.GetSemesterByID(int(courseDetail.SemesterID))
+	semeter, err := h.Services.GetSemesterByID(int(courseDetail.SemesterID))
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
