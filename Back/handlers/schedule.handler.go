@@ -22,8 +22,8 @@ type ScheduleData struct {
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
 // @Router /schedule/data [get]
-func GetScheduleData(c *fiber.Ctx) error {
-	courses, err := services.GetCoursesSchedule()
+func (h *Handler) GetScheduleData(c *fiber.Ctx) error {
+	courses, err := h.Services.GetCoursesSchedule()
 	if err != nil {
 		return utils.Error(c, fiber.StatusBadRequest, err.Error())
 	}
@@ -31,17 +31,17 @@ func GetScheduleData(c *fiber.Ctx) error {
 	var scheduleData []ScheduleData
 
 	for _, course := range courses {
-		instructor, err := services.GetInstructorSchedule(int(course.InstructorID))
+		instructor, err := h.Services.GetInstructorSchedule(int(course.InstructorID))
 		if err != nil {
 			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 		}
 
-		time, err := services.GetTimeSchedule(int(course.ID))
+		time, err := h.Services.GetTimeSchedule(int(course.ID))
 		if err != nil {
 			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 		}
 
-		department, err := services.GetDepartmentSchedule(int(course.DepartmentID))
+		department, err := h.Services.GetDepartmentSchedule(int(course.DepartmentID))
 		if err != nil {
 			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 		}
