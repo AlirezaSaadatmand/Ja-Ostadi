@@ -5,6 +5,8 @@ import (
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
+
 )
 
 type ScheduleCourse struct {
@@ -18,7 +20,7 @@ type ScheduleCourse struct {
 	InstructorID uint   `json:"instructor_id"`
 }
 
-func GetCoursesSchedule() ([]ScheduleCourse, error) {
+func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
 
 	semesterID := 2
 
@@ -28,17 +30,20 @@ func GetCoursesSchedule() ([]ScheduleCourse, error) {
 		Where("semester_id = ?", semesterID).
 		Find(&courses).Error
 	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get courses schedule", map[logging.ExtraKey]interface{}{"semesterID": semesterID, "error": err.Error()})
 		return nil, errors.New("error getting data")
 	}
 
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched courses schedule successfully", map[logging.ExtraKey]interface{}{"semesterID": semesterID, "count": len(courses)})
 	return courses, nil
 }
+
 
 type ScheduleInstructor struct {
 	Name string `json:"name"`
 }
 
-func GetInstructorSchedule(instructorId int) (ScheduleInstructor, error) {
+func (s *Services) GetInstructorSchedule(instructorId int) (ScheduleInstructor, error) {
 	var instructor ScheduleInstructor
 
 	err := database.DB.
@@ -46,11 +51,14 @@ func GetInstructorSchedule(instructorId int) (ScheduleInstructor, error) {
 		Where("id = ?", instructorId).
 		Find(&instructor).Error
 	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get instructor schedule", map[logging.ExtraKey]interface{}{"instructorId": instructorId, "error": err.Error()})
 		return instructor, errors.New("error getting data")
 	}
 
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched instructor schedule successfully", map[logging.ExtraKey]interface{}{"instructorId": instructorId})
 	return instructor, nil
 }
+
 
 type ScheduleTime struct {
 	Day       string `json:"day"`
@@ -59,7 +67,7 @@ type ScheduleTime struct {
 	Room      string `json:"room"`
 }
 
-func GetTimeSchedule(courseId int) ([]ScheduleTime, error) {
+func (s *Services) GetTimeSchedule(courseId int) ([]ScheduleTime, error) {
 	var classTime []ScheduleTime
 
 	err := database.DB.
@@ -67,17 +75,20 @@ func GetTimeSchedule(courseId int) ([]ScheduleTime, error) {
 		Where("course_id = ?", courseId).
 		Find(&classTime).Error
 	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get class schedule", map[logging.ExtraKey]interface{}{"courseId": courseId, "error": err.Error()})
 		return nil, errors.New("error getting data")
 	}
 
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched class schedule successfully", map[logging.ExtraKey]interface{}{"courseId": courseId})
 	return classTime, nil
 }
+
 
 type ScheduleDepartment struct {
 	Name string `json:"name"`
 }
 
-func GetDepartmentSchedule(departmentId int) (ScheduleDepartment, error) {
+func (s *Services) GetDepartmentSchedule(departmentId int) (ScheduleDepartment, error) {
 	var department ScheduleDepartment
 
 	err := database.DB.
@@ -85,8 +96,10 @@ func GetDepartmentSchedule(departmentId int) (ScheduleDepartment, error) {
 		Where("id = ?", departmentId).
 		Find(&department).Error
 	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get department schedule", map[logging.ExtraKey]interface{}{"departmentId": departmentId, "error": err.Error()})
 		return department, errors.New("error getting data")
 	}
 
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched department schedule successfully", map[logging.ExtraKey]interface{}{"departmentId": departmentId})
 	return department, nil
 }
