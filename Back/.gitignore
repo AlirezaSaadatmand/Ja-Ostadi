@@ -28,5 +28,6 @@ go.work.sum
 # .idea/
 # .vscode/
 
+.log
 data.json
 tmp/
