@@ -21,8 +21,8 @@ type InstructorsData struct {
 // @Success 200 {object} utils.APIResponse{data=[]handlers.InstructorsData}
 // @Failure 500 {object} utils.APIResponse
 // @Router /instructors/data [get]
-func GetInstructorData(c *fiber.Ctx) error {
-	relations, err := services.GetInstructorRelations()
+func (h *Handler) GetInstructorData(c *fiber.Ctx) error {
+	relations, err := h.Services.GetInstructorRelations()
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -30,7 +30,7 @@ func GetInstructorData(c *fiber.Ctx) error {
 	var instructorsData []InstructorsData
 
 	for _, relation := range relations {
-		instructor, err := services.GetInstructorData(int(relation.InstructorID))
+		instructor, err := h.Services.GetInstructorData(int(relation.InstructorID))
 		if err != nil {
 			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 		}
@@ -59,7 +59,7 @@ type InstructorCoursesData struct {
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
 // @Router /instructors/courses/{instructorID} [get]
-func GetInstructorCourses(c *fiber.Ctx) error {
+func (h *Handler) GetInstructorCourses(c *fiber.Ctx) error {
 
 	instructorIdParam := c.Params("instructorID")
 	instructorId, err := strconv.Atoi(instructorIdParam)
@@ -67,7 +67,7 @@ func GetInstructorCourses(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusBadRequest, "invalid instructor ID")
 	}
 
-	semesters, err := services.GetSemesters()
+	semesters, err := h.Services.GetSemesters()
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -75,7 +75,7 @@ func GetInstructorCourses(c *fiber.Ctx) error {
 	var result []InstructorCoursesData
 
 	for _, semester := range semesters {
-		courses, err := services.GetInstructorCourses(instructorId, int(semester.ID))
+		courses, err := h.Services.GetInstructorCourses(instructorId, int(semester.ID))
 		if err != nil {
 			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 		}
@@ -102,6 +102,6 @@ func GetInstructorCourses(c *fiber.Ctx) error {
 // @Success 200 {object} utils.APIResponse
 // @Failure 400 {object} utils.APIResponse
 // @Router /instructors/{instructorID}/detail [get]
-func GetInstructorDetail(c *fiber.Ctx) error {
+func (h *Handler) GetInstructorDetail(c *fiber.Ctx) error {
 	return utils.Success(c, fiber.StatusOK, nil, "Data fetched successfully")
 }
