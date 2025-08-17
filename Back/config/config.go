@@ -16,6 +16,7 @@ type Config struct {
 	DBHost     string
 	DBPort     string
 	DBName     string
+	Logger     string
 }
 
 var appConfig *Config
@@ -38,6 +39,7 @@ func LoadConfig() *Config {
 		DBHost:     os.Getenv("DB_HOST"),
 		DBPort:     os.Getenv("DB_PORT"),
 		DBName:     os.Getenv("DB_NAME"),
+		Logger:     os.Getenv("LOGGER"),
 	}
 
 	return appConfig

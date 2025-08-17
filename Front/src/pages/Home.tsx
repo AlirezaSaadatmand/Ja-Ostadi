@@ -69,11 +69,11 @@ const HomePage: React.FC = () => {
       </div>
 
       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 sm:mb-12 text-gray-900 text-center px-4">
-        خوش آمدید به داشبورد دانشگاه شما
+        داشبورد دانشگاه
       </h1>
 
       <p className="max-w-xl mb-8 sm:mb-10 text-center text-gray-600 text-base sm:text-lg md:text-xl px-4">
-        در ترم‌ها، دپارتمان‌ها، اساتید و دروس حرکت کنید. برای شروع روی هر بخش کلیک کنید.
+        از بخش های پایین می تونی به قسمت های مختلف دسترسی داشته باشی.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl w-full mb-8 sm:mb-12 px-4">

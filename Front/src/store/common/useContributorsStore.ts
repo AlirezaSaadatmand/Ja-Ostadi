@@ -27,7 +27,7 @@ export const useContributorsStore = create<ContributorsStore>((set) => ({
     set({ isLoading: true, error: null })
     try {
       const response = await axios.get(
-        `https://api.github.com/repos/${config.owner}/${config.repo}/contributors`,
+        `https://api.github.com/repos/${config.GitHubUsername}/${config.appName}/contributors`,
       )
       const data = Array.isArray(response.data) ? response.data : []
       set({ contributors: data })
