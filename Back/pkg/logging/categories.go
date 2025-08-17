@@ -29,6 +29,7 @@ const (
 
 	// IO
 	RemoveFile SubCategory = "RemoveFile"
+	API        SubCategory = "API"
 )
 
 const (

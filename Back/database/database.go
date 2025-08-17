@@ -13,9 +13,8 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDB() error {
+func ConnectDB(zapLogger logging.Logger) error {
 	cfg := config.GetConfig()
-	zapLogger := logging.NewLogger()
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&charset=utf8mb4&loc=Local",
 		cfg.DBUser,
