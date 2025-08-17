@@ -50,7 +50,7 @@ func main() {
 	})
 
 	docs.SetupSwagger(app)
-	routes.Router(app)
+	routes.Router(app, logger)
 
 	if err := app.Listen(fmt.Sprintf(":%s", cfg.PORT)); err != nil {
 		logger.Fatal(logging.General, logging.Startup, "Failed to start server", map[logging.ExtraKey]interface{}{"error": err})

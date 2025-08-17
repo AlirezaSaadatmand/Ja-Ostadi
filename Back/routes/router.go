@@ -2,39 +2,42 @@ package routes
 
 import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/handlers"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 	"github.com/gofiber/fiber/v2"
 )
 
-func Router(app *fiber.App) {
+func Router(app *fiber.App, logger logging.Logger) {
+	h := handlers.NewHandler(logger) // create a Handler instance
+
 	api := app.Group("/api/v1")
 
-	api.Get("/test", handlers.Test)
+	api.Get("/test", h.Test) // now using the handler with logger
 
 	remove := api.Group("/remove")
-	remove.Post("/", handlers.DeleteAllData)
+	remove.Post("/", h.DeleteAllData)
 
 	// Semester Routes
 	semesterRouter := api.Group("/semesters")
-	semesterRouter.Get("/", handlers.GetSemesters)
+	semesterRouter.Get("/", h.GetSemesters)
 
 	// Instructor Routes
 	instructorRouter := api.Group("/instructors")
-	instructorRouter.Get("/:instructorID/detail", handlers.GetInstructorDetail)
-	instructorRouter.Get("/data", handlers.GetInstructorData)
-	instructorRouter.Get("/courses/:instructorID", handlers.GetInstructorCourses)
+	instructorRouter.Get("/:instructorID/detail", h.GetInstructorDetail)
+	instructorRouter.Get("/data", h.GetInstructorData)
+	instructorRouter.Get("/courses/:instructorID", h.GetInstructorCourses)
 
 	// Course Routes
 	courseRouter := api.Group("/courses")
-	courseRouter.Get("/:courseId/detail", handlers.GetCourseByID)
-	courseRouter.Get("/semester/:semesterID", handlers.GetCoursesBySemester)
-	courseRouter.Get("/semester/:semesterID/department/:departmentID", handlers.GetCoursesBySemesterAndDepartment)
+	courseRouter.Get("/:courseId/detail", h.GetCourseByID)
+	courseRouter.Get("/semester/:semesterID", h.GetCoursesBySemester)
+	courseRouter.Get("/semester/:semesterID/department/:departmentID", h.GetCoursesBySemesterAndDepartment)
 
 	// Department Routes
 	departmentRouter := api.Group("/departments")
-	departmentRouter.Get("/", handlers.GetDepartments)
-	departmentRouter.Get("/data", handlers.GetDepartmentsData)
+	departmentRouter.Get("/", h.GetDepartments)
+	departmentRouter.Get("/data", h.GetDepartmentsData)
 
 	// Schedule Routes
 	scheduleRouter := api.Group("/schedule")
-	scheduleRouter.Get("/data", handlers.GetScheduleData)
+	scheduleRouter.Get("/data", h.GetScheduleData)
 }

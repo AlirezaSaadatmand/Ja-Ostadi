@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func DeleteAllData(c *fiber.Ctx) error {
+func (h *Handler) DeleteAllData(c *fiber.Ctx) error {
 	db := database.DB
 
 	// Order matters - delete dependent tables first
