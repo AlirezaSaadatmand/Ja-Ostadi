@@ -5,6 +5,7 @@ import (
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 )
 
 type CourseMinimal struct {
@@ -12,32 +13,52 @@ type CourseMinimal struct {
 	Name string `json:"name"`
 }
 
-func GetCoursesBySemester(semesterID int) ([]CourseMinimal, error) {
-
+func (s *Services) GetCoursesBySemester(semesterID int) ([]CourseMinimal, error) {
 	var courses []CourseMinimal
 	err := database.DB.
 		Model(&models.Course{}).
 		Select("ID, Name").
 		Where("semester_id = ?", semesterID).
 		Find(&courses).Error
+
 	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get courses by semester", map[logging.ExtraKey]interface{}{
+			"semesterID": semesterID,
+			"error":      err.Error(),
+		})
 		return nil, errors.New("error getting data")
 	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched courses by semester successfully", map[logging.ExtraKey]interface{}{
+		"semesterID": semesterID,
+		"count":      len(courses),
+	})
 
 	return courses, nil
 }
 
-func GetCoursesBySemesterAndDepartment(semesterID, departmentID int) ([]CourseMinimal, error) {
-
+func (s *Services) GetCoursesBySemesterAndDepartment(semesterID, departmentID int) ([]CourseMinimal, error) {
 	var courses []CourseMinimal
 	err := database.DB.
 		Model(&models.Course{}).
 		Select("ID, Name").
-		Where("semester_id = ? and department_id = ?", semesterID, departmentID).
+		Where("semester_id = ? AND department_id = ?", semesterID, departmentID).
 		Find(&courses).Error
+
 	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get courses by semester and department", map[logging.ExtraKey]interface{}{
+			"semesterID":   semesterID,
+			"departmentID": departmentID,
+			"error":        err.Error(),
+		})
 		return nil, errors.New("error getting data")
 	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched courses by semester and department successfully", map[logging.ExtraKey]interface{}{
+		"semesterID":   semesterID,
+		"departmentID": departmentID,
+		"count":        len(courses),
+	})
 
 	return courses, nil
 }
@@ -59,16 +80,24 @@ type CourseDetail struct {
 	InstructorID  uint   `json:"instructor_id"`
 }
 
-func GetCourseByID(courseID int) (CourseDetail, error) {
-
+func (s *Services) GetCourseByID(courseID int) (CourseDetail, error) {
 	var course CourseDetail
 	err := database.DB.
 		Model(&models.Course{}).
 		Where("ID = ?", courseID).
 		Find(&course).Error
+
 	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get course by ID", map[logging.ExtraKey]interface{}{
+			"courseID": courseID,
+			"error":    err.Error(),
+		})
 		return course, errors.New("error getting data")
 	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched course by ID successfully", map[logging.ExtraKey]interface{}{
+		"courseID": courseID,
+	})
 
 	return course, nil
 }
