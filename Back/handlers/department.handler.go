@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"github.com/AlirezaSaadatmand/Ja-Ostadi/services"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,8 +13,8 @@ import (
 // @Success 200 {object} utils.APIResponse{data=[]services.DepartmentMinimal}
 // @Failure 500 {object} utils.APIResponse
 // @Router /departments/ [get]
-func GetDepartments(c *fiber.Ctx) error {
-	departments, err := services.GetDepartments()
+func (h *Handler) GetDepartments(c *fiber.Ctx) error {
+	departments, err := h.Services.GetDepartments()
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -31,11 +30,11 @@ func GetDepartments(c *fiber.Ctx) error {
 // @Success 200 {object} utils.APIResponse{data=[]services.DepartmentDataResponse}
 // @Failure 500 {object} utils.APIResponse
 // @Router /departments/data [get]
-func GetDepartmentsData(c *fiber.Ctx) error {
-    departments, err := services.GetDepartmentsDataService()
-    if err != nil {
+func (h *Handler) GetDepartmentsData(c *fiber.Ctx) error {
+	departments, err := h.Services.GetDepartmentsDataService()
+	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
-    }
+	}
 
 	return utils.Success(c, fiber.StatusOK, departments, "Data fetched successfully")
 }
