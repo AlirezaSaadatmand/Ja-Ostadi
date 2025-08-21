@@ -9,7 +9,7 @@ import (
 type ScheduleData struct {
 	Course     services.ScheduleCourse     `json:"course"`
 	Instructor services.ScheduleInstructor `json:"instructor"`
-	Time       []services.ScheduleTime     `json:"time"`
+	Time       []services.ScheduleTimeID   `json:"time"`
 	Department services.ScheduleDepartment `json:"department"`
 }
 
@@ -28,29 +28,33 @@ func (h *Handler) GetScheduleData(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusBadRequest, err.Error())
 	}
 
+	instructors, _ := h.Services.GetAllInstructorsSchedule()
+	times, _ := h.Services.GetAllTimesSchedule()
+	departments, _ := h.Services.GetAllDepartmentsSchedule()
+
+	instructorMap := make(map[int]services.ScheduleInstructor)
+	for _, i := range instructors {
+		instructorMap[int(i.ID)] = i
+	}
+
+	departmentMap := make(map[int]services.ScheduleDepartment)
+	for _, d := range departments {
+		departmentMap[int(d.ID)] = d
+	}
+
+	timeMap := make(map[int][]services.ScheduleTimeID)
+	for _, t := range times {
+		timeMap[int(t.CourseID)] = append(timeMap[int(t.CourseID)], t)
+	}
+
 	var scheduleData []ScheduleData
 
 	for _, course := range courses {
-		instructor, err := h.Services.GetInstructorSchedule(int(course.InstructorID))
-		if err != nil {
-			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
-		}
-
-		time, err := h.Services.GetTimeSchedule(int(course.ID))
-		if err != nil {
-			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
-		}
-
-		department, err := h.Services.GetDepartmentSchedule(int(course.DepartmentID))
-		if err != nil {
-			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
-		}
-
 		scheduleData = append(scheduleData, ScheduleData{
 			Course:     course,
-			Instructor: instructor,
-			Time:       time,
-			Department: department,
+			Instructor: instructorMap[int(course.InstructorID)],
+			Time:       timeMap[int(course.ID)],
+			Department: departmentMap[int(course.DepartmentID)],
 		})
 	}
 

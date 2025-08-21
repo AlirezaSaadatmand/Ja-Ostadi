@@ -40,66 +40,66 @@ func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
 
 
 type ScheduleInstructor struct {
+	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
 
-func (s *Services) GetInstructorSchedule(instructorId int) (ScheduleInstructor, error) {
-	var instructor ScheduleInstructor
+func (s *Services) GetAllInstructorsSchedule() ([]ScheduleInstructor, error) {
+	var instructors []ScheduleInstructor
 
 	err := database.DB.
 		Model(&models.Instructor{}).
-		Where("id = ?", instructorId).
-		Find(&instructor).Error
+		Find(&instructors).Error
 	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get instructor schedule", map[logging.ExtraKey]interface{}{"instructorId": instructorId, "error": err.Error()})
-		return instructor, errors.New("error getting data")
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get instructors schedule", map[logging.ExtraKey]interface{}{"error": err.Error()})
+		return nil, errors.New("error getting instructors")
 	}
 
-	s.Logger.Info(logging.Mysql, logging.Select, "Fetched instructor schedule successfully", map[logging.ExtraKey]interface{}{"instructorId": instructorId})
-	return instructor, nil
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched instructors schedule successfully", map[logging.ExtraKey]interface{}{})
+	return instructors, nil
 }
 
-
-type ScheduleTime struct {
+type ScheduleTimeID struct {
+	CourseID  uint   `json:"course_id"` // add CourseID to relate back
 	Day       string `json:"day"`
 	StartTime string `json:"start_time"`
 	EndTime   string `json:"end_time"`
 	Room      string `json:"room"`
 }
 
-func (s *Services) GetTimeSchedule(courseId int) ([]ScheduleTime, error) {
-	var classTime []ScheduleTime
+func (s *Services) GetAllTimesSchedule() ([]ScheduleTimeID, error) {
+	var times []ScheduleTimeID
 
 	err := database.DB.
 		Model(&models.ClassTime{}).
-		Where("course_id = ?", courseId).
-		Find(&classTime).Error
+		Find(&times).Error
 	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get class schedule", map[logging.ExtraKey]interface{}{"courseId": courseId, "error": err.Error()})
-		return nil, errors.New("error getting data")
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get all class schedules", map[logging.ExtraKey]interface{}{"error": err.Error()})
+		return nil, errors.New("error getting times")
 	}
 
-	s.Logger.Info(logging.Mysql, logging.Select, "Fetched class schedule successfully", map[logging.ExtraKey]interface{}{"courseId": courseId})
-	return classTime, nil
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched all class schedules successfully", nil)
+	return times, nil
 }
 
 
 type ScheduleDepartment struct {
+	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
 
-func (s *Services) GetDepartmentSchedule(departmentId int) (ScheduleDepartment, error) {
-	var department ScheduleDepartment
+func (s *Services) GetAllDepartmentsSchedule() ([]ScheduleDepartment, error) {
+	var departments []ScheduleDepartment
 
 	err := database.DB.
 		Model(&models.Department{}).
-		Where("id = ?", departmentId).
-		Find(&department).Error
+		Find(&departments).Error
 	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get department schedule", map[logging.ExtraKey]interface{}{"departmentId": departmentId, "error": err.Error()})
-		return department, errors.New("error getting data")
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get all departments schedule", map[logging.ExtraKey]interface{}{"error": err.Error()})
+		return nil, errors.New("error getting departments")
 	}
 
-	s.Logger.Info(logging.Mysql, logging.Select, "Fetched department schedule successfully", map[logging.ExtraKey]interface{}{"departmentId": departmentId})
-	return department, nil
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched all departments schedule successfully", nil)
+	return departments, nil
 }
+

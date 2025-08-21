@@ -101,3 +101,26 @@ func (s *Services) GetCourseByID(courseID int) (CourseDetail, error) {
 
 	return course, nil
 }
+
+type ScheduleTime struct {
+	Day       string `json:"day"`
+	StartTime string `json:"start_time"`
+	EndTime   string `json:"end_time"`
+	Room      string `json:"room"`
+}
+
+func (s *Services) GetTimeSchedule(courseId int) ([]ScheduleTime, error) {
+	var classTime []ScheduleTime
+
+	err := database.DB.
+		Model(&models.ClassTime{}).
+		Where("course_id = ?", courseId).
+		Find(&classTime).Error
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get class schedule", map[logging.ExtraKey]interface{}{"courseId": courseId, "error": err.Error()})
+		return nil, errors.New("error getting data")
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched class schedule successfully", map[logging.ExtraKey]interface{}{"courseId": courseId})
+	return classTime, nil
+}
