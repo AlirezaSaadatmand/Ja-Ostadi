@@ -9,28 +9,27 @@ import (
 )
 
 type InstructorMinimal struct {
+	ID    uint `json:"id"`
 	Name  string `json:"name"`
 	Field string `json:"field"`
 }
 
-func (s *Services) GetInstructorData(instructorId int) (InstructorMinimal, error) {
-	var instructor InstructorMinimal
+func (s *Services) GetInstructorData() ([]InstructorMinimal, error) {
+	var instructors []InstructorMinimal
 
 	err := database.DB.
 		Model(&models.Instructor{}).
-		Select("name, field").
-		Where("id = ?", instructorId).
-		Find(&instructor).Error
+		Select("id, name, field").
+		Find(&instructors).Error
 
 	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get instructor data", map[logging.ExtraKey]interface{}{"instructorID": instructorId, "error": err.Error()})
-		return instructor, errors.New("error getting data")
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get instructor data", map[logging.ExtraKey]interface{}{"error": err.Error()})
+		return nil, errors.New("error getting data")
 	}
 
-	s.Logger.Info(logging.Mysql, logging.Select, "Fetched instructor data successfully", map[logging.ExtraKey]interface{}{"instructorID": instructorId})
-	return instructor, nil
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched instructor data successfully", map[logging.ExtraKey]interface{}{})
+	return instructors, nil
 }
-
 
 type InstructorRelations struct {
 	InstructorID uint `json:"instructor_id"`
@@ -54,7 +53,6 @@ func (s *Services) GetInstructorRelations() ([]InstructorRelations, error) {
 	return relations, nil
 }
 
-
 type InstructorCourse struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
@@ -76,7 +74,6 @@ func (s *Services) GetInstructorCourses(instructorId, semesterId int) ([]Instruc
 	s.Logger.Info(logging.Mysql, logging.Select, "Fetched instructor courses successfully", map[logging.ExtraKey]interface{}{"instructorID": instructorId, "semesterID": semesterId, "count": len(courses)})
 	return courses, nil
 }
-
 
 type InstructorByID struct {
 	ID    uint   `json:"id"`

@@ -29,14 +29,20 @@ func (h *Handler) GetInstructorData(c *fiber.Ctx) error {
 
 	var instructorsData []InstructorsData
 
-	for _, relation := range relations {
-		instructor, err := h.Services.GetInstructorData(int(relation.InstructorID))
-		if err != nil {
-			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
-		}
 
+	instructors, err := h.Services.GetInstructorData()
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+    instructorMap := make(map[int]services.InstructorMinimal)
+	for _, i := range instructors {
+		instructorMap[int(i.ID)] = i
+	}
+
+	for _, relation := range relations {
 		instructorsData = append(instructorsData, InstructorsData{
-			Instructor: instructor,
+			Instructor: instructorMap[int(relation.InstructorID)],
 			Relations:  relation,
 		})
 	}
