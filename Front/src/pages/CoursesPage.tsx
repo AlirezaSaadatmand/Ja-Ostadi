@@ -7,6 +7,7 @@ import { useCoursesPageStore } from "../store/courses/useCoursesPageStore"
 import { useSemesterStore } from "../store/common/useSemesterStore"
 import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore"
 import { BookOpen } from "lucide-react"
+import Header from "../components/Header"
 
 const CoursesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -87,7 +88,9 @@ const CoursesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100" dir="rtl">
-      <div className="bg-white shadow-sm border-b">
+      <Header />
+
+      {/* <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-10 flex items-center justify-between">
           <div className="text-center flex-1">
             <h1 className="text-4xl font-bold text-gray-900">دروس دانشگاه</h1>
@@ -104,9 +107,9 @@ const CoursesPage: React.FC = () => {
             بازگشت
           </Link>
         </div>
-      </div>
+      </div> */}
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8 mt-20">
         <div className="bg-white rounded-xl shadow-md p-8 mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 text-center mb-6">فیلتر دروس</h2>
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
