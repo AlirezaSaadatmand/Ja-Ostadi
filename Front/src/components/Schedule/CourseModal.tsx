@@ -95,7 +95,7 @@ const CourseModal: React.FC<CourseModalProps> = ({
                 />
               </svg>
               <span className="text-gray-800">
-                <strong>استاد:</strong> {course.instructor.name}
+                <strong>استاد:</strong> {course.instructor.name || ""}
               </span>
             </div>
 
@@ -113,7 +113,7 @@ const CourseModal: React.FC<CourseModalProps> = ({
                 <span className="text-gray-700 font-medium">زمان‌های کلاس:</span>
               </div>
               <div className="space-y-2">
-                {course.time.map((timeSlot, index) => (
+                {course.time?.map((timeSlot, index) => (
                   <div key={index} className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 space-x-reverse">

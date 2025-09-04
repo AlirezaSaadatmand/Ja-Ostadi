@@ -88,7 +88,7 @@ func main() {
 
 func loginAndNavigate(browser *rod.Browser) *rod.Page {
 	fmt.Println("🌐 Opening login page...")
-	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/10133249912")
+	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/17841998318")
 	page.MustWaitLoad()
 
 	fmt.Println("🔑 Filling credentials...")
