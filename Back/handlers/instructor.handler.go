@@ -29,13 +29,12 @@ func (h *Handler) GetInstructorData(c *fiber.Ctx) error {
 
 	var instructorsData []InstructorsData
 
-
 	instructors, err := h.Services.GetInstructorData()
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-    instructorMap := make(map[int]services.InstructorMinimal)
+	instructorMap := make(map[int]services.InstructorMinimal)
 	for _, i := range instructors {
 		instructorMap[int(i.ID)] = i
 	}

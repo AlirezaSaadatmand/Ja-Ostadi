@@ -9,7 +9,6 @@ import (
 	middleware "github.com/AlirezaSaadatmand/Ja-Ostadi/middlewares"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/routes"
-	"github.com/AlirezaSaadatmand/Ja-Ostadi/scripts"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -28,17 +27,17 @@ func main() {
 
 	database.ConnectDB(logger)
 
-	if err := scripts.ImportData(); err != nil {
-		logger.Error(logging.General, logging.Startup, "Importing JSON failed", map[logging.ExtraKey]interface{}{"error": err})
-	} else {
-		logger.Info(logging.General, logging.Startup, "Imported JSON successfully", nil)
-	}
+	// if err := scripts.ImportData(); err != nil {
+	// 	logger.Error(logging.General, logging.Startup, "Importing JSON failed", map[logging.ExtraKey]interface{}{"error": err})
+	// } else {
+	// 	logger.Info(logging.General, logging.Startup, "Imported JSON successfully", nil)
+	// }
 
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization, X-Admin-Token",
 	}))
 
 	app.Use(middleware.RequestLogger(logger))
