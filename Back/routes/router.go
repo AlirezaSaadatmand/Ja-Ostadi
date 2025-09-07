@@ -2,16 +2,17 @@ package routes
 
 import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/handlers"
+	middleware "github.com/AlirezaSaadatmand/Ja-Ostadi/middlewares"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Router(app *fiber.App, logger logging.Logger) {
-	h := handlers.NewHandler(logger) // create a Handler instance
+	h := handlers.NewHandler(logger)
 
 	api := app.Group("/api/v1")
 
-	api.Get("/test", h.Test) // now using the handler with logger
+	api.Get("/test", h.Test)
 
 	remove := api.Group("/remove")
 	remove.Post("/", h.DeleteAllData)
@@ -40,4 +41,8 @@ func Router(app *fiber.App, logger logging.Logger) {
 	// Schedule Routes
 	scheduleRouter := api.Group("/schedule")
 	scheduleRouter.Get("/data", h.GetScheduleData)
+
+	// Admin Routes
+	adminRoutes := api.Group("/admin", middleware.AdminMiddleware())
+	adminRoutes.Post("/upload/data", h.UploadJson)
 }
