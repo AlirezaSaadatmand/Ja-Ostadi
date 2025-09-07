@@ -40,7 +40,7 @@ definitions:
         $ref: '#/definitions/services.ScheduleInstructor'
       time:
         items:
-          $ref: '#/definitions/services.ScheduleTime'
+          $ref: '#/definitions/services.ScheduleTimeID'
         type: array
     type: object
   services.CourseDetail:
@@ -119,6 +119,8 @@ definitions:
     properties:
       field:
         type: string
+      id:
+        type: integer
       name:
         type: string
     type: object
@@ -152,16 +154,33 @@ definitions:
     type: object
   services.ScheduleDepartment:
     properties:
+      id:
+        type: integer
       name:
         type: string
     type: object
   services.ScheduleInstructor:
     properties:
+      id:
+        type: integer
       name:
         type: string
     type: object
   services.ScheduleTime:
     properties:
+      day:
+        type: string
+      end_time:
+        type: string
+      room:
+        type: string
+      start_time:
+        type: string
+    type: object
+  services.ScheduleTimeID:
+    properties:
+      course_id:
+        type: integer
       day:
         type: string
       end_time:
@@ -189,6 +208,52 @@ definitions:
 info:
   contact: {}
 paths:
+  /admin/upload/data:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Accepts a JSON data file upload (admin only), parses it, and returns
+        the number of records
+      parameters:
+      - description: Admin authentication token
+        in: header
+        name: X-Admin-Token
+        required: true
+        type: string
+      - description: Data file to upload (JSON format)
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Example: {\"count\": 42}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  additionalProperties:
+                    type: integer
+                  type: object
+              type: object
+        "400":
+          description: 'Bad Request: missing or invalid file'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: 'Unauthorized: missing or invalid admin token'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Upload data file
+      tags:
+      - Admin
   /courses/{courseId}/detail:
     get:
       description: Returns course details including instructor, department, class

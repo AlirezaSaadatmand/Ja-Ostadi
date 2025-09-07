@@ -15,6 +15,78 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/upload/data": {
+            "post": {
+                "description": "Accepts a JSON data file upload (admin only), parses it, and returns the number of records",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Upload data file",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin authentication token",
+                        "name": "X-Admin-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Data file to upload (JSON format)",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Example: {\\\"count\\\": 42}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: missing or invalid file",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: missing or invalid admin token",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/courses/semester/{semesterID}": {
             "get": {
                 "description": "Returns all courses for a specific semester",
@@ -554,7 +626,7 @@ const docTemplate = `{
                 "time": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/services.ScheduleTime"
+                        "$ref": "#/definitions/services.ScheduleTimeID"
                     }
                 }
             }
@@ -676,6 +748,9 @@ const docTemplate = `{
                 "field": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -727,6 +802,9 @@ const docTemplate = `{
         "services.ScheduleDepartment": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -735,6 +813,9 @@ const docTemplate = `{
         "services.ScheduleInstructor": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -743,6 +824,26 @@ const docTemplate = `{
         "services.ScheduleTime": {
             "type": "object",
             "properties": {
+                "day": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "room": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "services.ScheduleTimeID": {
+            "type": "object",
+            "properties": {
+                "course_id": {
+                    "type": "integer"
+                },
                 "day": {
                     "type": "string"
                 },
