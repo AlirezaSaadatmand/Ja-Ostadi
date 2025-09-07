@@ -31,6 +31,7 @@ type ClassData struct {
 }
 
 func main() {
+	os.Remove("data.json")
 	_ = godotenv.Load()
 
 	url := launcher.New().
@@ -88,7 +89,7 @@ func main() {
 
 func loginAndNavigate(browser *rod.Browser) *rod.Page {
 	fmt.Println("🌐 Opening login page...")
-	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/17841998318")
+	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/16713266153")
 	page.MustWaitLoad()
 
 	fmt.Println("🔑 Filling credentials...")
@@ -111,12 +112,6 @@ func loginAndNavigate(browser *rod.Browser) *rod.Page {
 
 	return page
 }
-
-// func loadSemesterAndDepartment(page *rod.Page) {
-// 	fmt.Println("🎓 Selecting semester and department filters...")
-// 	page.MustElement("select#edSemester").MustSelect(os.Getenv("EDSEMESTER"))
-// 	page.MustElement("select#edDepartment").MustSelect(os.Getenv("EDDEPARTMENT"))
-// }
 
 func getTargetRows(page *rod.Page) []*rod.Element {
 	fmt.Println("🔍 Locating rows in the table...")
