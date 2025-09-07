@@ -21,23 +21,32 @@ type ScheduleCourse struct {
 }
 
 func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
+	semesterName := "اول - 1404"
 
-	semesterID := 5
-
-	var courses []ScheduleCourse
+	// 1. Get semester ID
+	var semester models.Semester
 	err := database.DB.
-		Model(&models.Course{}).
-		Where("semester_id = ?", semesterID).
-		Find(&courses).Error
+		Where("name = ?", semesterName).
+		First(&semester).Error
 	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get courses schedule", map[logging.ExtraKey]interface{}{"semesterID": semesterID, "error": err.Error()})
-		return nil, errors.New("error getting data")
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get semester", map[logging.ExtraKey]interface{}{"semesterName": semesterName, "error": err.Error()})
+		return nil, errors.New("error getting semester data")
 	}
 
-	s.Logger.Info(logging.Mysql, logging.Select, "Fetched courses schedule successfully", map[logging.ExtraKey]interface{}{"semesterID": semesterID, "count": len(courses)})
+	// 2. Get courses for that semester
+	var courses []ScheduleCourse
+	err = database.DB.
+		Model(&models.Course{}).
+		Where("semester_id = ?", semester.ID).
+		Find(&courses).Error
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get courses schedule", map[logging.ExtraKey]interface{}{"semesterID": semester.ID, "error": err.Error()})
+		return nil, errors.New("error getting courses data")
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched courses schedule successfully", map[logging.ExtraKey]interface{}{"semesterID": semester.ID, "count": len(courses)})
 	return courses, nil
 }
-
 
 type ScheduleInstructor struct {
 	ID   uint   `json:"id"`
@@ -60,7 +69,7 @@ func (s *Services) GetAllInstructorsSchedule() ([]ScheduleInstructor, error) {
 }
 
 type ScheduleTimeID struct {
-	CourseID  uint   `json:"course_id"` // add CourseID to relate back
+	CourseID  uint   `json:"course_id"`
 	Day       string `json:"day"`
 	StartTime string `json:"start_time"`
 	EndTime   string `json:"end_time"`
