@@ -1,10 +1,8 @@
 package scripts
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
@@ -14,17 +12,48 @@ import (
 	"gorm.io/gorm"
 )
 
-// Load JSON from file
-func loadJSON(path string) ([]types.CourseJSON, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %w", err)
+func addOrUpdateBaseCourse(inputCourse types.CourseJSON) error {
+	db := database.DB
+	var course models.Base_course_data
+
+	result := db.Where("course_number = ? AND `group` = ? AND semester = ? AND department = ?", inputCourse.CourseNumber, inputCourse.Group, inputCourse.Semester, inputCourse.Department).First(&course)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			course = models.Base_course_data{
+				CourseNumber: inputCourse.CourseNumber,
+				CourseName:   inputCourse.CourseName,
+				Semester:     inputCourse.Semester,
+				Department:   inputCourse.Department,
+				Group:        inputCourse.Group,
+				Units:        inputCourse.Units,
+				ClassType:    inputCourse.ClassType,
+				Instructor:   inputCourse.Instructor,
+				TimeInWeek:   inputCourse.TimeInWeek,
+				TimeRoom:     inputCourse.TimeRoom,
+			}
+			if err := db.Create(&course).Error; err != nil {
+				return err
+			}
+		} else {
+			return result.Error
+		}
+	} else {
+		course.CourseName = inputCourse.CourseName
+		course.Semester = inputCourse.Semester
+		course.Department = inputCourse.Department
+		course.Group = inputCourse.Group
+		course.Units = inputCourse.Units
+		course.ClassType = inputCourse.ClassType
+		course.Instructor = inputCourse.Instructor
+		course.TimeInWeek = inputCourse.TimeInWeek
+		course.TimeRoom = inputCourse.TimeRoom
+
+		if err := db.Save(&course).Error; err != nil {
+			return err
+		}
 	}
-	var rawCourses []types.CourseJSON
-	if err := json.Unmarshal(data, &rawCourses); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
-	}
-	return rawCourses, nil
+
+	return nil
 }
 
 func getOrCreateSemester(name string) (models.Semester, error) {
@@ -74,7 +103,7 @@ func getOrCreateInstructor(item types.CourseJSON) (models.Instructor, error) {
 	db := database.DB
 	raw := item.Instructor
 	name, field := parseInstructorNameAndField(raw)
-	
+
 	var instructor models.Instructor
 	err := db.Where("name = ? AND field = ?", name, field).First(&instructor).Error
 	if err != nil {
@@ -101,7 +130,7 @@ func getOrCreateInstructorDepartment(instructorID, departmentID, semesterID uint
 			rel = models.InstructorDepartment{
 				InstructorID: instructorID,
 				DepartmentID: departmentID,
-				SemesterID: semesterID,
+				SemesterID:   semesterID,
 			}
 			err = db.Create(&rel).Error
 		}
@@ -109,36 +138,53 @@ func getOrCreateInstructorDepartment(instructorID, departmentID, semesterID uint
 	return rel, err
 }
 
-func createCourse(item types.CourseJSON, semester models.Semester, dept models.Department, instructor models.Instructor) (models.Course, error) {
-	db := database.DB
+func createOrUpdateCourse(item types.CourseJSON, semester models.Semester, dept models.Department, instructor models.Instructor) (models.Course, error) {
+    db := database.DB
 
-	units, _ := strconv.Atoi(item.Units)
-	capacity, _ := strconv.Atoi(item.Capacity)
-	studentCount, _ := strconv.Atoi(item.StudentCount)
+    units, _ := strconv.Atoi(item.Units)
+    capacity, _ := strconv.Atoi(item.Capacity)
+    studentCount, _ := strconv.Atoi(item.StudentCount)
 
-	course := models.Course{
-		Name:          item.CourseName,
-		Number:        item.CourseNumber,
-		Group:         item.Group,
-		Units:         units,
-		ClassType:     item.ClassType,
-		TimeInWeek:    item.TimeInWeek,
-		TimeRoom:      item.TimeRoom,
-		MidExamTime:   item.MidExamTime,
-		FinalExamTime: item.FinalExamTime,
-		Capacity:      capacity,
-		StudentCount:  studentCount,
-		SemesterID:    semester.ID,
-		DepartmentID:  dept.ID,
-		InstructorID:  instructor.ID,
-	}
+    var course models.Course
+    err := db.Where("number = ? AND `group` = ? AND semester_id = ? AND department_id = ?", item.CourseNumber, item.Group, semester.ID, dept.ID).First(&course).Error
 
-	return course, db.Create(&course).Error
+    if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+        return course, err
+    }
+
+    course.Name = item.CourseName
+    course.Number = item.CourseNumber
+    course.Group = item.Group
+    course.Units = units
+    course.ClassType = item.ClassType
+    course.TimeInWeek = item.TimeInWeek
+    course.TimeRoom = item.TimeRoom
+    course.MidExamTime = item.MidExamTime
+    course.FinalExamTime = item.FinalExamTime
+    course.Capacity = capacity
+    course.StudentCount = studentCount
+    course.SemesterID = semester.ID
+    course.DepartmentID = dept.ID
+    course.InstructorID = instructor.ID
+
+    if errors.Is(err, gorm.ErrRecordNotFound) {
+        err = db.Create(&course).Error
+    } else {
+        err = db.Save(&course).Error
+    }
+
+    return course, err
 }
 
-func createClassTime(item types.CourseJSON, course models.Course) error {
+func createOrUpdateClassTime(item types.CourseJSON, course models.Course) error {
     db := database.DB
-    
+
+    // 1️⃣ Remove old class times for this course
+    if err := db.Where("course_id = ?", course.ID).Delete(&models.ClassTime{}).Error; err != nil {
+        return err
+    }
+
+    // 2️⃣ Insert new class times
     lines := strings.Split(item.TimeRoom, "\n")
     for _, line := range lines {
         line = strings.TrimSpace(line)
@@ -178,24 +224,19 @@ func createClassTime(item types.CourseJSON, course models.Course) error {
             return err
         }
     }
+
     return nil
 }
 
-func ImportData() error {
-	db := database.DB
-	var count int64
-	db.Model(&models.Course{}).Count(&count)
-	if count > 0 {
-		fmt.Println("⚠️ Data already exists in the database. Skipping import.")
-		return nil
-	}
-
-	rawCourses, err := loadJSON("./data/data.json")
-	if err != nil {
-		return err
-	}
+func SaveData(rawCourses []types.CourseJSON) error {
 
 	for _, item := range rawCourses {
+
+		err := addOrUpdateBaseCourse(item)
+		if err != nil {
+			return err
+		}
+
 		semester, err := getOrCreateSemester(item.Semester)
 		if err != nil {
 			return err
@@ -216,11 +257,11 @@ func ImportData() error {
 			return err
 		}
 
-		course, err := createCourse(item, semester, dept, instructor)
+		course, err := createOrUpdateCourse(item, semester, dept, instructor)
 		if err != nil {
 			return err
 		}
-		err = createClassTime(item, course)
+		err = createOrUpdateClassTime(item, course)
 		if err != nil {
 			return err
 		}
