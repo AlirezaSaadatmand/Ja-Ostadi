@@ -17,6 +17,7 @@ type Config struct {
 	DBPort     string
 	DBName     string
 	Logger     string
+	AdminToken string
 }
 
 var appConfig *Config
@@ -40,6 +41,7 @@ func LoadConfig() *Config {
 		DBPort:     os.Getenv("DB_PORT"),
 		DBName:     os.Getenv("DB_NAME"),
 		Logger:     os.Getenv("LOGGER"),
+		AdminToken: os.Getenv("ADMIN_TOKEN"),
 	}
 
 	return appConfig
