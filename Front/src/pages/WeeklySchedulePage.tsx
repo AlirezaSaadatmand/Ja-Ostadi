@@ -97,6 +97,11 @@ const WeeklySchedulePage: React.FC = () => {
             isLoading={isLoadingDepartments}
           />
         </div>
+          {selectedDept && (
+            <div className="mt-8">
+              <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={isLoadingCourses} />
+            </div>
+          )}
 
         <div className="flex flex-col lg:flex-row gap-12 items-stretch min-h-[600px]">
           <div className="lg:w-1/4 flex-shrink-0">
@@ -119,11 +124,6 @@ const WeeklySchedulePage: React.FC = () => {
           </div>
         </div>
 
-        {selectedDept && (
-          <div className="mt-8">
-            <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={isLoadingCourses} />
-          </div>
-        )}
       </div>
 
       <CourseModal
