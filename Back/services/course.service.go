@@ -77,7 +77,7 @@ type CourseDetail struct {
 	ClassType     string `json:"class_type"`
 	TimeInWeek    string `json:"time_in_week"`
 	MidExamTime   string `json:"mid_exam_time"`
-	FinalExamTime string `json:"final_exam_time"`
+	FinalExamDate string `json:"final_exam_date"`
 	Capacity      int    `json:"capacity"`
 	StudentCount  int    `json:"student_count"`
 	SemesterID    uint   `json:"semester_id"`
