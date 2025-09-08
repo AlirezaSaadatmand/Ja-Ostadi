@@ -37,11 +37,16 @@ func (s *Services) GetCoursesBySemester(semesterID int) ([]CourseMinimal, error)
 	return courses, nil
 }
 
-func (s *Services) GetCoursesBySemesterAndDepartment(semesterID, departmentID int) ([]CourseMinimal, error) {
-	var courses []CourseMinimal
+type CourseInstructor struct {
+	ID           uint   `json:"id"`
+	Name         string `json:"name"`
+	InstructorID uint   `json:"instructor_id"`
+}
+
+func (s *Services) GetCoursesBySemesterAndDepartment(semesterID, departmentID int) ([]CourseInstructor, error) {
+	var courses []CourseInstructor
 	err := database.DB.
 		Model(&models.Course{}).
-		Select("ID, Name").
 		Where("semester_id = ? AND department_id = ?", semesterID, departmentID).
 		Find(&courses).Error
 

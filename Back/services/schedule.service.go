@@ -23,7 +23,6 @@ type ScheduleCourse struct {
 func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
 	semesterName := "اول - 1404"
 
-	// 1. Get semester ID
 	var semester models.Semester
 	err := database.DB.
 		Where("name = ?", semesterName).
@@ -33,7 +32,6 @@ func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
 		return nil, errors.New("error getting semester data")
 	}
 
-	// 2. Get courses for that semester
 	var courses []ScheduleCourse
 	err = database.DB.
 		Model(&models.Course{}).
