@@ -193,25 +193,27 @@ const CoursesPage: React.FC = () => {
                 to={`/courses/${course.ID}`}
                 className="group bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-emerald-400 hover:bg-gradient-to-br from-white to-emerald-50"
               >
-                <div className="mb-6">
+                <div className="mb-4">
                   <BookOpen className="w-14 h-14 text-emerald-600 mx-auto" />
                 </div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-2">{course.CourseName}</h2>
-                <div className="text-gray-700 text-lg space-y-2">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-4">{course.CourseName}</h2>
+                <div className="text-gray-700 text-lg space-y-4">
                   <p className="flex items-center justify-center">
-                    <svg
-                      className="w-6 h-6 text-[#059669]"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      viewBox="0 0 24 24"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="12" cy="7" r="4" />
-                      <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
-                    </svg>
-                    <span className="font-bold mr-1">{course.InstructorName}</span>
+                    {course.InstructorName ? 
+                      <svg
+                        className="w-6 h-6 text-[#059669]"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        viewBox="0 0 24 24"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="7" r="4" />
+                        <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
+                      </svg> : null
+                    }
+                    <span className="font-bold mr-1">{course.InstructorName ? course.InstructorName : "استاد مشخص نشده"}</span>
                   </p>
                 </div>   
               </Link>

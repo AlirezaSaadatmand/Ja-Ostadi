@@ -117,12 +117,13 @@ const CourseDetailPage: React.FC = () => {
             <div className="flex items-center text-lg text-gray-700 bg-gray-50 p-4 rounded-lg shadow-sm">
               <UserRound className="w-6 h-6 text-blue-600 ml-2" />
               <span className="font-semibold ml-2">استاد:</span>
+              {Instructor.name ? 
               <Link
                 to={`/instructors/${Instructor.id}`}
                 className="text-blue-600 hover:underline hover:text-blue-800 transition-colors"
               >
                 {Instructor.name} ({Instructor.field})
-              </Link>
+              </Link> : null}
             </div>
             <div className="flex items-center text-lg text-gray-700 bg-gray-50 p-4 rounded-lg shadow-sm">
               <Building2 className="w-6 h-6 text-green-600 ml-2" />
@@ -176,7 +177,7 @@ const CourseDetailPage: React.FC = () => {
             <div className="flex items-center text-lg text-gray-700 bg-gray-50 p-4 rounded-lg shadow-sm">
               <CalendarDays className="w-6 h-6 text-red-600 ml-2" />
               <span className="font-semibold ml-2">زمان امتحان پایان‌ترم:</span>
-              <span>{Course.final_exam_time}</span>
+              <span>{Course.final_exam_date}</span>
             </div>
           </div>
         </div>
