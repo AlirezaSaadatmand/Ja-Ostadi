@@ -37,6 +37,12 @@ func (h *Handler) GetCoursesBySemester(c *fiber.Ctx) error {
 	return utils.Success(c, fiber.StatusOK, courses, "Data fetched successfully")
 }
 
+type CourseInstructor struct {
+	ID             uint
+	CourseName     string
+	InstructorName string
+}
+
 // GetCoursesBySemesterAndDepartment returns courses for a semester and department
 // @Summary Get courses by semester and department
 // @Description Returns all courses for a specific semester and department
@@ -66,7 +72,27 @@ func (h *Handler) GetCoursesBySemesterAndDepartment(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	return utils.Success(c, fiber.StatusOK, courses, "Data fetched successfully")
+	instructors, err := h.Services.GetInstructorData()
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, err.Error())
+	}
+
+	instructorMap := make(map[int]string)
+	for _, i := range instructors {
+		instructorMap[int(i.ID)] = i.Name
+	}
+
+	var data []CourseInstructor
+
+	for _, course := range courses {
+		data = append(data, CourseInstructor{
+			ID:             course.ID,
+			CourseName:     course.Name,
+			InstructorName: instructorMap[int(course.InstructorID)],
+		})
+	}
+
+	return utils.Success(c, fiber.StatusOK, data, "Data fetched successfully")
 }
 
 type CourseDetail struct {
