@@ -12,7 +12,7 @@ type CourseJSON struct {
 	TimeInWeek     string `json:"time_in_week"`
 	TimeRoom       string `json:"time_room"`
 	MidExamTime    string `json:"mid_exam_time"`
-	FinalExamTime  string `json:"final_exam_time"`
+	FinalExamDate string `json:"final_exam_date"`
 	Capacity       string `json:"capacity"`
 	StudentCount   string `json:"student_count"`
 }
