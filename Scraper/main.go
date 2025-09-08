@@ -25,7 +25,7 @@ type ClassData struct {
 	TimeInWeek    string `json:"time_in_week"`
 	TimeRoom      string `json:"time_room"`
 	MidExamTime   string `json:"mid_exam_time"`
-	FinalExamTime string `json:"final_exam_time"`
+	FinalExamDate string `json:"final_exam_date"`
 	Capacity      string `json:"capacity"`
 	StudentCount  string `json:"student_count"`
 }
@@ -112,7 +112,6 @@ func loginAndNavigate(browser *rod.Browser) *rod.Page {
 }
 
 func getTargetRows(page *rod.Page) []*rod.Element {
-	fmt.Println("🔍 Locating rows in the table...")
 	table := page.MustElement(`table`).MustElement("tbody")
 	trs := table.MustElements(":scope > tr")
 	if len(trs) <= 3 {
@@ -149,7 +148,7 @@ func processRow(page *rod.Page, index, id int) bool{
 		TimeInWeek:    page.MustElement("#edTimeInWeek").MustText(),
 		TimeRoom:      page.MustElement("#edTimeRoom").MustText(),
 		MidExamTime:   page.MustElement("#edMidTime").MustText(),
-		FinalExamTime: page.MustElement("#edFinalTime").MustText(),
+		FinalExamDate: page.MustElement("#edFinalDate").MustText(),
 		Capacity:      page.MustElement("#edCapacity").MustText(),
 		StudentCount:  page.MustElement("#edStdCount").MustText(),
 	}
@@ -177,9 +176,6 @@ func processRow(page *rod.Page, index, id int) bool{
 		log.Fatalf("Failed to write JSON: %v", err)
 	}
 
-	fmt.Println("✅ Data appended to data.json successfully.")
-
-	fmt.Printf("🔙 [Row %d] Going back to list...\n", index)
 	page.MustEval(`() => window.history.back()`)
 	page.MustWaitLoad()
 	return true
