@@ -12,7 +12,7 @@ type Course struct {
 	TimeInWeek    string
 	TimeRoom      string
 	MidExamTime   string
-	FinalExamTime string
+	FinalExamDate string
 	Capacity      int
 	StudentCount  int
 

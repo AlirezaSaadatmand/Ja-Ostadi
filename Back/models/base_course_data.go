@@ -15,7 +15,7 @@ type Base_course_data struct {
 	TimeInWeek     string 
 	TimeRoom       string 
 	MidExamTime    string 
-	FinalExamTime  string 
+	FinalExamDate  string 
 	Capacity       string 
 	StudentCount   string
 }

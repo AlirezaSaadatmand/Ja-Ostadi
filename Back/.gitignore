@@ -29,5 +29,5 @@ go.work.sum
 # .vscode/
 
 *.log
-data.json
 tmp/
+logs/
