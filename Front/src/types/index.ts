@@ -97,7 +97,7 @@ export interface CourseDetailCourse {
   class_type: string
   time_in_week: string
   mid_exam_time: string
-  final_exam_time: string
+  final_exam_date: string
   capacity: number
   student_count: number
   semester_id: number
