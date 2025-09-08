@@ -67,14 +67,12 @@ func main() {
 		page.MustElement("#edDisplay").MustClick()
 		page.MustWaitLoad()
 
-		// Get course rows
 		rows := getTargetRows(page)
 		if len(rows) == 0 {
 			fmt.Println("❌ No course rows found.")
 			continue
 		}
 
-		// Process each course
 		for rowIndex := 3; rowIndex < len(rows); rowIndex++ {
 			fmt.Printf("📚 [Dept: %s] Processing row %d\n", deptText, rowIndex)
 			ok := processRow(page, rowIndex, id)
@@ -89,7 +87,7 @@ func main() {
 
 func loginAndNavigate(browser *rod.Browser) *rod.Page {
 	fmt.Println("🌐 Opening login page...")
-	page := browser.MustPage("https://pershiess.fasau.ac.ir/Sess/16713266153")
+	page := browser.MustPage(os.Getenv("URL"))
 	page.MustWaitLoad()
 
 	fmt.Println("🔑 Filling credentials...")

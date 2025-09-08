@@ -82,8 +82,9 @@ export interface InstructorCoursesBySemester {
 }
 
 export interface CourseInList {
-  id: number
-  name: string
+  ID: number
+  CourseName: string
+  InstructorName: string
 }
 
 
