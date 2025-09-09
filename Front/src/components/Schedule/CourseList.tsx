@@ -16,7 +16,7 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
         <div className="h-5 bg-gray-200 rounded w-1/2 mb-4"></div>
         <div className="grid grid-flow-col grid-rows-2 gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-28 w-56 bg-gray-200 rounded flex-shrink-0"></div>
+            <div key={i} className="h-28 w-56 sm:h-28 sm:w-56  bg-gray-200 rounded flex-shrink-0"></div>
           ))}
         </div>
       </div>
@@ -24,9 +24,14 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-5">
-      <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center justify-center">
-        <svg className="w-5 h-5 ml-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="bg-white rounded-lg shadow-sm p-3 sm:p-5">
+      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center justify-center">
+        <svg
+          className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 text-emerald-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -37,8 +42,13 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
         دروس موجود ({courses.length})
       </h3>
       {courses.length === 0 ? (
-        <div className="p-8 text-center col-span-full">
-          <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="p-6 sm:p-8 text-center col-span-full">
+          <svg
+            className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -49,19 +59,21 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
           <p className="text-gray-500">هیچ درسی یافت نشد</p>
         </div>
       ) : (
-        <div className="grid grid-flow-col grid-rows-2 gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
+        <div className="grid grid-flow-col grid-rows-2 gap-2 sm:gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
           {courses.map((course) => (
             <div
               key={course.course.id}
-              className="p-5 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer"
+              className="p-3 sm:p-5 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer"
               onClick={() => onCourseClick(course)}
             >
               <div className="flex items-center justify-between">
-                <div className="flex-1 text-right ml-2">
-                  <span className="font-semibold text-gray-900 text-base block">{course.course.name}</span>
-                  <span className="text-sm text-gray-500 block mt-1">استاد: {course.instructor.name}</span>
+                <div className="flex-1 text-right ml-1 sm:ml-2">
+                  <span className="font-semibold text-gray-900 text-sm sm:text-base block">{course.course.name}</span>
+                  <span className="text-xs sm:text-sm text-gray-500 block mt-0.5 sm:mt-1">
+                    استاد: {course.instructor.name}
+                  </span>
                 </div>
-                <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded flex-shrink-0">
+                <span className="text-xs sm:text-sm bg-blue-100 text-blue-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
                   {course.course.units} واحد
                 </span>
               </div>
