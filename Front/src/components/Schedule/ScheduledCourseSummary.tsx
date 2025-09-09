@@ -13,7 +13,6 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({ schedul
 
   return (
     <div className="bg-white rounded-lg shadow-sm flex flex-col h-full max-h-[400px] sm:max-h-[500px] lg:max-h-[600px]">
-      {/* Header */}
       <div className="p-2 sm:p-3 border-b border-gray-200 flex-shrink-0">
         <h3 className="text-sm sm:text-base font-semibold text-gray-900 flex items-center justify-center">
           <svg
@@ -33,13 +32,11 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({ schedul
         </h3>
       </div>
 
-      {/* Total Units */}
       <div className="p-2 sm:p-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center text-xs font-medium text-gray-700 flex-shrink-0">
         <span>تعداد کل واحدها:</span>
         <span className="text-purple-700 text-sm sm:text-base font-bold">{totalUnits}</span>
       </div>
 
-      {/* Scrollable course list */}
       <div className="flex-grow overflow-y-auto scrollbar-hide p-1 sm:p-2">
         {scheduledCourses.length === 0 ? (
           <div className="p-3 sm:p-4 text-center">
