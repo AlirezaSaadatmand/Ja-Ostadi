@@ -68,19 +68,21 @@ const WeeklySchedulePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-10 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-1 sm:px-6 py-1 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-1 sm:gap-2">
           <div className="text-center flex-1">
-            <h1 className="text-4xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
-            <p className="text-gray-600 mt-3 text-xl">دپارتمان و درس مورد نظر خود را انتخاب کنید</p>
+            <h1 className="text-sm sm:text-2xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
+            <p className="text-gray-600 mt-0.5 sm:mt-1 text-xs sm:text-base">
+              دپارتمان و درس مورد نظر خود را انتخاب کنید
+            </p>
           </div>
 
-          <div className="flex items-center gap-2 justify-end min-w-fit"></div>
+          <div className="flex items-center gap-1 sm:gap-2 justify-end min-w-fit"></div>
 
           <a
             href="/"
-            className="hidden sm:inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
+            className="inline-flex items-center px-1.5 sm:px-4 py-1 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-xs sm:text-base"
           >
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3 h-3 sm:w-5 sm:h-5 ml-0.5 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             بازگشت
@@ -88,8 +90,8 @@ const WeeklySchedulePage: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-8">
+      <div className="max-w-6xl mx-auto px-1 sm:px-6 py-1 sm:py-4">
+        <div className="mb-1 sm:mb-4">
           <DepartmentList
             departments={Array.isArray(departments) ? departments : []}
             selectedDept={selectedDept}
@@ -97,19 +99,19 @@ const WeeklySchedulePage: React.FC = () => {
             isLoading={isLoadingDepartments}
           />
         </div>
-          {selectedDept && (
-            <div className="mt-8 mb-8">
-              <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={isLoadingCourses} />
-            </div>
-          )}
+        {selectedDept && (
+          <div className="mt-1 sm:mt-4 mb-1 sm:mb-4">
+            <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={isLoadingCourses} />
+          </div>
+        )}
 
-        <div className="flex flex-col lg:flex-row gap-12 items-stretch min-h-[600px]">
-          <div className="lg:w-1/4 flex-shrink-0">
-            <div className="sticky top-6">
+        <div className="flex flex-col lg:flex-row gap-1 sm:gap-4 lg:gap-6 items-stretch min-h-[250px] sm:min-h-[500px]">
+          <div className="lg:w-1/4 flex-shrink-0 order-2 lg:order-1">
+            <div className="lg:sticky lg:top-4">
               <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />
             </div>
           </div>
-          <div className="lg:w-3/4 flex-grow">
+          <div className="lg:w-3/4 flex-grow order-1 lg:order-2">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden h-full">
               <WeeklyTable
                 days={days}
@@ -123,7 +125,6 @@ const WeeklySchedulePage: React.FC = () => {
             </div>
           </div>
         </div>
-
       </div>
 
       <CourseModal
