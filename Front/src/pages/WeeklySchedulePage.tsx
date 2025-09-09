@@ -78,7 +78,7 @@ const WeeklySchedulePage: React.FC = () => {
 
           <a
             href="/"
-            className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
+            className="hidden sm:inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
           >
             <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -98,7 +98,7 @@ const WeeklySchedulePage: React.FC = () => {
           />
         </div>
           {selectedDept && (
-            <div className="mt-8">
+            <div className="mt-8 mb-8">
               <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={isLoadingCourses} />
             </div>
           )}
