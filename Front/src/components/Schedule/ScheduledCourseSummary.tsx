@@ -72,9 +72,14 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({ schedul
                       استاد: {course.instructor.name}
                     </span>
                   </div>
-                  <span className="text-xs sm:text-sm bg-purple-100 text-purple-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
-                    {course.course.units} واحد
-                  </span>
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs sm:text-sm bg-purple-100 text-purple-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
+                      {course.course.units} واحد
+                    </span>
+                    <span className="text-xs sm:text-sm bg-green-100 text-green-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
+                      گروه : {course.course.group}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
