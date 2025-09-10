@@ -8,7 +8,7 @@ import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPage
 import { useSemesterStore } from "../store/common/useSemesterStore"
 import InstructorList from "../components/Instructor/InstructorList"
 import ToggleFilter from "../components/common/ToggleFilter"
-import { ArrowRight } from "lucide-react"
+import Header from "../components/Header"
 
 const InstructorsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -90,35 +90,34 @@ const InstructorsPage: React.FC = () => {
   }
 
   return (
+    
     <div className="min-h-screen bg-gray-100" dir="rtl">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-6xl mx-auto px-1 sm:px-6 py-1 sm:py-4 relative">
-          <a
-            href="/"
-            className="hidden sm:inline-flex items-center px-1.5 sm:px-4 py-1 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-xs sm:text-base absolute top-4 right-6"
-          >
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-            بازگشت
-          </a>
+      <Header />
 
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 ">اساتید دانشگاه</h1>
-            <p className="text-gray-600 mt-3 text-xl">لیست اساتید و جزئیات تماس آنها</p>
+      <div className="block md:hidden bg-white shadow-sm border-b ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex items-center justify-center">
+          <div className="text-center flex-1">
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">اساتید دانشگاه</h1>
+            <p className="text-gray-600 text-lg sm:text-xl">لیست اساتید و جزئیات تماس آنها</p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-xl shadow-md p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-gray-900 text-center mb-6">فیلتر اساتید</h2>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 lg:mt-20 sm:mt-0">
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-8 mb-8">
+          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">فیلتر اساتید</h2>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center">
             <div className="w-full sm:w-1/2 lg:w-1/3">
-              <label htmlFor="department-filter" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="department-filter"
+                className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+              >
                 فیلتر بر اساس دپارتمان:
               </label>
               <select
                 id="department-filter"
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+                className="mt-1 block w-full pl-2 sm:pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
                 value={selectedDepartmentId !== null ? selectedDepartmentId : ""}
                 onChange={handleDepartmentChange}
               >
@@ -131,12 +130,15 @@ const InstructorsPage: React.FC = () => {
             </div>
 
             <div className="w-full sm:w-1/2 lg:w-1/3">
-              <label htmlFor="semester-filter" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="semester-filter"
+                className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+              >
                 فیلتر بر اساس ترم:
               </label>
               <select
                 id="semester-filter"
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+                className="mt-1 block w-full pl-2 sm:pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
                 value={selectedSemesterId !== null ? selectedSemesterId : ""}
                 onChange={handleSemesterChange}
               >
@@ -148,7 +150,7 @@ const InstructorsPage: React.FC = () => {
               </select>
             </div>
 
-            <div className="w-full sm:w-auto flex items-center justify-center mt-4 sm:mt-0">
+            <div className="w-full sm:w-auto flex items-center justify-center mt-2 sm:mt-4">
               <ToggleFilter value={filterByMode} onValueChange={handleFilterModeChange} />
             </div>
           </div>

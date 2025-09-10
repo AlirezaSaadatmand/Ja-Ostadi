@@ -84,7 +84,6 @@ addCourseToSchedule: (course) => {
     
     const key = `${t.day}-${slotKey}`
     
-    console.log(key, table[key], table);
     if (!slotKey || !table[key]) {
       console.warn(`Could not find slot key for time: ${t.start_time}-${t.end_time} on ${t.day}`)
       return false
@@ -110,7 +109,6 @@ addCourseToSchedule: (course) => {
   }
   set(newState)
   saveState(newState)
-  console.log(`Course '${course.course.name}' added to schedule.`)
   return true
 },
 
@@ -127,13 +125,11 @@ removeCourseFromSchedule: (courseId) => {
   const newState = { scheduledCourses: updatedCourses, table: newTable }
   set(newState)
   saveState(newState)
-  console.log(`Course with ID '${courseId}' removed from schedule.`)
 },
 
 clearSchedule: () => {
   const newState = { scheduledCourses: [], table: generateEmptyTable() }
   set(newState)
   saveState(newState)
-  console.log("Schedule cleared.")
 },
 }))

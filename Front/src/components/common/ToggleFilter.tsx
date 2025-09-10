@@ -12,9 +12,12 @@ const ToggleFilter: React.FC<ToggleFilterProps> = ({ value, onValueChange }) => 
   const isSemesterActive = value === "semester"
 
   return (
-    <div className="flex rounded-lg bg-gray-100 p-1 text-sm font-medium text-gray-700 shadow-inner" dir="rtl">
+    <div
+      className="flex rounded-lg bg-gray-100 p-0.5 sm:p-1 text-xs sm:text-sm font-medium text-gray-700 shadow-inner"
+      dir="rtl"
+    >
       <button
-        className={`flex-1 py-2 px-4 rounded-md transition-colors duration-200 ${
+        className={`flex-1 py-1.5 sm:py-2 px-2 sm:px-4 rounded-md transition-colors duration-200 ${
           isDepartmentActive ? "bg-white shadow text-indigo-700" : "hover:bg-gray-200"
         }`}
         onClick={() => onValueChange("department")}
@@ -22,7 +25,7 @@ const ToggleFilter: React.FC<ToggleFilterProps> = ({ value, onValueChange }) => 
         اساتید این رشته
       </button>
       <button
-        className={`flex-1 py-2 px-4 rounded-md transition-colors duration-200 ${
+        className={`flex-1 py-1.5 sm:py-2 px-2 sm:px-4 rounded-md transition-colors duration-200 ${
           isSemesterActive ? "bg-white shadow text-indigo-700" : "hover:bg-gray-200"
         }`}
         onClick={() => onValueChange("semester")}

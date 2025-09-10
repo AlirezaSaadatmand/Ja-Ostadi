@@ -4,8 +4,9 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore"
 import DepartmentDetailModal from "../components/Department/DepartmentDetailModal"
+import Header from "../components/Header"
 import type { DepartmentDetail } from "../types"
-import { Building2, ArrowRight } from "lucide-react"
+import { Building2 } from "lucide-react"
 
 const DepartmentsPage: React.FC = () => {
   const { departments, isLoading, error, fetchDepartmentsDetail } = useDepartmentsPageStore()
@@ -29,16 +30,11 @@ const DepartmentsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-10 relative">
-          <a
-            href="/"
-            className="hidden sm:inline-flex items-center px-1.5 sm:px-4 py-1 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-xs sm:text-base absolute top-4 right-6"
-          >
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-            بازگشت
-          </a>
 
+      <Header />
+
+      <div className="bg-white shadow-sm border-b lg:mt-20">
+        <div className="max-w-7xl mx-auto px-6 py-10 relative">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900">دپارتمان‌ها</h1>
             <p className="text-gray-600 mt-3 text-xl">لیست دپارتمان‌ها با جزئیات</p>

@@ -90,36 +90,30 @@ const CoursesPage: React.FC = () => {
     <div className="min-h-screen bg-gray-100" dir="rtl">
       <Header />
 
-      {/* <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-10 flex items-center justify-between">
+      <div className="block md:hidden bg-white shadow-sm border-b ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex items-center justify-center">
           <div className="text-center flex-1">
-            <h1 className="text-4xl font-bold text-gray-900">دروس دانشگاه</h1>
-            <p className="text-gray-600 mt-3 text-xl">لیست دروس بر اساس ترم و دپارتمان</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">دروس دانشگاه</h1>
+            <p className="text-gray-600 text-lg sm:text-xl">لیست دروس بر اساس ترم و دپارتمان</p>
           </div>
-
-          <Link
-            to="/"
-            className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
-          >
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            بازگشت
-          </Link>
         </div>
-      </div> */}
+      </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8 mt-20">
-        <div className="bg-white rounded-xl shadow-md p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-gray-900 text-center mb-6">فیلتر دروس</h2>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 lg:mt-20 sm:mt-0">
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">فیلتر دروس</h2>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center">
             <div className="w-full sm:w-1/2 lg:w-1/3">
-              <label htmlFor="semester-filter" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="semester-filter"
+                className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+              >
                 انتخاب ترم:
               </label>
               <select
                 id="semester-filter"
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+                className="mt-1 block w-full pl-2 sm:pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
                 value={selectedSemesterId !== null ? selectedSemesterId : ""}
                 onChange={handleSemesterChange}
                 disabled={semesters.length === 0}
@@ -137,12 +131,15 @@ const CoursesPage: React.FC = () => {
             </div>
 
             <div className="w-full sm:w-1/2 lg:w-1/3">
-              <label htmlFor="department-filter" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="department-filter"
+                className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+              >
                 انتخاب دپارتمان:
               </label>
               <select
                 id="department-filter"
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm"
+                className="mt-1 block w-full pl-2 sm:pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
                 value={selectedDepartmentId !== null ? selectedDepartmentId : ""}
                 onChange={handleDepartmentChange}
                 disabled={departments.length === 0}
@@ -186,24 +183,24 @@ const CoursesPage: React.FC = () => {
         )}
 
         {!isLoading && !error && courses.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {courses.map((course) => (
               <Link
                 key={course.ID}
                 to={`/courses/${course.ID}`}
-                className="group bg-white rounded-xl shadow-md p-4 sm:p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-emerald-400 hover:bg-gradient-to-br from-white to-emerald-50"
+                className="group bg-white rounded-xl shadow-md p-3 sm:p-6 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-emerald-400 hover:bg-gradient-to-br from-white to-emerald-50"
               >
                 <div className="mb-2 sm:mb-4">
-                  <BookOpen className="w-10 h-10 sm:w-14 sm:h-14 text-emerald-600 mx-auto" />
+                  <BookOpen className="w-8 h-8 sm:w-14 sm:h-14 text-emerald-600 mx-auto" />
                 </div>
-                <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4 leading-tight">
+                <h2 className="text-sm sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4 leading-tight">
                   {course.CourseName}
                 </h2>
-                <div className="text-gray-700 text-sm sm:text-lg space-y-2 sm:space-y-4">
+                <div className="text-gray-700 text-xs sm:text-lg space-y-2 sm:space-y-4">
                   <p className="flex items-center justify-center">
                     {course.InstructorName ? (
                       <svg
-                        className="w-4 h-4 sm:w-6 sm:h-6 text-[#059669]"
+                        className="w-3 h-3 sm:w-6 sm:h-6 text-[#059669]"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth={2}

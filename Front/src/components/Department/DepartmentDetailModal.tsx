@@ -22,7 +22,6 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
   }
 
   const handleViewInstructors = () => {
-    console.log(department.id)
     navigate(`/instructors?deptId=${department.id}&mode=department`)
     onClose()
   }
@@ -37,7 +36,6 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
         className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="p-7 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900">جزئیات دپارتمان</h2>
@@ -49,7 +47,6 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-7 text-center">
           <div className="mb-6">
             <Building2 className="w-20 h-20 text-green-600 mx-auto mb-4" />
