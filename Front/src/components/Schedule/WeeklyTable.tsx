@@ -113,10 +113,10 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                         >
                           {course ? (
                             <div className="absolute inset-0.5 lg:inset-1 bg-indigo-100 border border-indigo-300 rounded lg:rounded-xl p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center">
-                              <div className="text-xs lg:text-sm font-semibold text-indigo-900 truncate leading-tight">
+                              <div className="text-[8px] lg:text-sm font-semibold text-indigo-900 truncate leading-tight">
                                 {course.course.name}
                               </div>
-                              <div className="text-xs lg:text-sm text-indigo-700 truncate leading-tight hidden sm:block">
+                              <div className="text-[7px] lg:text-sm text-indigo-700 truncate leading-tight sm:block">
                                 {course.instructor.name}
                               </div>
                               <button
