@@ -2,17 +2,21 @@ package main
 
 import (
 	"fmt"
+	"sync"
+	"time"
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/docs"
 	middleware "github.com/AlirezaSaadatmand/Ja-Ostadi/middlewares"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/limiter"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
+
 
 func main() {
 	config.LoadConfig()
@@ -27,12 +31,6 @@ func main() {
 
 	database.ConnectDB(logger)
 
-	// if err := scripts.ImportData(); err != nil {
-	// 	logger.Error(logging.General, logging.Startup, "Importing JSON failed", map[logging.ExtraKey]interface{}{"error": err})
-	// } else {
-	// 	logger.Info(logging.General, logging.Startup, "Imported JSON successfully", nil)
-	// }
-
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
@@ -41,6 +39,27 @@ func main() {
 	}))
 
 	app.Use(middleware.RequestLogger(logger))
+
+	buckets := make(map[string]*limiter.TokenBucket)
+	var mu sync.Mutex
+
+	app.Use(func(c *fiber.Ctx) error {
+		ip := c.IP()
+
+		mu.Lock()
+		bucket, ok := buckets[ip]
+		if !ok {
+			bucket = limiter.NewTokenBucket(5, 1, time.Second)
+			buckets[ip] = bucket
+		}
+		mu.Unlock()
+		if !bucket.Allow() {
+			return c.Status(429).JSON(fiber.Map{
+				"error": "Too many requests, slow down!",
+			})
+		}
+		return c.Next()
+	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
