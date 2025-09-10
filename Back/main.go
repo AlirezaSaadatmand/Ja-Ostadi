@@ -49,7 +49,7 @@ func main() {
 		mu.Lock()
 		bucket, ok := buckets[ip]
 		if !ok {
-			bucket = limiter.NewTokenBucket(5, 1, time.Second)
+			bucket = limiter.NewTokenBucket(10, 1, time.Second)
 			buckets[ip] = bucket
 		}
 		mu.Unlock()
