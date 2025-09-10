@@ -77,12 +77,16 @@ const WeeklySchedulePage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 justify-end min-w-fit"></div>
-
           <a
             href="/"
-            className="inline-flex items-center px-1.5 sm:px-4 py-1 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-xs sm:text-base"
+            className="hidden sm:inline-flex items-center px-1.5 sm:px-4 py-1 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-xs sm:text-base"
           >
-            <svg className="w-3 h-3 sm:w-5 sm:h-5 ml-0.5 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-3 h-3 sm:w-5 sm:h-5 ml-0.5 sm:ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             بازگشت
@@ -100,14 +104,14 @@ const WeeklySchedulePage: React.FC = () => {
           />
         </div>
         {selectedDept && (
-          <div className="mt-1 sm:mt-4 mb-1 sm:mb-4">
+          <div className="mt-5 sm:mt-4 mb-5 sm:mb-4">
             <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={isLoadingCourses} />
           </div>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-1 sm:gap-4 lg:gap-6 items-stretch min-h-[250px] sm:min-h-[500px]">
+        <div className="flex flex-col lg:flex-row gap-1 sm:gap-4 lg:gap-6 items-stretch min-h-[350px] sm:min-h-[500px]">
           <div className="lg:w-1/4 flex-shrink-0 order-2 lg:order-1">
-            <div className="lg:sticky lg:top-4">
+            <div className="lg:sticky lg:top-14">
               <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />
             </div>
           </div>
