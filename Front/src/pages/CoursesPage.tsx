@@ -162,7 +162,7 @@ const CoursesPage: React.FC = () => {
         </div>
 
         {isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-white rounded-xl shadow-md p-6 animate-pulse">
                 <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
@@ -186,22 +186,24 @@ const CoursesPage: React.FC = () => {
         )}
 
         {!isLoading && !error && courses.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {courses.map((course) => (
               <Link
                 key={course.ID}
                 to={`/courses/${course.ID}`}
-                className="group bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-emerald-400 hover:bg-gradient-to-br from-white to-emerald-50"
+                className="group bg-white rounded-xl shadow-md p-4 sm:p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-emerald-400 hover:bg-gradient-to-br from-white to-emerald-50"
               >
-                <div className="mb-4">
-                  <BookOpen className="w-14 h-14 text-emerald-600 mx-auto" />
+                <div className="mb-2 sm:mb-4">
+                  <BookOpen className="w-10 h-10 sm:w-14 sm:h-14 text-emerald-600 mx-auto" />
                 </div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">{course.CourseName}</h2>
-                <div className="text-gray-700 text-lg space-y-4">
+                <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4 leading-tight">
+                  {course.CourseName}
+                </h2>
+                <div className="text-gray-700 text-sm sm:text-lg space-y-2 sm:space-y-4">
                   <p className="flex items-center justify-center">
-                    {course.InstructorName ? 
+                    {course.InstructorName ? (
                       <svg
-                        className="w-6 h-6 text-[#059669]"
+                        className="w-4 h-4 sm:w-6 sm:h-6 text-[#059669]"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth={2}
@@ -211,11 +213,13 @@ const CoursesPage: React.FC = () => {
                       >
                         <circle cx="12" cy="7" r="4" />
                         <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
-                      </svg> : null
-                    }
-                    <span className="font-bold mr-1">{course.InstructorName ? course.InstructorName : "استاد مشخص نشده"}</span>
+                      </svg>
+                    ) : null}
+                    <span className="font-bold mr-1">
+                      {course.InstructorName ? course.InstructorName : "استاد مشخص نشده"}
+                    </span>
                   </p>
-                </div>   
+                </div>
               </Link>
             ))}
           </div>
