@@ -35,6 +35,13 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
       tempDiv.style.direction = "rtl"
       tempDiv.style.backgroundColor = "#fff"
 
+      // center content
+      tempDiv.style.display = "flex"
+      tempDiv.style.flexDirection = "column"
+      tempDiv.style.alignItems = "center"
+      tempDiv.style.justifyContent = "flex-start"
+      tempDiv.style.padding = "20px"
+
       document.body.appendChild(tempDiv)
 
       root = createRoot(tempDiv)
@@ -43,9 +50,8 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
       await new Promise((resolve) => setTimeout(resolve, 100))
 
       const opt = {
-        margin: 20,
         filename: "برنامه_هفتگی.pdf",
-        image: { type: "jpeg", quality: 1 },
+        image: { type: "jpeg", quality: 0.98 },
         html2canvas: {
           scale: 2,
           useCORS: true,
@@ -53,6 +59,8 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
           backgroundColor: "#fff",
           scrollX: 0,
           scrollY: 0,
+          allowTaint: true,
+          logging: false,
         },
         jsPDF: { unit: "pt", format: [1920, 1080], orientation: "landscape" },
       }
