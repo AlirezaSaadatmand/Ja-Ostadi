@@ -22,6 +22,7 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
   }
 
   const handleViewInstructors = () => {
+    console.log(department.id)
     navigate(`/instructors?deptId=${department.id}&mode=department`)
     onClose()
   }

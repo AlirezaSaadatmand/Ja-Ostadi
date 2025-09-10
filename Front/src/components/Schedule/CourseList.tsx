@@ -25,7 +25,7 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-3 sm:p-5">
-      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center justify-center">
+      <h3 className="text-l sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center justify-center">
         <svg
           className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 text-emerald-600"
           fill="none"
