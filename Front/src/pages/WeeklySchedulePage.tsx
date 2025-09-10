@@ -12,6 +12,7 @@ import WeeklyTable from "../components/Schedule/WeeklyTable"
 import CourseModal from "../components/Schedule/CourseModal"
 import ScheduledCourseSummary from "../components/Schedule/ScheduledCourseSummary"
 import CourseList from "../components/Schedule/CourseList"
+import { ArrowRight } from "lucide-react"
 import type { CourseResponse } from "../types"
 import toast, { Toaster } from "react-hot-toast"
 
@@ -68,29 +69,21 @@ const WeeklySchedulePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-6xl mx-auto px-1 sm:px-6 py-1 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-1 sm:gap-2">
-          <div className="text-center flex-1">
+        <div className="max-w-6xl mx-auto px-1 sm:px-6 py-1 sm:py-4 relative">
+          <a
+            href="/"
+            className="hidden sm:inline-flex items-center px-1.5 sm:px-4 py-1 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-xs sm:text-base absolute top-4 right-6"
+          >
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
+            بازگشت
+          </a>
+
+          <div className="text-center">
             <h1 className="text-sm sm:text-2xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
             <p className="text-gray-600 mt-0.5 sm:mt-1 text-xs sm:text-base">
               دپارتمان و درس مورد نظر خود را انتخاب کنید
             </p>
           </div>
-
-          <div className="flex items-center gap-1 sm:gap-2 justify-end min-w-fit"></div>
-          <a
-            href="/"
-            className="hidden sm:inline-flex items-center px-1.5 sm:px-4 py-1 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-xs sm:text-base"
-          >
-            <svg
-              className="w-3 h-3 sm:w-5 sm:h-5 ml-0.5 sm:ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            بازگشت
-          </a>
         </div>
       </div>
 

@@ -4,7 +4,7 @@ import type React from "react"
 import { useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore"
-import { BookOpen, CalendarDays, UserRound, Mail, MapPin, Clock, Building2 } from "lucide-react"
+import { BookOpen, CalendarDays, UserRound, Mail, MapPin, Clock, Building2, ArrowRight } from "lucide-react"
 
 const InstructorDetailPage: React.FC = () => {
   const { instructorId } = useParams<{ instructorId: string }>()
@@ -61,23 +61,21 @@ const InstructorDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-10 flex items-center justify-between">
-          <div className="text-center flex-1">
+        <div className="max-w-7xl mx-auto px-6 py-10 relative">
+          <Link
+            to="/instructors"
+            className="hidden sm:inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium absolute top-4 right-6"
+          >
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
+            بازگشت به لیست اساتید
+          </Link>
+
+          <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900">جزئیات استاد</h1>
             <p className="text-gray-600 mt-3 text-xl">
               اطلاعات مربوط به استاد {instructorDetail ? instructorDetail.name : "نامشخص"}
             </p>
           </div>
-
-          <Link
-            to="/instructors"
-            className="hidden sm:inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
-          >
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            بازگشت به لیست اساتید
-          </Link>
         </div>
       </div>
 
