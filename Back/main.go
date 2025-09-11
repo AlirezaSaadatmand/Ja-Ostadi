@@ -17,7 +17,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-
 func main() {
 	config.LoadConfig()
 	cfg := config.GetConfig()
@@ -34,18 +33,15 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization, X-Admin-Token",
+		AllowOrigins: "http://localhost:5173",
 	}))
 
 	app.Use(middleware.RequestLogger(logger))
 
 	buckets := make(map[string]*limiter.TokenBucket)
 	var mu sync.Mutex
-
 	app.Use(func(c *fiber.Ctx) error {
 		ip := c.IP()
-
 		mu.Lock()
 		bucket, ok := buckets[ip]
 		if !ok {

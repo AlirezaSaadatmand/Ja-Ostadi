@@ -51,7 +51,7 @@ definitions:
         type: string
       department_id:
         type: integer
-      final_exam_time:
+      final_exam_date:
         type: string
       group:
         type: string
@@ -254,6 +254,84 @@ paths:
       summary: Upload data file
       tags:
       - Admin
+  /auth/google/callback:
+    get:
+      description: Exchanges authorization code for token, fetches Google user info,
+        generates JWT, and redirects to frontend
+      parameters:
+      - description: OAuth state returned by Google
+        in: query
+        name: state
+        required: true
+        type: string
+      - description: Authorization code returned by Google
+        in: query
+        name: code
+        required: true
+        type: string
+      responses:
+        "302":
+          description: Redirects to frontend with JWT in query param
+        "400":
+          description: Code not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Invalid or expired OAuth state
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Handle Google OAuth callback
+      tags:
+      - Auth
+  /auth/google/login:
+    get:
+      description: Generates a Google login URL and saves a temporary OAuth state
+        to prevent CSRF
+      parameters:
+      - default: /
+        description: Redirect path after successful login
+        in: query
+        name: redirect
+        type: string
+      responses:
+        "200":
+          description: Returns the Google OAuth URL
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate Google OAuth login URL
+      tags:
+      - Auth
+  /auth/status:
+    get:
+      description: Checks if the user is authenticated based on JWT (sent via Authorization
+        header)
+      responses:
+        "200":
+          description: 'Returns isAuthenticated: true/false'
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Get authentication status
+      tags:
+      - Auth
   /courses/{courseId}/detail:
     get:
       description: Returns course details including instructor, department, class

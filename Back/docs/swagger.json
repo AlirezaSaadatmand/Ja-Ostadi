@@ -76,6 +76,119 @@
                 }
             }
         },
+        "/auth/google/callback": {
+            "get": {
+                "description": "Exchanges authorization code for token, fetches Google user info, generates JWT, and redirects to frontend",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Handle Google OAuth callback",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "OAuth state returned by Google",
+                        "name": "state",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization code returned by Google",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirects to frontend with JWT in query param"
+                    },
+                    "400": {
+                        "description": "Code not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired OAuth state",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/google/login": {
+            "get": {
+                "description": "Generates a Google login URL and saves a temporary OAuth state to prevent CSRF",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Generate Google OAuth login URL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "/",
+                        "description": "Redirect path after successful login",
+                        "name": "redirect",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the Google OAuth URL",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/status": {
+            "get": {
+                "description": "Checks if the user is authenticated based on JWT (sent via Authorization header)",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get authentication status",
+                "responses": {
+                    "200": {
+                        "description": "Returns isAuthenticated: true/false",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/courses/semester/{semesterID}": {
             "get": {
                 "description": "Returns all courses for a specific semester",
@@ -632,7 +745,7 @@
                 "department_id": {
                     "type": "integer"
                 },
-                "final_exam_time": {
+                "final_exam_date": {
                     "type": "string"
                 },
                 "group": {
