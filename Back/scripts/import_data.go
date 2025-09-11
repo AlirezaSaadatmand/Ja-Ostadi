@@ -3,7 +3,6 @@ package scripts
 import (
 	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
@@ -31,7 +30,7 @@ func addOrUpdateBaseCourse(inputCourse types.CourseJSON) error {
 				Instructor:    inputCourse.Instructor,
 				TimeInWeek:    inputCourse.TimeInWeek,
 				TimeRoom:      inputCourse.TimeRoom,
-				MidExamTime:   inputCourse.MidExamTime,
+				FinalExamTime: inputCourse.FinalExamTime,
 				FinalExamDate: inputCourse.FinalExamDate,
 				Capacity:      inputCourse.Capacity,
 				StudentCount:  inputCourse.StudentCount,
@@ -52,10 +51,10 @@ func addOrUpdateBaseCourse(inputCourse types.CourseJSON) error {
 		course.Instructor = inputCourse.Instructor
 		course.TimeInWeek = inputCourse.TimeInWeek
 		course.TimeRoom = inputCourse.TimeRoom
-		course.MidExamTime =   inputCourse.MidExamTime
+		course.FinalExamTime = inputCourse.FinalExamTime
 		course.FinalExamDate = inputCourse.FinalExamDate
-		course.Capacity =      inputCourse.Capacity
-		course.StudentCount =  inputCourse.StudentCount
+		course.Capacity = inputCourse.Capacity
+		course.StudentCount = inputCourse.StudentCount
 
 		if err := db.Save(&course).Error; err != nil {
 			return err
@@ -152,10 +151,6 @@ func getOrCreateInstructorDepartment(instructorID, departmentID, semesterID uint
 func createOrUpdateCourse(item types.CourseJSON, semester models.Semester, dept models.Department, instructor models.Instructor) (models.Course, error) {
 	db := database.DB
 
-	units, _ := strconv.Atoi(item.Units)
-	capacity, _ := strconv.Atoi(item.Capacity)
-	studentCount, _ := strconv.Atoi(item.StudentCount)
-
 	var course models.Course
 	err := db.Where("number = ? AND `group` = ? AND semester_id = ? AND department_id = ?", item.CourseNumber, item.Group, semester.ID, dept.ID).First(&course).Error
 
@@ -166,14 +161,14 @@ func createOrUpdateCourse(item types.CourseJSON, semester models.Semester, dept 
 	course.Name = item.CourseName
 	course.Number = item.CourseNumber
 	course.Group = item.Group
-	course.Units = units
+	course.Units = item.Units
 	course.ClassType = item.ClassType
 	course.TimeInWeek = item.TimeInWeek
 	course.TimeRoom = item.TimeRoom
-	course.MidExamTime = item.MidExamTime
+	course.FinalExamTime = item.FinalExamTime
 	course.FinalExamDate = item.FinalExamDate
-	course.Capacity = capacity
-	course.StudentCount = studentCount
+	course.Capacity = item.Capacity
+	course.StudentCount = item.StudentCount
 	course.SemesterID = semester.ID
 	course.DepartmentID = dept.ID
 	course.InstructorID = instructor.ID

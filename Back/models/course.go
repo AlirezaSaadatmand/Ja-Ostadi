@@ -7,14 +7,14 @@ type Course struct {
 	Name          string
 	Number        string
 	Group         string
-	Units         int
+	Units         string
 	ClassType     string
 	TimeInWeek    string
 	TimeRoom      string
-	MidExamTime   string
+	FinalExamTime string
 	FinalExamDate string
-	Capacity      int
-	StudentCount  int
+	Capacity      string
+	StudentCount  string
 
 	SemesterID   uint
 	DepartmentID uint

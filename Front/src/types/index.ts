@@ -93,13 +93,13 @@ export interface CourseDetailCourse {
   name: string
   number: string
   group: string
-  units: number
+  units: string
   class_type: string
   time_in_week: string
-  mid_exam_time: string
+  final_exam_time: string
   final_exam_date: string
-  capacity: number
-  student_count: number
+  capacity: string
+  student_count: string
   semester_id: number
   department_id: number
   instructor_id: number

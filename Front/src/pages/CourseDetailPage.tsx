@@ -156,8 +156,8 @@ const CourseDetailPage: React.FC = () => {
                   <div key={index} className="bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
                       <div className="flex items-center space-x-2 sm:space-x-4 space-x-reverse">
-                        <span className="font-semibold text-gray-900 text-sm sm:text-base">{time.day}</span>
-                        <span className="text-gray-700 text-sm sm:text-base">
+                        <span className="font-semibold text-gray-900 text-sm sm:text-base">{time.day}</span>  
+                        <span className="text-gray-700 text-sm sm:text-base px-5">
                           {time.start_time} - {time.end_time}
                         </span>
                       </div>
@@ -174,13 +174,13 @@ const CourseDetailPage: React.FC = () => {
           <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
             <div className="flex items-center text-sm sm:text-lg text-gray-700 bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm">
               <CalendarDays className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 ml-2 flex-shrink-0" />
-              <span className="font-semibold ml-2">زمان امتحان میان‌ترم:</span>
-              <span className="text-balance">{Course.mid_exam_time}</span>
+              <span className="font-semibold ml-2">تاریخ امتحان پایان‌ترم:</span>
+              <span className="text-balance">{Course.final_exam_date}</span>
             </div>
             <div className="flex items-center text-sm sm:text-lg text-gray-700 bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm">
               <CalendarDays className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 ml-2 flex-shrink-0" />
               <span className="font-semibold ml-2">زمان امتحان پایان‌ترم:</span>
-              <span className="text-balance">{Course.final_exam_date}</span>
+              <span className="text-balance">{Course.final_exam_time}</span>
             </div>
           </div>
         </div>

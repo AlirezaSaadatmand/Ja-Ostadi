@@ -69,7 +69,7 @@ const InstructorDetailPage: React.FC = () => {
             <p className="text-gray-600 text-base sm:text-xl">
               اطلاعات مربوط به استاد{" "}
               <span className="font-semibold text-gray-800">
-                {instructorDetail?.name || "—"}kw
+                {instructorDetail?.name || "—"}
               </span>
             </p>
           </div>

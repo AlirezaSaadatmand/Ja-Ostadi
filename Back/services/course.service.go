@@ -73,13 +73,13 @@ type CourseDetail struct {
 	Name          string `json:"name"`
 	Number        string `json:"number"`
 	Group         string `json:"group"`
-	Units         int    `json:"units"`
+	Units         string `json:"units"`
 	ClassType     string `json:"class_type"`
 	TimeInWeek    string `json:"time_in_week"`
-	MidExamTime   string `json:"mid_exam_time"`
+	FinalExamTime string `json:"final_exam_time"`
 	FinalExamDate string `json:"final_exam_date"`
-	Capacity      int    `json:"capacity"`
-	StudentCount  int    `json:"student_count"`
+	Capacity      string `json:"capacity"`
+	StudentCount  string `json:"student_count"`
 	SemesterID    uint   `json:"semester_id"`
 	DepartmentID  uint   `json:"department_id"`
 	InstructorID  uint   `json:"instructor_id"`

@@ -24,7 +24,7 @@ type ClassData struct {
 	Instructor    string `json:"instructor"`
 	TimeInWeek    string `json:"time_in_week"`
 	TimeRoom      string `json:"time_room"`
-	MidExamTime   string `json:"mid_exam_time"`
+	FinalExamTime string `json:"final_exam_time"`
 	FinalExamDate string `json:"final_exam_date"`
 	Capacity      string `json:"capacity"`
 	StudentCount  string `json:"student_count"`
@@ -121,7 +121,7 @@ func getTargetRows(page *rod.Page) []*rod.Element {
 	return trs[3].MustElements(":scope > td > table > tbody > tr")
 }
 
-func processRow(page *rod.Page, index, id int) bool{
+func processRow(page *rod.Page, index, id int) bool {
 	rows := getTargetRows(page)
 	if index >= len(rows) {
 		fmt.Printf("❌ Row %d not found (only %d rows)\n", index, len(rows))
@@ -147,7 +147,7 @@ func processRow(page *rod.Page, index, id int) bool{
 		Instructor:    page.MustElement("#edTch").MustText(),
 		TimeInWeek:    page.MustElement("#edTimeInWeek").MustText(),
 		TimeRoom:      page.MustElement("#edTimeRoom").MustText(),
-		MidExamTime:   page.MustElement("#edMidTime").MustText(),
+		FinalExamTime: page.MustElement("#edFinalTime").MustText(),
 		FinalExamDate: page.MustElement("#edFinalDate").MustText(),
 		Capacity:      page.MustElement("#edCapacity").MustText(),
 		StudentCount:  page.MustElement("#edStdCount").MustText(),
