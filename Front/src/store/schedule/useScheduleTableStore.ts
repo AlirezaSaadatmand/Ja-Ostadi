@@ -44,7 +44,6 @@ const findMatchingSlotKey = (start: string, end: string) => {
 
 const LOCAL_STORAGE_KEY = "weeklySchedule"
 
-
 const loadState = () => {
   try {
     const serializedState = localStorage.getItem(LOCAL_STORAGE_KEY)
