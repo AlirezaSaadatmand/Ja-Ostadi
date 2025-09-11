@@ -10,36 +10,42 @@ import (
 func Router(app *fiber.App, logger logging.Logger) {
 	h := handlers.NewHandler(logger)
 
+	// Google Auth Routes
+	
 	api := app.Group("/api/v1")
+	
+	api.Get("/auth/google/login", h.GoogleLoginHandler)
+	api.Get("/auth/google/callback", h.GoogleCallbackHandler)
 
+	api.Get("/auth/status", middleware.Auth(), h.AuthStatus)
 	api.Get("/test", h.Test)
-
+	
 	remove := api.Group("/remove")
 	remove.Post("/", h.DeleteAllData)
 
 	// Semester Routes
-	semesterRouter := api.Group("/semesters")
+	semesterRouter := api.Group("/semesters", middleware.Auth())
 	semesterRouter.Get("/", h.GetSemesters)
 
 	// Instructor Routes
-	instructorRouter := api.Group("/instructors")
+	instructorRouter := api.Group("/instructors", middleware.Auth())
 	instructorRouter.Get("/:instructorID/detail", h.GetInstructorDetail)
 	instructorRouter.Get("/data", h.GetInstructorData)
 	instructorRouter.Get("/courses/:instructorID", h.GetInstructorCourses)
 
 	// Course Routes
-	courseRouter := api.Group("/courses")
+	courseRouter := api.Group("/courses", middleware.Auth())
 	courseRouter.Get("/:courseId/detail", h.GetCourseByID)
 	courseRouter.Get("/semester/:semesterID", h.GetCoursesBySemester)
 	courseRouter.Get("/semester/:semesterID/department/:departmentID", h.GetCoursesBySemesterAndDepartment)
 
 	// Department Routes
-	departmentRouter := api.Group("/departments")
+	departmentRouter := api.Group("/departments", middleware.Auth())
 	departmentRouter.Get("/", h.GetDepartments)
 	departmentRouter.Get("/data", h.GetDepartmentsData)
 
 	// Schedule Routes
-	scheduleRouter := api.Group("/schedule")
+	scheduleRouter := api.Group("/schedule", middleware.Auth())
 	scheduleRouter.Get("/data", h.GetScheduleData)
 
 	// Admin Routes
