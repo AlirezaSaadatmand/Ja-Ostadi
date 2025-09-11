@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/react-icons": "^2.2.7",
     "axios": "^1.11.0",
     "html2pdf.js": "^0.10.3",
     "lucide-react": "^0.536.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^7.7.1",
     "zustand": "^5.0.6"
   },
