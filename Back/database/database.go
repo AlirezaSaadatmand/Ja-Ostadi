@@ -36,6 +36,7 @@ func ConnectDB(zapLogger logging.Logger) error {
 	zapLogger.Info(logging.Mysql, logging.Connection, "Database connection established", nil)
 
 	if err := db.AutoMigrate(
+		&models.Client{},
 		&models.Base_course_data{},
 		&models.Semester{},
 		&models.Department{},
