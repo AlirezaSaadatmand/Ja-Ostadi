@@ -2,7 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type Client struct {
+type User struct {
 	gorm.Model
 	GoogleID      string `gorm:"type:varchar(255);uniqueIndex"`
 	Email         string `gorm:"type:varchar(255);uniqueIndex"`
