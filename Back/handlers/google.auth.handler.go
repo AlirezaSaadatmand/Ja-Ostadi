@@ -146,7 +146,7 @@ func (h *Handler) GoogleCallbackHandler(c *fiber.Ctx) error {
 // @Success 200 {object} map[string]bool "Returns isAuthenticated: true/false"
 // @Router /auth/status [get]
 func (h *Handler) AuthStatus(c *fiber.Ctx) error {
-	client := c.Locals("client")
+	client := c.Locals("user")
 	if client != nil {
 		return c.JSON(fiber.Map{"isAuthenticated": true})
 	}
