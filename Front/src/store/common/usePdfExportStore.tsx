@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client"
 import PdfDocument from "../../components/PdfDocument"
 import type { CourseResponse } from "../../types"
 import type { TableCell } from "../schedule/useScheduleTableStore"
+import {useUserCoursesStore } from "../schedule/useUserCourseStore"
 
 interface PdfExportData {
   scheduledCourses: CourseResponse[]
@@ -29,6 +30,13 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
     let root: ReturnType<typeof createRoot> | null = null
 
     try {
+
+      const courseIds = data.scheduledCourses.map((c) => c.course.id)
+      
+      if (courseIds.length > 0) {
+        await useUserCoursesStore.getState().saveUserCourses(courseIds)
+      }
+
       tempDiv = document.createElement("div")
       tempDiv.style.width = "100%"
       tempDiv.style.overflow = "visible"
