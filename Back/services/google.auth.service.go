@@ -9,13 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *Services) FindOrCreateGoogleUser(gUser types.GoogleUser) (models.Client, error) {
-	var client models.Client
+func (s *Services) FindOrCreateGoogleUser(gUser types.GoogleUser) (models.User, error) {
+	var client models.User
 
 	err := database.DB.Where("google_id = ?", gUser.ID).First(&client).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			client = models.Client{
+			client = models.User{
 				GoogleID:      gUser.ID,
 				Email:         gUser.Email,
 				VerifiedEmail: gUser.VerifiedEmail,
