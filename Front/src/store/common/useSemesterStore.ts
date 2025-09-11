@@ -1,7 +1,7 @@
 import { create } from "zustand"
-import axios from "axios"
 import config from "../../config/config"
 import type { Semester } from "../../types"
+import api from "../../utils/axios"
 
 interface SemesterStore {
   semesters: Semester[]
@@ -18,7 +18,7 @@ export const useSemesterStore = create<SemesterStore>((set) => ({
   fetchSemesters: async () => {
     set({ isLoading: true, error: null })
     try {
-      const response = await axios.get(`${config.apiUrl}/semesters`)
+      const response = await api.get(`${config.apiUrl}/semesters`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
       set({ semesters: data })
     } catch (error) {

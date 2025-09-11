@@ -1,7 +1,7 @@
 import { create } from "zustand"
-import axios from "axios"
 import config from "../../config/config"
 import type { InstructorListItem, Department, Semester } from "../../types"
+import api from "../../utils/axios"
 
 interface InstructorListStore {
   instructors: InstructorListItem[]
@@ -29,7 +29,7 @@ export const useInstructorListStore = create<InstructorListStore>((set, get) => 
   fetchInstructors: async () => {
     set({ isLoading: true, error: null })
     try {
-      const response = await axios.get(`${config.apiUrl}/instructors/data`)
+      const response = await api.get(`${config.apiUrl}/instructors/data`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
       set({ instructors: data })
     } catch (error) {
@@ -50,26 +50,22 @@ export const useInstructorListStore = create<InstructorListStore>((set, get) => 
       if (selectedSemesterId !== null) {
         filtered = filtered.filter((item) => item.relations.semester_id === selectedSemesterId)
       }
-      // If filtering by semester, also apply department filter if selected
       if (selectedDepartmentId !== null) {
         filtered = filtered.filter((item) => item.relations.department_id === selectedDepartmentId)
       }
     } else {
-      // filterByMode === "department"
       if (selectedDepartmentId !== null) {
         const selectedDept = allDepartments.find((dept) => dept.id === selectedDepartmentId)
         if (selectedDept) {
           filtered = filtered.filter((item) => item.instructor.field === selectedDept.name)
         } else {
-          filtered = [] // No matching department found, so no instructors
+          filtered = []
         }
       }
-      // If filtering by department, also apply semester filter if selected
       if (selectedSemesterId !== null) {
         filtered = filtered.filter((item) => item.relations.semester_id === selectedSemesterId)
       }
 
-      // For "department" mode, ensure unique instructors by ID
       const seenInstructorIds = new Set<number>()
       filtered = filtered.filter((item) => {
         if (seenInstructorIds.has(item.relations.instructor_id)) {

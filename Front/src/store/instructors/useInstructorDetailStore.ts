@@ -1,7 +1,7 @@
 import { create } from "zustand"
-import axios from "axios"
 import config from "../../config/config"
 import type { InstructorDetail, InstructorCoursesBySemester } from "../../types"
+import api from "../../utils/axios"
 
 interface InstructorDetailStore {
   instructorDetail: InstructorDetail | null
@@ -23,7 +23,7 @@ export const useInstructorDetailStore = create<InstructorDetailStore>((set) => (
   fetchInstructorDetail: async (id: number) => {
     set({ isLoading: true, error: null, instructorDetail: null })
     try {
-      const response = await axios.get(`${config.apiUrl}/instructors/${id}/detail`)
+      const response = await api.get(`${config.apiUrl}/instructors/${id}/detail`)
       
       set({ instructorDetail: response.data.data })
     } catch (error) {
@@ -39,7 +39,7 @@ export const useInstructorDetailStore = create<InstructorDetailStore>((set) => (
   fetchInstructorCoursesBySemester: async (instructorId: number) => {
     set({ isLoading: true, error: null, instructorCoursesBySemester: [] })
     try {
-      const response = await axios.get(`${config.apiUrl}/instructors/courses/${instructorId}`)
+      const response = await api.get(`${config.apiUrl}/instructors/courses/${instructorId}`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
       set({ instructorCoursesBySemester: data })
     } catch (error) {

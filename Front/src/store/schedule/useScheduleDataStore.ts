@@ -1,7 +1,7 @@
 import { create } from "zustand"
-import axios from "axios"
 import config from "../../config/config"
 import type { Department, CourseResponse } from "../../types"
+import api from "../../utils/axios"
 
 interface ScheduleDataStore {
   departments: Department[]
@@ -28,7 +28,7 @@ export const useScheduleDataStore = create<ScheduleDataStore>((set, get) => ({
   fetchDepartments: async () => {
     set({ isLoadingDepartments: true, error: null })
     try {
-      const response = await axios.get(`${config.apiUrl}/departments`)
+      const response = await api.get(`${config.apiUrl}/departments`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
       set({ departments: data })
       if (data.length > 0 && get().selectedDept === null) {
@@ -49,7 +49,7 @@ export const useScheduleDataStore = create<ScheduleDataStore>((set, get) => ({
   fetchCourses: async () => {
     set({ isLoadingCourses: true, error: null })
     try {
-      const response = await axios.get(`${config.apiUrl}/schedule/data`)
+      const response = await api.get(`${config.apiUrl}/schedule/data`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
       set({ courses: data })
     } catch (error) {

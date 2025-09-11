@@ -1,7 +1,7 @@
 import { create } from "zustand"
-import axios from "axios"
 import config from "../../config/config"
 import type { CourseInList } from "../../types"
+import api from "../../utils/axios"
 
 interface CoursesPageStore {
   courses: CourseInList[]
@@ -25,7 +25,7 @@ export const useCoursesPageStore = create<CoursesPageStore>((set) => ({
   fetchCourses: async (semesterId: number, departmentId: number) => {
     set({ isLoading: true, error: null, courses: [] })
     try {
-      const response = await axios.get(`${config.apiUrl}/courses/semester/${semesterId}/department/${departmentId}`)
+      const response = await api.get(`${config.apiUrl}/courses/semester/${semesterId}/department/${departmentId}`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
       set({ courses: data })
     } catch (error) {

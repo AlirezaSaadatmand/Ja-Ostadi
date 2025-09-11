@@ -1,7 +1,7 @@
 import { create } from "zustand"
-import axios from "axios"
 import config from "../../config/config"
 import type { DepartmentDetail } from "../../types"
+import api from "../../utils/axios"
 
 interface DepartmentsPageStore {
   departments: DepartmentDetail[]
@@ -20,7 +20,7 @@ export const useDepartmentsPageStore = create<DepartmentsPageStore>((set) => ({
     set({ isLoading: true, error: null })
 
     try {
-      const response = await axios.get(`${config.apiUrl}/departments/data`)
+      const response = await api.get(`${config.apiUrl}/departments/data`)
       const data = Array.isArray(response.data.data) ? response.data.data : []
 
       set({ departments: data })
