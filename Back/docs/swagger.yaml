@@ -43,15 +43,24 @@ definitions:
           $ref: '#/definitions/services.ScheduleTimeID'
         type: array
     type: object
+  handlers.UserCoursesRequest:
+    properties:
+      courseIds:
+        items:
+          type: integer
+        type: array
+    type: object
   services.CourseDetail:
     properties:
       capacity:
-        type: integer
+        type: string
       class_type:
         type: string
       department_id:
         type: integer
       final_exam_date:
+        type: string
+      final_exam_time:
         type: string
       group:
         type: string
@@ -59,8 +68,6 @@ definitions:
         type: integer
       instructor_id:
         type: integer
-      mid_exam_time:
-        type: string
       name:
         type: string
       number:
@@ -68,11 +75,11 @@ definitions:
       semester_id:
         type: integer
       student_count:
-        type: integer
+        type: string
       time_in_week:
         type: string
       units:
-        type: integer
+        type: string
     type: object
   services.CourseMinimal:
     properties:
@@ -620,4 +627,41 @@ paths:
       summary: Get semesters
       tags:
       - semesters
+  /user/courses:
+    post:
+      consumes:
+      - application/json
+      description: Saves a list of course IDs for the authenticated user. Existing
+        courses will be replaced.
+      parameters:
+      - description: Course IDs
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UserCoursesRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Save user's courses
+      tags:
+      - user
 swagger: "2.0"

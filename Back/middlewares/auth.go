@@ -26,7 +26,7 @@ func Auth() fiber.Handler {
 			return utils.Error(c, fiber.StatusUnauthorized, err.Error())
 		}
 
-		c.Locals("client", tok.Claims)
+		c.Locals("user", tok.Claims)
 		return c.Next()
 	}
 }

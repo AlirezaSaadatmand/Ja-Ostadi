@@ -673,6 +673,63 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/courses": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Saves a list of course IDs for the authenticated user. Existing courses will be replaced.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Save user's courses",
+                "parameters": [
+                    {
+                        "description": "Course IDs",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.UserCoursesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -744,11 +801,22 @@ const docTemplate = `{
                 }
             }
         },
+        "handlers.UserCoursesRequest": {
+            "type": "object",
+            "properties": {
+                "courseIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "services.CourseDetail": {
             "type": "object",
             "properties": {
                 "capacity": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "class_type": {
                     "type": "string"
@@ -757,6 +825,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "final_exam_date": {
+                    "type": "string"
+                },
+                "final_exam_time": {
                     "type": "string"
                 },
                 "group": {
@@ -768,9 +839,6 @@ const docTemplate = `{
                 "instructor_id": {
                     "type": "integer"
                 },
-                "mid_exam_time": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string"
                 },
@@ -781,13 +849,13 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "student_count": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "time_in_week": {
                     "type": "string"
                 },
                 "units": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
