@@ -1,7 +1,6 @@
-import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom"
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 
-import Header from "./components/Header"
 import Home from "./pages/Home"
 import NotFoundPage from "./pages/NotFoundPage"
 import WeeklySchedulePage from "./pages/WeeklySchedulePage"
@@ -11,13 +10,6 @@ import InstructorDetailPage from "./pages/InstructorDetailPage"
 import CoursesPage from "./pages/CoursesPage"
 import CourseDetailPage from "./pages/CourseDetailPage"
 import AuthPage from "./pages/AuthPage"
-
-const AuthLayout = () => (
-  <>
-    <Header />
-    <Outlet />
-  </>
-)
 
 const AppRoutes = () => {
   const [initialized, setInitialized] = useState(false)
@@ -38,40 +30,33 @@ const AppRoutes = () => {
       path: "/login",
       element: isAuthenticated ? <Navigate to="/" replace /> : <AuthPage />,
     },
+    { path: "/", element: <Home /> },
 
     {
-      element: <AuthLayout />,
-      children: [
-        { path: "/", element: <Home /> },
-
-        {
-          path: "/schedule",
-          element: isAuthenticated ? <WeeklySchedulePage /> : <Navigate to="/login" replace />,
-        },
-        {
-          path: "/departments",
-          element: isAuthenticated ? <DepartmentsPage /> : <Navigate to="/login" replace />,
-        },
-        {
-          path: "/instructors",
-          element: isAuthenticated ? <InstructorsPage /> : <Navigate to="/login" replace />,
-        },
-        {
-          path: "/instructors/:instructorId",
-          element: isAuthenticated ? <InstructorDetailPage /> : <Navigate to="/login" replace />,
-        },
-        {
-          path: "/courses",
-          element: isAuthenticated ? <CoursesPage /> : <Navigate to="/login" replace />,
-        },
-        {
-          path: "/courses/:courseId",
-          element: isAuthenticated ? <CourseDetailPage /> : <Navigate to="/login" replace />,
-        },
-
-        { path: "*", element: <NotFoundPage /> },
-      ],
+      path: "/schedule",
+      element: isAuthenticated ? <WeeklySchedulePage /> : <Navigate to="/login" replace />,
     },
+    {
+      path: "/departments",
+      element: isAuthenticated ? <DepartmentsPage /> : <Navigate to="/login" replace />,
+    },
+    {
+      path: "/instructors",
+      element: isAuthenticated ? <InstructorsPage /> : <Navigate to="/login" replace />,
+    },
+    {
+      path: "/instructors/:instructorId",
+      element: isAuthenticated ? <InstructorDetailPage /> : <Navigate to="/login" replace />,
+    },
+    {
+      path: "/courses",
+      element: isAuthenticated ? <CoursesPage /> : <Navigate to="/login" replace />,
+    },
+    {
+      path: "/courses/:courseId",
+      element: isAuthenticated ? <CourseDetailPage /> : <Navigate to="/login" replace />,
+    },
+    { path: "*", element: <NotFoundPage /> },
   ])
 
   return <RouterProvider router={router} />
