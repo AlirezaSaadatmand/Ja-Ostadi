@@ -33,7 +33,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173",
+		AllowOrigins: cfg.Front_URL,
 	}))
 
 	app.Use(middleware.RequestLogger(logger))
