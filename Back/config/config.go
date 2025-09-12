@@ -20,6 +20,7 @@ type Config struct {
 	AdminToken         string
 	GoogleClientID     string
 	GoogleClientSecret string
+	GoogleCallbackUrl string
 	Secret_Token       string
 	Front_URL          string
 }
@@ -48,6 +49,7 @@ func LoadConfig() *Config {
 		AdminToken:         os.Getenv("ADMIN_TOKEN"),
 		GoogleClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		GoogleClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		GoogleCallbackUrl:  os.Getenv("GOOGLE_CALLBACK_URL"),
 		Secret_Token:       os.Getenv("TOKEN_SECRET"),
 		Front_URL:          os.Getenv("FRONT_URL"),
 	}

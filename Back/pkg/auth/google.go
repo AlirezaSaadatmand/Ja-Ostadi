@@ -11,7 +11,7 @@ var GoogleOauthConfig *oauth2.Config
 func init() {
 	cfg := config.GetConfig()
 	GoogleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:3003/api/v1/auth/google/callback",
+		RedirectURL:  cfg.GoogleCallbackUrl,
 		ClientID:     cfg.GoogleClientID,
 		ClientSecret: cfg.GoogleClientSecret,
 		Scopes: []string{
