@@ -28,17 +28,17 @@ func (h *Handler) SaveUserCourses(c *fiber.Ctx) error {
 
     userClaims := c.Locals("user")
     if userClaims == nil {
-        return utils.Error(c, fiber.StatusUnauthorized, "Unauthorized")
+        return utils.Error(c, fiber.StatusBadRequest, "Unauthorized")
     }
 
     claims, ok := userClaims.(jwt.MapClaims)
     if !ok {
-        return utils.Error(c, fiber.StatusUnauthorized, "Invalid user claims")
+        return utils.Error(c, fiber.StatusBadRequest, "Invalid user claims")
     }
 
     userIDFloat, ok := claims["user_id"].(float64)
     if !ok {
-        return utils.Error(c, fiber.StatusUnauthorized, "Invalid user_id in claims")
+        return utils.Error(c, fiber.StatusBadRequest, "Invalid user_id in claims")
     }
     userID := uint(userIDFloat)
 
