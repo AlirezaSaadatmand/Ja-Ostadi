@@ -1,0 +1,91 @@
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: ja-ostadi
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - Ja_Ostadi_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    networks:
+      - Ja_Ostadi_network
+
+  backend:
+    build:
+      context: ./Back
+      dockerfile: Dockerfile
+    container_name: backend
+    env_file:
+      - ./Back/.env
+    ports:
+      - "5005:3003"
+    depends_on:
+      - mysql
+    networks:
+      - Ja_Ostadi_network
+
+  frontend:
+    build:
+      context: ./Front
+      dockerfile: docker/Dockerfile
+    container_name: frontend
+    env_file:
+      - ./Front/.env
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - Ja_Ostadi_network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: my-secret-pw
+    networks:
+      - Ja_Ostadi_network
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    networks:
+      - Ja_Ostadi_network
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - ./Back/logs/app.log:/var/log/app/app.log
+      - ./Back/docker/promtail-config.yaml:/etc/promtail/promtail.yaml
+    command: -config.file=/etc/promtail/promtail.yaml
+    networks:
+      - Ja_Ostadi_network
+
+volumes:
+  mysql_data:
+
+networks:
+  Ja_Ostadi_network:

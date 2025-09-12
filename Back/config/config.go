@@ -49,7 +49,7 @@ func LoadConfig() *Config {
 		GoogleClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		GoogleClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Secret_Token:       os.Getenv("TOKEN_SECRET"),
-		Front_URL:       os.Getenv("FRONT_URL"),
+		Front_URL:          os.Getenv("FRONT_URL"),
 	}
 
 	return appConfig
