@@ -8,7 +8,7 @@ export const timeSlots = [
 { label: "10:00 - 12:00", key: "10-12", start: "10:00", end: "12:00" },
 { label: "13:30 - 15:30", key: "13_30-15_30", start: "13:30", end: "15:30" },
 { label: "15:30 - 17:30", key: "15_30-17_30", start: "15:30", end: "17:30" },
-{ label: "17:30 - 19:15", key: "17_30-19_15", start: "17:30", end: "19:15" },
+{ label: "17:30 - 19:30", key: "17_30-19_30", start: "17:30", end: "19:30" },
 ]
 
 export interface TableCell {
