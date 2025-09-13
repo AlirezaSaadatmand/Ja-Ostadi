@@ -49,15 +49,20 @@ const WeeklySchedulePage: React.FC = () => {
     openModal(course, isScheduled)
   }
 
-  const handleAddToSchedule = (course: CourseResponse) => {
-    const success = addCourseToSchedule(course)
-    if (!success) {
-      toast.error("این درس با برنامه فعلی شما تداخل دارد و اضافه نشد.")
-    } else {
-      toast.success(`درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`)
+    const handleAddToSchedule = (course: CourseResponse) => {
+      const conflicts = addCourseToSchedule(course)
+      
+      if (conflicts.length > 0) {
+        toast.error(
+          `درس "${course.course.name}" با برنامه فعلی شما تداخل دارد با: ${conflicts.join(", ")}`
+        )
+      } else {
+        toast.success(`درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`)
+      }
+      
+      closeModal()
     }
-    closeModal()
-  }
+
 
   const handleRemoveCourse = (courseId: number) => {
     const courseName = scheduledCourses.find((c) => c.course.id === courseId)?.course.name || "درس"

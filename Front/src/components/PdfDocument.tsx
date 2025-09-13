@@ -9,7 +9,6 @@ interface PdfDocumentProps {
 }
 
 const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) => {
-  // Helper to find matching slot key
   const findMatchingSlotKey = (start: string, end: string) => {
     const normalizedStart = start.padStart(5, "0")
     const normalizedEnd = end.padStart(5, "0")
@@ -18,13 +17,11 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
     )?.key
   }
 
-  // Get course info + room for a specific slot
   const getCourseForSlot = (day: string, timeSlotKey: string) => {
     const key = `${day}-${timeSlotKey}`
     const cell = table[key]
     if (!cell || !cell.course) return null
 
-    // Find matching time object for this slot to get the room
     const time = cell.course.time.find(
       (t) => t.day === day && findMatchingSlotKey(t.start_time, t.end_time) === timeSlotKey
     )
@@ -99,7 +96,6 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
                       >
                         {slotData ? (
                           <div className="w-full h-full bg-indigo-100 border border-indigo-300 rounded-2xl p-4 flex flex-col justify-between">
-                            {/* Top section: course name + instructor */}
                             <div>
                               <div className="text-lg font-bold text-indigo-900 leading-tight break-words">
                                 {slotData.course.course.name}
@@ -109,7 +105,6 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
                               </div>
                             </div>
 
-                            {/* Bottom section: room */}
                             {slotData.room && (
                               <div className="mt-3 text-sm bg-yellow-200 text-yellow-900 rounded-xl px-2 py-1 text-center font-semibold">
                                 {slotData.room}

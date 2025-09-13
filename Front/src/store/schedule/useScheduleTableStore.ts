@@ -20,7 +20,7 @@ export interface TableCell {
 interface ScheduleTableStore {
   scheduledCourses: CourseResponse[]
   table: Record<string, TableCell>
-  addCourseToSchedule: (course: CourseResponse) => boolean
+  addCourseToSchedule: (course: CourseResponse) => string[]
   removeCourseFromSchedule: (courseId: number) => void
   clearSchedule: () => void
 }
@@ -60,7 +60,6 @@ const loadState = () => {
 
     const state = JSON.parse(serializedState)
 
-    // If schema changed, reset state
     if (!state.version || state.version !== STORAGE_VERSION) {
       return {
         version: STORAGE_VERSION,
@@ -98,6 +97,7 @@ export const useScheduleTableStore = create<ScheduleTableStore>((set, get) => ({
 
   addCourseToSchedule: (course) => {
     const { scheduledCourses, table } = get()
+    const conflicts: string[] = []
 
     for (const t of course.time) {
       const slotKey = findMatchingSlotKey(t.start_time, t.end_time)
@@ -107,14 +107,17 @@ export const useScheduleTableStore = create<ScheduleTableStore>((set, get) => ({
         console.warn(
           `Could not find slot key for time: ${t.start_time}-${t.end_time} on ${t.day}`
         )
-        return false
+        return [`Invalid slot: ${t.day} ${t.start_time}-${t.end_time}`]
       }
+
       if (table[key].course) {
-        console.warn(
-          `Conflict detected: Slot ${key} is already occupied by ${table[key].course?.course.name}`
-        )
-        return false
+        conflicts.push(table[key].course.course.name)
       }
+    }
+
+    if (conflicts.length > 0) {
+      console.warn(`Conflict detected with: ${conflicts.join(", ")}`)
+      return conflicts
     }
 
     const newTable = { ...table }
@@ -131,11 +134,12 @@ export const useScheduleTableStore = create<ScheduleTableStore>((set, get) => ({
       scheduledCourses: [...scheduledCourses, course],
       table: newTable,
     }
+
     set(newState)
     saveState(newState)
-    return true
+    return []
   },
-
+  
   removeCourseFromSchedule: (courseId) => {
     const { scheduledCourses, table } = get()
     const updatedCourses = scheduledCourses.filter((c) => c.course.id !== courseId)
