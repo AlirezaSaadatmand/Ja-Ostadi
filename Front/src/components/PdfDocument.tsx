@@ -14,7 +14,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
     return table[key]?.course || null
   }
 
-  const totalUnits = scheduledCourses.reduce((sum, course) => sum + course.course.units, 0)
+  const totalUnits = scheduledCourses.reduce((sum, course) => sum + parseFloat(course.course.units), 0)
 
   return (
     <div
@@ -22,7 +22,6 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
       dir="rtl"
       style={{ width: "80%", minHeight: "100vh", fontSize: "20px" }}
     >
-      {/* Header */}
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-2">برنامه هفتگی دانشجو</h1>
         <p className="text-gray-700 text-xl">برنامه کلاس‌های هفتگی و دروس انتخاب شده</p>

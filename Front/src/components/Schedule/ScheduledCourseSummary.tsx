@@ -9,7 +9,7 @@ interface ScheduledCourseSummaryProps {
 }
 
 const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({ scheduledCourses, onCourseClick }) => {
-  const totalUnits = scheduledCourses.reduce((sum, course) => sum + course.course.units, 0)
+  const totalUnits = scheduledCourses.reduce((sum, course) => sum + parseFloat(course.course.units), 0)
 
   return (
     <div className="bg-white rounded-lg shadow-sm flex flex-col h-full max-h-[400px] sm:max-h-[500px] lg:max-h-[600px]">

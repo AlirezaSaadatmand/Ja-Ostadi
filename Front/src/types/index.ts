@@ -3,7 +3,7 @@ export interface Course {
   name: string
   number: string
   group: string
-  units: number
+  units: string
   semester_id: number
   department_id: number
   instructor_id: number
