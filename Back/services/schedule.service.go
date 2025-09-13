@@ -6,7 +6,6 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
-
 )
 
 type ScheduleCourse struct {
@@ -14,7 +13,7 @@ type ScheduleCourse struct {
 	Name         string `json:"name"`
 	Number       string `json:"number"`
 	Group        string `json:"group"`
-	Units        int    `json:"units"`
+	Units        string `json:"units"`
 	SemesterID   uint   `json:"semester_id"`
 	DepartmentID uint   `json:"department_id"`
 	InstructorID uint   `json:"instructor_id"`
@@ -89,7 +88,6 @@ func (s *Services) GetAllTimesSchedule() ([]ScheduleTimeID, error) {
 	return times, nil
 }
 
-
 type ScheduleDepartment struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
@@ -109,4 +107,3 @@ func (s *Services) GetAllDepartmentsSchedule() ([]ScheduleDepartment, error) {
 	s.Logger.Info(logging.Mysql, logging.Select, "Fetched all departments schedule successfully", nil)
 	return departments, nil
 }
-
