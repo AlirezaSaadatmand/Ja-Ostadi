@@ -47,6 +47,17 @@ func (s *Services) GetDepartmentsDataService() ([]DepartmentDataResponse, error)
 		return nil, errors.New("error getting departments")
 	}
 
+	semesterName := "اول - 1404"
+
+	var semester models.Semester
+	err := database.DB.
+		Where("name = ?", semesterName).
+		First(&semester).Error
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get semester", map[logging.ExtraKey]interface{}{"semesterName": semesterName, "error": err.Error()})
+		return nil, errors.New("error getting semester data")
+	}
+
 	var result []DepartmentDataResponse
 
 	for _, dept := range departments {
@@ -54,11 +65,11 @@ func (s *Services) GetDepartmentsDataService() ([]DepartmentDataResponse, error)
 		var coursesCount int64
 
 		db.Model(&models.InstructorDepartment{}).
-			Where("department_id = ?", dept.ID).
+			Where("department_id = ? AND semester_id = ?", dept.ID, semester.ID).
 			Count(&instructorsCount)
 
 		db.Model(&models.Course{}).
-			Where("department_id = ?", dept.ID).
+			Where("department_id = ? and semester_id = ?", dept.ID, semester.ID).
 			Count(&coursesCount)
 
 		result = append(result, DepartmentDataResponse{
