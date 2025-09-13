@@ -11,7 +11,7 @@ import (
 func SetupSwagger(app *fiber.App) {
 	cfg := config.GetConfig()
 	var domain string
-	if cfg.MODE == "producation" {
+	if cfg.MODE == "production" {
 		domain = cfg.HOST
 	} else {
 		domain = fmt.Sprintf("%s:%s", cfg.HOST, cfg.PORT)
