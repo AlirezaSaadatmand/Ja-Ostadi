@@ -10,10 +10,16 @@ import (
 
 func SetupSwagger(app *fiber.App) {
 	cfg := config.GetConfig()
+	var domain string
+	if cfg.MODE == "producation" {
+		domain = cfg.HOST
+	} else {
+		domain = fmt.Sprintf("%s:%s", cfg.HOST, cfg.PORT)
+	}
 
 	// Dynamic Swagger setup
 	SwaggerInfo.Version = "1.0"
-	SwaggerInfo.Host = fmt.Sprintf("%s:%s", cfg.HOST, cfg.PORT)
+	SwaggerInfo.Host = domain
 	SwaggerInfo.BasePath = "/api/v1"
 	if cfg.MODE == "production" {
 		SwaggerInfo.Schemes = []string{"https"}
