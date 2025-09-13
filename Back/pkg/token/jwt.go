@@ -20,13 +20,13 @@ func GenerateJWT(userID uint, email string) (string, error) {
 	return token.SignedString([]byte(cfg.Secret_Token))
 }
 
-func ParseJWT(tokenStr string) (*jwt.Token, error) {
+func ParseJWT(tokenStr string) (jwt.MapClaims, error) {
     cfg := config.GetConfig()
     if tokenStr == "" {
         return nil, errors.New("missing token")
     }
 
-    claims := &jwt.RegisteredClaims{}
+    claims := jwt.MapClaims{}
 
     token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
         return []byte(cfg.Secret_Token), nil
@@ -39,9 +39,11 @@ func ParseJWT(tokenStr string) (*jwt.Token, error) {
         return nil, errors.New("invalid token")
     }
 
-    if claims.ExpiresAt != nil && claims.ExpiresAt.Time.Before(time.Now()) {
-        return nil, errors.New("token expired")
+    if exp, ok := claims["exp"].(float64); ok {
+        if time.Unix(int64(exp), 0).Before(time.Now()) {
+            return nil, errors.New("token expired")
+        }
     }
 
-    return token, nil
+    return claims, nil
 }

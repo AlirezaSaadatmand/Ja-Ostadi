@@ -5,9 +5,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
+
 // UserCoursesRequest represents the request body for saving user courses
 type UserCoursesRequest struct {
-    CourseIDs []uint `json:"courseIds"`
+	CourseIDs []uint `json:"courseIds"`
 }
 
 // SaveUserCourses saves a list of courses for the authenticated user
@@ -24,36 +25,28 @@ type UserCoursesRequest struct {
 // @Security ApiKeyAuth
 // @Router /user/courses [post]
 func (h *Handler) SaveUserCourses(c *fiber.Ctx) error {
-    var req UserCoursesRequest
+	var req UserCoursesRequest
 
-    userClaims := c.Locals("user")
-    if userClaims == nil {
-        return utils.Error(c, fiber.StatusBadRequest, "Unauthorized")
-    }
+	userClaims := c.Locals("user").(jwt.MapClaims)
 
-    claims, ok := userClaims.(jwt.MapClaims)
-    if !ok {
-        return utils.Error(c, fiber.StatusBadRequest, "Invalid user claims")
-    }
+	userIDFloat, ok := userClaims["user_id"].(float64)
+	if !ok {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid user_id in claims")
+	}
+	userID := uint(userIDFloat)
 
-    userIDFloat, ok := claims["user_id"].(float64)
-    if !ok {
-        return utils.Error(c, fiber.StatusBadRequest, "Invalid user_id in claims")
-    }
-    userID := uint(userIDFloat)
+	if err := c.BodyParser(&req); err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid request body")
+	}
 
-    if err := c.BodyParser(&req); err != nil {
-        return utils.Error(c, fiber.StatusBadRequest, "Invalid request body")
-    }
+	if len(req.CourseIDs) == 0 {
+		return utils.Error(c, fiber.StatusBadRequest, "No courses provided")
+	}
 
-    if len(req.CourseIDs) == 0 {
-        return utils.Error(c, fiber.StatusBadRequest, "No courses provided")
-    }
+	userCourses, err := h.Services.SaveUserCourses(userID, req.CourseIDs)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
 
-    userCourses, err := h.Services.SaveUserCourses(userID, req.CourseIDs)
-    if err != nil {
-        return utils.Error(c, fiber.StatusInternalServerError, err.Error())
-    }
-
-    return utils.Success(c, fiber.StatusCreated, userCourses, "User courses saved successfully")
+	return utils.Success(c, fiber.StatusCreated, userCourses, "User courses saved successfully")
 }
