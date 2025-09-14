@@ -108,5 +108,15 @@ func (h *Handler) GetInstructorCourses(c *fiber.Ctx) error {
 // @Failure 400 {object} utils.APIResponse
 // @Router /instructors/{instructorID}/detail [get]
 func (h *Handler) GetInstructorDetail(c *fiber.Ctx) error {
-	return utils.Success(c, fiber.StatusOK, nil, "Data fetched successfully")
+	instructorIdParam := c.Params("instructorID")
+	instructorId, err := strconv.Atoi(instructorIdParam)
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "invalid instructor ID")
+	}
+	data, err := h.Services.GetInstructorByID(instructorId)
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "invalid instructor ID")
+	}
+	
+	return utils.Success(c, fiber.StatusOK, data, "Data fetched successfully")
 }
