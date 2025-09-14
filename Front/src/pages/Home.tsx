@@ -90,37 +90,40 @@ const HomePage: React.FC = () => {
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl w-full mb-8 sm:mb-12 px-4">
-        {sections.map(({ title, description, icon, link, comingSoon }) => (
-          <div
-            key={title}
-            className={`group bg-white rounded-xl shadow-md flex flex-col items-center text-center transition-shadow duration-300 relative ${
-              comingSoon
-                ? "p-6 sm:p-8 lg:p-10 cursor-not-allowed opacity-70"
-                : "p-6 sm:p-8 lg:p-5 hover:shadow-xl cursor-pointer"
-            }`}
-          >
-            {comingSoon && (
-              <span className="absolute top-3 left-3 bg-yellow-500 text-white text-xs sm:text-sm px-2 py-1 rounded-full">
-                به زودی
-              </span>
-            )}
-            <div className="mb-4 sm:mb-6">{icon}</div>
-            <h2 className="text-lg sm:text-xl lg:text-base font-semibold mb-2 group-hover:text-indigo-600 transition-colors duration-300">
-              {title}
-            </h2>
-            <p className="text-gray-600 text-sm sm:text-base lg:text-sm">
-              {description}
-            </p>
-            {!comingSoon && (
-              <a
-                href={link}
-                className="mt-4 sm:mt-6 inline-block text-indigo-600 group-hover:underline font-semibold text-sm sm:text-base lg:text-sm"
-              >
-                مشاهده →
-              </a>
-            )}
-          </div>
-        ))}
+        {sections.map(({ title, description, icon, link, comingSoon }) => {
+          const Wrapper: React.ElementType = comingSoon ? "div" : "a"
+
+          return (
+            <Wrapper
+              key={title}
+              {...(!comingSoon && { href: link })}
+              className={`group bg-white rounded-xl shadow-md flex flex-col items-center text-center transition-shadow duration-300 relative ${
+                comingSoon
+                  ? "p-6 sm:p-8 lg:p-10 cursor-not-allowed opacity-70"
+                  : "p-6 sm:p-8 lg:p-5 hover:shadow-xl hover:bg-gray-50 cursor-pointer"
+              }`}
+            >
+              {comingSoon && (
+                <span className="absolute top-3 left-3 bg-yellow-500 text-white text-xs sm:text-sm px-2 py-1 rounded-full">
+                  به زودی
+                </span>
+              )}
+              <div className="mb-4 sm:mb-6">{icon}</div>
+              <h2 className="text-lg sm:text-xl lg:text-base font-semibold mb-2 group-hover:text-indigo-600 transition-colors duration-300">
+                {title}
+              </h2>
+              <p className="text-gray-600 text-sm sm:text-base lg:text-sm">
+                {description}
+              </p>
+              {!comingSoon && (
+                <span className="mt-4 sm:mt-6 inline-block text-indigo-600 group-hover:underline font-semibold text-sm sm:text-base lg:text-sm">
+                  مشاهده →
+                </span>
+              )}
+            </Wrapper>
+          )
+        })}
+
       </div>
     </div>
   )
