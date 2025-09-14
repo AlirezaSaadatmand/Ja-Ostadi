@@ -58,7 +58,7 @@ const HomePage: React.FC = () => {
       link: "/courses",
     },
     {
-      title: "اطلاعات بدرد بخود",
+      title: "اطلاعات بدرد بخور",
       description: "نکات و اطلاعات مفید برای دانشجوها.",
       icon: <Info className="w-12 h-12 text-[#AB8A58]" />,
       comingSoon: true,
