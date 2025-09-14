@@ -59,7 +59,7 @@ export interface InstructorDetail {
   email: string
   office_location: string
   office_hours: string
-  departments: { id: number; name: string }[]
+  field: string
   courses: { id: number; name: string; semester_id: number; department_id: number }[]
 }
 

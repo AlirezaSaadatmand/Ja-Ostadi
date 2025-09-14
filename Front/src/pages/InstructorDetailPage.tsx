@@ -76,9 +76,7 @@ const InstructorDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-10">
-        {/* Error */}
         {error && (
           <div
             className="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-center text-sm sm:text-base"
@@ -89,7 +87,6 @@ const InstructorDetailPage: React.FC = () => {
           </div>
         )}
 
-       {/* Contact Info */}
         <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
           <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center flex items-center justify-center">
             <UserRound className="w-6 sm:w-7 h-6 sm:h-7 text-blue-600 ml-2" />
@@ -109,24 +106,9 @@ const InstructorDetailPage: React.FC = () => {
                 <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 ml-2" />
                 <strong>ساعات کاری:</strong> {instructorDetail.office_hours || "—"}
               </p>
-              <p className="flex items-center justify-center flex-wrap gap-2">
+              <p className="flex items-center justify-center flex-wrap gap-1">
                 <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 ml-2" />
-                <strong>دپارتمان‌ها:</strong>
-                {instructorDetail.departments?.length > 0 ? (
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {instructorDetail.departments.map((dept) => (
-                      <Link
-                        key={dept.id}
-                        to={`/departments?deptId=${dept.id}`}
-                        className="px-2.5 sm:px-3 py-1 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 text-xs sm:text-sm font-medium"
-                      >
-                        {dept.name || "—"}
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <span>—</span>
-                )}
+                <strong>دپارتمان‌:</strong> {instructorDetail.field || "—"}
               </p>
             </div>
           ) : (
@@ -136,7 +118,6 @@ const InstructorDetailPage: React.FC = () => {
           )}
         </div>
 
-        {/* Courses */}
         <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
           <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center flex items-center justify-center">
             <BookOpen className="w-6 sm:w-7 h-6 sm:h-7 text-emerald-600 ml-2" />
