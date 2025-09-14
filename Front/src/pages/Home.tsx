@@ -1,6 +1,5 @@
 import type React from "react"
-import { Building2 } from "lucide-react"
-import { BookOpen } from "lucide-react"
+import { Building2, BookOpen, Info, UtensilsCrossed } from "lucide-react"
 import ContributorsSection from "../components/Contributors/ContributorsSection"
 import Header from "../components/Header"
 
@@ -58,14 +57,26 @@ const HomePage: React.FC = () => {
       icon: <BookOpen className="w-12 h-12 text-[#AB8A58]" />,
       link: "/courses",
     },
+    {
+      title: "اطلاعات بدرد بخود",
+      description: "نکات و اطلاعات مفید برای دانشجوها.",
+      icon: <Info className="w-12 h-12 text-[#AB8A58]" />,
+      comingSoon: true,
+    },
+    {
+      title: "سلف",
+      description: "اطلاعات و برنامه هفتگی کالینان دانشگاه.",
+      icon: <UtensilsCrossed className="w-12 h-12 text-[#AB8A58]" />,
+      comingSoon: true,
+    },
   ]
 
   return (
     <div
-    className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
-    dir="rtl"
+      className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
+      dir="rtl"
     >
-    <Header />
+      <Header />
       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
         <ContributorsSection />
       </div>
@@ -79,21 +90,36 @@ const HomePage: React.FC = () => {
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl w-full mb-8 sm:mb-12 px-4">
-        {sections.map(({ title, description, icon, link }) => (
-          <a
+        {sections.map(({ title, description, icon, link, comingSoon }) => (
+          <div
             key={title}
-            href={link}
-            className="group bg-white rounded-xl shadow-md p-6 sm:p-8 lg:p-10 flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+            className={`group bg-white rounded-xl shadow-md flex flex-col items-center text-center transition-shadow duration-300 relative ${
+              comingSoon
+                ? "p-6 sm:p-8 lg:p-10 cursor-not-allowed opacity-70"
+                : "p-6 sm:p-8 lg:p-5 hover:shadow-xl cursor-pointer"
+            }`}
           >
+            {comingSoon && (
+              <span className="absolute top-3 left-3 bg-yellow-500 text-white text-xs sm:text-sm px-2 py-1 rounded-full">
+                به زودی
+              </span>
+            )}
             <div className="mb-4 sm:mb-6">{icon}</div>
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-2 group-hover:text-indigo-600 transition-colors duration-300">
+            <h2 className="text-lg sm:text-xl lg:text-base font-semibold mb-2 group-hover:text-indigo-600 transition-colors duration-300">
               {title}
             </h2>
-            <p className="text-gray-600 text-sm sm:text-base">{description}</p>
-            <span className="mt-4 sm:mt-6 inline-block text-indigo-600 group-hover:underline font-semibold text-sm sm:text-base">
-              مشاهده →
-            </span>
-          </a>
+            <p className="text-gray-600 text-sm sm:text-base lg:text-sm">
+              {description}
+            </p>
+            {!comingSoon && (
+              <a
+                href={link}
+                className="mt-4 sm:mt-6 inline-block text-indigo-600 group-hover:underline font-semibold text-sm sm:text-base lg:text-sm"
+              >
+                مشاهده →
+              </a>
+            )}
+          </div>
         ))}
       </div>
     </div>
