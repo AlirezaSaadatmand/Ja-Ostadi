@@ -31,6 +31,45 @@ const ContributorsSection: React.FC = () => {
     }
   }, [isSmallScreen])
 
+  const ContributorsList = () => (
+    <div
+      className={`
+        flex justify-center gap-2 
+        overflow-x-auto sm:overflow-x-hidden 
+        scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pb-2
+        flex-wrap sm:flex-nowrap
+      `}
+    >
+      {contributors.map((contributor) => (
+        <div
+          key={contributor.id}
+          className="flex flex-col items-center group flex-shrink-0 w-14 sm:w-14"
+        >
+          <a
+            href={contributor.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block transition-transform duration-200 group-hover:scale-110"
+          >
+            <img
+              src={contributor.avatar_url || "/placeholder.svg"}
+              alt={contributor.login}
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-gray-200 group-hover:border-indigo-400 transition-all duration-200 shadow-sm group-hover:shadow-md mx-auto"
+            />
+          </a>
+          <span
+            className="text-[10px] text-gray-600 mt-1 opacity-0 group-hover:opacity-100 
+                      transition-opacity duration-200 text-center w-full overflow-hidden"
+          >
+            {contributor.login.length > 9
+              ? "..." + contributor.login.slice(0, 9)
+              : contributor.login}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+
   if (isSmallScreen && !isExpanded) {
     return (
       <button
@@ -91,38 +130,7 @@ const ContributorsSection: React.FC = () => {
                   <p className="text-sm text-gray-500">یافت نشد</p>
                 </div>
               ) : (
-                <>
-                  <div className="grid grid-cols-3 gap-4 justify-items-center mb-4">
-                    {contributors.slice(0, 3).map((contributor) => (
-                      <div
-                        key={contributor.id}
-                        className="flex flex-col items-center group w-14 sm:w-16"
-                      >
-                        <a
-                          href={contributor.html_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block transition-transform duration-200 group-hover:scale-110"
-                        >
-                          <img
-                            src={contributor.avatar_url || "/placeholder.svg"}
-                            alt={contributor.login}
-                            className="w-10 h-10 rounded-full border-2 border-gray-200 group-hover:border-indigo-400 transition-all duration-200 shadow-sm group-hover:shadow-md mx-auto"
-                          />
-                        </a>
-                        <span className="text-xs text-gray-600 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center truncate w-full">
-                          {contributor.login}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {contributors.length > 3 && (
-                    <p className="text-xs text-gray-600 mb-4">
-                      +{contributors.length - 3} نفر دیگر
-                    </p>
-                  )}
-                </>
+                <ContributorsList />
               )}
 
               <div className="pt-4 border-t border-gray-200">
@@ -190,38 +198,7 @@ const ContributorsSection: React.FC = () => {
           <p className="text-xs sm:text-sm text-gray-500">یافت نشد</p>
         </div>
       ) : (
-        <>
-          <div className="grid grid-cols-3 gap-4 justify-items-center mb-3 sm:mb-4">
-            {contributors.slice(0, 3).map((contributor) => (
-              <div
-                key={contributor.id}
-                className="flex flex-col items-center group w-14 sm:w-16"
-              >
-                <a
-                  href={contributor.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block transition-transform duration-200 group-hover:scale-110"
-                >
-                  <img
-                    src={contributor.avatar_url || "/placeholder.svg"}
-                    alt={contributor.login}
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 sm:border-3 border-gray-200 group-hover:border-indigo-400 transition-all duration-200 shadow-sm group-hover:shadow-md mx-auto"
-                  />
-                </a>
-                <span className="hidden sm:block text-xs text-gray-600 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center truncate w-full">
-                  {contributor.login}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {contributors.length > 3 && (
-            <p className="text-xs text-gray-600 mb-3 sm:mb-4">
-              +{contributors.length - 3} نفر دیگر
-            </p>
-          )}
-        </>
+        <ContributorsList />
       )}
 
       <div className="pt-3 sm:pt-4 border-t border-gray-200">
