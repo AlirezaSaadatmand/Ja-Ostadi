@@ -1,4 +1,4 @@
-<img width="1470" height="837" alt="image" src="https://github.com/user-attachments/assets/3ca0c1a3-1a3d-459d-be7e-f97163aa7a50" />
+<img width="1470" height="837" alt="image" src="https://github.com/user-attachments/assets/2dfa7730-5f98-4f5f-9482-036c2dbc94d9" />
 
 # جا استادی !
 
