@@ -92,9 +92,12 @@ const ContributorsSection: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  <div className="flex flex-wrap justify-center gap-3 mb-4">
-                    {contributors.slice(0, 4).map((contributor) => (
-                      <div key={contributor.id} className="flex flex-col items-center group">
+                  <div className="grid grid-cols-3 gap-4 justify-items-center mb-4">
+                    {contributors.slice(0, 3).map((contributor) => (
+                      <div
+                        key={contributor.id}
+                        className="flex flex-col items-center group w-14 sm:w-16"
+                      >
                         <a
                           href={contributor.html_url}
                           target="_blank"
@@ -104,18 +107,20 @@ const ContributorsSection: React.FC = () => {
                           <img
                             src={contributor.avatar_url || "/placeholder.svg"}
                             alt={contributor.login}
-                            className="w-10 h-10 rounded-full border-3 border-gray-200 group-hover:border-indigo-400 transition-all duration-200 shadow-sm group-hover:shadow-md"
+                            className="w-10 h-10 rounded-full border-2 border-gray-200 group-hover:border-indigo-400 transition-all duration-200 shadow-sm group-hover:shadow-md mx-auto"
                           />
                         </a>
-                        <span className="text-xs text-gray-600 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <span className="text-xs text-gray-600 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center truncate w-full">
                           {contributor.login}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  {contributors.length > 4 && (
-                    <p className="text-xs text-gray-600 mb-4">+{contributors.length - 4} نفر دیگر</p>
+                  {contributors.length > 3 && (
+                    <p className="text-xs text-gray-600 mb-4">
+                      +{contributors.length - 3} نفر دیگر
+                    </p>
                   )}
                 </>
               )}
@@ -186,9 +191,12 @@ const ContributorsSection: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            {contributors.slice(0, 4).map((contributor) => (
-              <div key={contributor.id} className="flex flex-col items-center group">
+          <div className="grid grid-cols-3 gap-4 justify-items-center mb-3 sm:mb-4">
+            {contributors.slice(0, 3).map((contributor) => (
+              <div
+                key={contributor.id}
+                className="flex flex-col items-center group w-14 sm:w-16"
+              >
                 <a
                   href={contributor.html_url}
                   target="_blank"
@@ -198,18 +206,20 @@ const ContributorsSection: React.FC = () => {
                   <img
                     src={contributor.avatar_url || "/placeholder.svg"}
                     alt={contributor.login}
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 sm:border-3 border-gray-200 group-hover:border-indigo-400 transition-all duration-200 shadow-sm group-hover:shadow-md"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 sm:border-3 border-gray-200 group-hover:border-indigo-400 transition-all duration-200 shadow-sm group-hover:shadow-md mx-auto"
                   />
                 </a>
-                <span className="hidden sm:block text-xs text-gray-600 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <span className="hidden sm:block text-xs text-gray-600 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center truncate w-full">
                   {contributor.login}
                 </span>
               </div>
             ))}
           </div>
 
-          {contributors.length > 4 && (
-            <p className="text-xs text-gray-600 mb-3 sm:mb-4">+{contributors.length - 4} نفر دیگر</p>
+          {contributors.length > 3 && (
+            <p className="text-xs text-gray-600 mb-3 sm:mb-4">
+              +{contributors.length - 3} نفر دیگر
+            </p>
           )}
         </>
       )}
