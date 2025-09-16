@@ -1,6 +1,7 @@
-<img width="1470" height="837" alt="image" src="https://github.com/user-attachments/assets/5d5fcb10-11f2-4703-be2f-b9abb96fc743" />
+<img width="1470" height="837" alt="image" src="https://github.com/user-attachments/assets/3ca0c1a3-1a3d-459d-be7e-f97163aa7a50" />
 
 # جا استادی !
+
 آیا از سردرگمی‌ در پرشیس خسته شدید؟ نمی‌دونید کدوم استاد چه درسی رو داره؟ برنامه‌های کلاس‌هات رو اول هر ترم مدام یادت می‌ره؟ یا شایدم توی انتخاب واحد مشکل داری!؟ جا استادی اومده تا این مشکلات رو سروسامون بده
 
 ## چرا جا استادی ؟
