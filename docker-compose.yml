@@ -1,59 +1,71 @@
-
 services:
-  mysql:
+
+  # ---------------- FRONTEND ----------------
+  frontend:
+    container_name: frontend
+    build:
+      context: ./Front
+      dockerfile: docker/Dockerfile
+    env_file:
+      - ./.env
+    networks:
+      - Ja_Ostadi_network
+    ports:
+      - "5173:80"
+
+  # ---------------- DATABASE ----------------
+  database:
+    container_name: jaostadi_db
     image: mysql:latest
-    container_name: mysql-container
+    env_file:
+      - ./.env
     environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw
-      MYSQL_DATABASE: ja-ostadi
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - jaostadi_db:/var/lib/mysql
     networks:
       - Ja_Ostadi_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 10
+      start_period: 5s
 
+  # ---------------- PHPMYADMIN ----------------
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: database
       PMA_PORT: 3306
     ports:
       - "8081:80"
     depends_on:
-      - mysql
+      - database
     networks:
       - Ja_Ostadi_network
 
+  # ---------------- BACKEND ----------------
   backend:
+    container_name: backend
     build:
       context: ./Back
       dockerfile: Dockerfile
-    container_name: backend
     env_file:
-      - ./Back/.env
+      - ./.env
     ports:
       - "5005:3003"
     depends_on:
-      - mysql
+      database:
+        condition: service_healthy
     networks:
       - Ja_Ostadi_network
+    restart: unless-stopped
 
-  frontend:
-    build:
-      context: ./Front
-      dockerfile: docker/Dockerfile
-    container_name: frontend
-    env_file:
-      - ./Front/.env
-    ports:
-      - "5173:80"
-    depends_on:
-      - backend
-    networks:
-      - Ja_Ostadi_network
-
+  # ---------------- MONITORING ----------------
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -85,7 +97,10 @@ services:
       - Ja_Ostadi_network
 
 volumes:
-  mysql_data:
+  jaostadi_db:
 
 networks:
   Ja_Ostadi_network:
+    external: true
+    name: Ja_Ostadi_network
+
