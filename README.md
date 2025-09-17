@@ -56,6 +56,8 @@
 
 
 ## چطور پروژه رو اجرا کنم؟
+<details>
+   <summary>⒈ اجرای پروژه به صورت کلاسیک </summary>
 
 این پروژه شامل سه بخشه:  **Front (React + TS)**،  **Back (Go API)**  و  **Scraper (Go)**.  
 در ادامه روش اجرای هر بخش رو می‌بینی:
@@ -94,6 +96,38 @@ npm run dev
 
 به طور پیش‌فرض API روی پورت  `:3000`  در دسترس خواهد بود.
 
+ </details>
+ <details>
+   <summary>⒉ اجرای پروژه با داکر</summary>
+
+   1. نصب Docker (در صورت نبود) 
+   
+   ```shell
+   curl -fsSL https://get.docker.com | sh
+   ```
+   
+   2. کلون کردن پروژه
+   
+   ```shell
+   git clone https://github.com/AlirezaSaadatmand/Ja-Ostadi.git
+   cd Ja-Ostadi
+   ```
+   3. ساخت شبکه Docker   
+   ```shell
+   docker network create \
+      --driver=bridge \
+      --subnet=192.168.25.0/24 \
+      --ip-range=192.168.25.0/24 \
+      --gateway=192.168.25.254 \
+      Ja_Ostadi_network
+   ```
+   4. اجرای پروژه
+   ```shell
+   docker compose up -d --build
+   
+   ```
+   
+   </details>
 
 
 ## نکات مهم
