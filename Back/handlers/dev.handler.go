@@ -6,36 +6,49 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
-func (h *Handler) DeleteAllData(c *fiber.Ctx) error {
+func (h *Handler) DeleteSemesterData(c *fiber.Ctx) error {
 	db := database.DB
 
-	// Order matters - delete dependent tables first
-	tables := []struct {
-		model interface{}
-		table string
-	}{
-		{model: &models.InstructorDepartment{}, table: "instructor_departments"},
-		{model: &models.Course{}, table: "courses"},
-		{model: &models.Instructor{}, table: "instructors"},
-		{model: &models.Department{}, table: "departments"},
-		{model: &models.Semester{}, table: "semesters"},
-		{model: &models.ClassTime{}, table: "class_times"},
-		{model: &models.Base_course_data{}, table: "base_course_data"},
+	semesterName := "اول - 1404"
 
+	var semester models.Semester
+	err := db.
+		Where("name = ?", semesterName).
+		First(&semester).Error
+	if err != nil {
+		return c.JSON(fiber.Map{"status": "semester not found"})
 	}
 
-	for _, t := range tables {
-		if err := db.Exec("DELETE FROM " + t.table).Error; err != nil {
-			if err := db.Unscoped().Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(t.model).Error; err != nil {
-				return c.Status(500).JSON(fiber.Map{
-					"error": fmt.Sprintf("Failed to clear %s: %v", t.table, err),
-				})
-			}
+	semesterID := semester.ID
+
+	if err := db.Unscoped().Where("Semester = ?", semesterName).Delete(&models.Base_course_data{}).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": fmt.Sprintf("failed to delete instructor_departments: %v", err)})
+	}
+
+	var courses []models.Course
+	if err := db.Where("semester_id = ?", semesterID).Find(&courses).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": fmt.Sprintf("failed to fetch courses: %v", err)})
+	}
+
+	for _, course := range courses {
+		if err := db.Unscoped().Where("course_id = ?", course.ID).Delete(&models.ClassTime{}).Error; err != nil {
+			return c.Status(500).JSON(fiber.Map{"error": fmt.Sprintf("failed to delete class_times: %v", err)})
 		}
 	}
 
-	return c.JSON(fiber.Map{"status": "all data deleted successfully"})
+	if err := db.Unscoped().Where("semester_id = ?", semesterID).Delete(&models.Course{}).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": fmt.Sprintf("failed to delete courses: %v", err)})
+	}
+
+	if err := db.Unscoped().Where("semester_id = ?", semesterID).Delete(&models.InstructorDepartment{}).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": fmt.Sprintf("failed to delete instructor_departments: %v", err)})
+	}
+
+	if err := db.Unscoped().Where("id = ?", semesterID).Delete(&models.Semester{}).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": fmt.Sprintf("failed to delete semester: %v", err)})
+	}
+
+	return c.JSON(fiber.Map{"status": "semester data permanently deleted"})
 }

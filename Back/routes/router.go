@@ -21,7 +21,7 @@ func Router(app *fiber.App, logger logging.Logger) {
 	api.Get("/test", h.Test)
 	
 	remove := api.Group("/remove")
-	remove.Post("/", h.DeleteAllData)
+	remove.Post("/", h.DeleteSemesterData)
 
 	// Semester Routes
 	semesterRouter := api.Group("/semesters", middleware.Auth())
