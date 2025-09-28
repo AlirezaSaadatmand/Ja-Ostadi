@@ -10,10 +10,10 @@ import (
 func Router(app *fiber.App, logger logging.Logger) {
 	h := handlers.NewHandler(logger)
 
-	// Google Auth Routes
 	
 	api := app.Group("/api/v1")
 	
+	// Google Auth Routes
 	api.Get("/auth/google/login", h.GoogleLoginHandler)
 	api.Get("/auth/google/callback", h.GoogleCallbackHandler)
 
@@ -50,7 +50,7 @@ func Router(app *fiber.App, logger logging.Logger) {
 
 	// Admin Routes
 	adminRoutes := api.Group("/admin", middleware.AdminMiddleware())
-	adminRoutes.Post("/upload/data", h.UploadJson)
+	adminRoutes.Post("/update/data", h.UpdateData)
 
 	// User Routes
 	userRoutes := api.Group("/user", middleware.Auth())
