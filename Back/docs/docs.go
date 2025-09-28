@@ -15,11 +15,11 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/upload/data": {
+        "/admin/update/data": {
             "post": {
-                "description": "Accepts a JSON data file upload (admin only), parses it, and returns the number of records",
+                "description": "Runs the scraper to fetch the latest course data from the source system (admin only).",
                 "consumes": [
-                    "multipart/form-data"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "Admin"
                 ],
-                "summary": "Upload data file",
+                "summary": "Update course data",
                 "parameters": [
                     {
                         "type": "string",
@@ -35,39 +35,11 @@ const docTemplate = `{
                         "name": "X-Admin-Token",
                         "in": "header",
                         "required": true
-                    },
-                    {
-                        "type": "file",
-                        "description": "Data file to upload (JSON format)",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Example: {\\\"count\\\": 42}",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/utils.APIResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "additionalProperties": {
-                                                "type": "integer"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request: missing or invalid file",
+                        "description": "Data updated successfully",
                         "schema": {
                             "$ref": "#/definitions/utils.APIResponse"
                         }
@@ -976,7 +948,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "units": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },

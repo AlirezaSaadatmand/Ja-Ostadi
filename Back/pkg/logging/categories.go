@@ -11,12 +11,14 @@ const (
 	Mysql           Category = "MySQL"
 	Validation      Category = "Validation"
 	RequestResponse Category = "RequestResponse"
+	Scraper 		Category = "Scraper"
 )
 
 const (
 	// General
 	Startup         SubCategory = "Startup"
 	ExternalService SubCategory = "ExternalService"
+	Login 			SubCategory = "ScraperLogin"
 
 	// MYSQL
 	Connection SubCategory = "Connection"

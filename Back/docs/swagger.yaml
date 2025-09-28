@@ -157,7 +157,7 @@ definitions:
       semester_id:
         type: integer
       units:
-        type: integer
+        type: string
     type: object
   services.ScheduleDepartment:
     properties:
@@ -215,39 +215,23 @@ definitions:
 info:
   contact: {}
 paths:
-  /admin/upload/data:
+  /admin/update/data:
     post:
       consumes:
-      - multipart/form-data
-      description: Accepts a JSON data file upload (admin only), parses it, and returns
-        the number of records
+      - application/json
+      description: Runs the scraper to fetch the latest course data from the source
+        system (admin only).
       parameters:
       - description: Admin authentication token
         in: header
         name: X-Admin-Token
         required: true
         type: string
-      - description: Data file to upload (JSON format)
-        in: formData
-        name: file
-        required: true
-        type: file
       produces:
       - application/json
       responses:
         "200":
-          description: 'Example: {\"count\": 42}'
-          schema:
-            allOf:
-            - $ref: '#/definitions/utils.APIResponse'
-            - properties:
-                data:
-                  additionalProperties:
-                    type: integer
-                  type: object
-              type: object
-        "400":
-          description: 'Bad Request: missing or invalid file'
+          description: Data updated successfully
           schema:
             $ref: '#/definitions/utils.APIResponse'
         "401":
@@ -258,7 +242,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.APIResponse'
-      summary: Upload data file
+      summary: Update course data
       tags:
       - Admin
   /auth/google/callback:
