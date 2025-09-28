@@ -20,7 +20,7 @@ type Config struct {
 	AdminToken         string
 	GoogleClientID     string
 	GoogleClientSecret string
-	GoogleCallbackUrl string
+	GoogleCallbackUrl  string
 	Secret_Token       string
 	Front_URL          string
 }
@@ -32,7 +32,7 @@ func LoadConfig() *Config {
 		return appConfig
 	}
 
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("../.env"); err != nil {
 		log.Println(".env file not found or cannot be loaded, using system env variables")
 	}
 
