@@ -34,6 +34,7 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: cfg.Front_URL,
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization, X-Admin-Token",
 	}))
 
 	app.Use(middleware.RequestLogger(logger))

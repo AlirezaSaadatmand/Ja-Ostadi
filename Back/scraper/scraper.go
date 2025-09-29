@@ -4,9 +4,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/scripts"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
-	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/joho/godotenv"
@@ -27,6 +27,7 @@ func (s *ScraperService) Scraper() {
 
 	url := launcher.New().
 		Headless(true).
+		Append("--no-sandbox").
 		MustLaunch()
 
 	browser := rod.New().ControlURL(url).MustConnect()
