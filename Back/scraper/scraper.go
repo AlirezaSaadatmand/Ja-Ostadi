@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
-	"github.com/AlirezaSaadatmand/Ja-Ostadi/scripts"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
@@ -140,7 +139,7 @@ func (s *ScraperService) processRow(page *rod.Page, index int) bool {
 		StudentCount:  page.MustElement("#edStdCount").MustText(),
 	}
 
-	scripts.SaveData(data)
+	// scripts.SaveData(data)
 
 	s.Logger.Info(logging.Scraper, logging.Insert, "Course saved or updated successfully", map[logging.ExtraKey]interface{}{
 		"course": data.CourseName,

@@ -50,7 +50,7 @@ func Router(app *fiber.App, logger logging.Logger) {
 
 	// Admin Routes
 	adminRoutes := api.Group("/admin", middleware.AdminMiddleware())
-	adminRoutes.Post("/update/data", h.UpdateData)
+	adminRoutes.Post("/update/data", h.UploadJson)
 
 	// User Routes
 	userRoutes := api.Group("/user", middleware.Auth())

@@ -17,9 +17,9 @@ const docTemplate = `{
     "paths": {
         "/admin/update/data": {
             "post": {
-                "description": "Runs the scraper to fetch the latest course data from the source system (admin only).",
+                "description": "Accepts a JSON data file upload (admin only), parses it, and returns the number of records",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "Admin"
                 ],
-                "summary": "Update course data",
+                "summary": "Upload data file",
                 "parameters": [
                     {
                         "type": "string",
@@ -35,11 +35,39 @@ const docTemplate = `{
                         "name": "X-Admin-Token",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Data file to upload (JSON format)",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Data updated successfully",
+                        "description": "Example: {\\\"count\\\": 42}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: missing or invalid file",
                         "schema": {
                             "$ref": "#/definitions/utils.APIResponse"
                         }

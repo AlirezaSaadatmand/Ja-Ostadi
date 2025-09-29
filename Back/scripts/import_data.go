@@ -231,41 +231,43 @@ func createOrUpdateClassTime(item types.CourseJSON, course models.Course) error 
 	return nil
 }
 
-func SaveData(rawCourse types.CourseJSON) error {
+func SaveData(rawCourses []types.CourseJSON) error {
 
-	err := addOrUpdateBaseCourse(rawCourse)
-	if err != nil {
-		return err
-	}
+	for _, item := range rawCourses {
 
-	semester, err := getOrCreateSemester(helpers.NormalizePersian(rawCourse.Semester))
-	if err != nil {
-		return err
-	}
+		err := addOrUpdateBaseCourse(item)
+		if err != nil {
+			return err
+		}
 
-	dept, err := getOrCreateDepartment(rawCourse)
-	if err != nil {
-		return err
-	}
+		semester, err := getOrCreateSemester(helpers.NormalizePersian(item.Semester))
+		if err != nil {
+			return err
+		}
 
-	instructor, err := getOrCreateInstructor(rawCourse)
-	if err != nil {
-		return err
-	}
+		dept, err := getOrCreateDepartment(item)
+		if err != nil {
+			return err
+		}
 
-	_, err = getOrCreateInstructorDepartment(instructor.ID, dept.ID, semester.ID)
-	if err != nil {
-		return err
-	}
+		instructor, err := getOrCreateInstructor(item)
+		if err != nil {
+			return err
+		}
 
-	course, err := createOrUpdateCourse(rawCourse, semester, dept, instructor)
-	if err != nil {
-		return err
-	}
-	err = createOrUpdateClassTime(rawCourse, course)
-	if err != nil {
-		return err
-	}
+		_, err = getOrCreateInstructorDepartment(instructor.ID, dept.ID, semester.ID)
+		if err != nil {
+			return err
+		}
 
+		course, err := createOrUpdateCourse(item, semester, dept, instructor)
+		if err != nil {
+			return err
+		}
+		err = createOrUpdateClassTime(item, course)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
