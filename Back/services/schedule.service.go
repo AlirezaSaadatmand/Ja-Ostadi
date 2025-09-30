@@ -19,31 +19,32 @@ type ScheduleCourse struct {
 	InstructorID uint   `json:"instructor_id"`
 }
 
-func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
-	semesterName := "اول - 1404"
+	func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
+		semesterName := "اول - 1404"
 
-	var semester models.Semester
-	err := database.DB.
-		Where("name = ?", semesterName).
-		First(&semester).Error
-	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get semester", map[logging.ExtraKey]interface{}{"semesterName": semesterName, "error": err.Error()})
-		return nil, errors.New("error getting semester data")
+		var semester models.Semester
+		err := database.DB.
+			Where("name = ?", semesterName).
+			First(&semester).Error
+		if err != nil {
+			s.Logger.Error(logging.Mysql, logging.Select, "Failed to get semester", map[logging.ExtraKey]interface{}{"semesterName": semesterName, "error": err.Error()})
+			return nil, errors.New("error getting semester data")
+		}
+
+		var courses []ScheduleCourse
+		err = database.DB.
+			Model(&models.Course{}).
+			Where("semester_id = ?", semester.ID).
+			Order("number ASC").
+			Find(&courses).Error
+		if err != nil {
+			s.Logger.Error(logging.Mysql, logging.Select, "Failed to get courses schedule", map[logging.ExtraKey]interface{}{"semesterID": semester.ID, "error": err.Error()})
+			return nil, errors.New("error getting courses data")
+		}
+
+		s.Logger.Info(logging.Mysql, logging.Select, "Fetched courses schedule successfully", map[logging.ExtraKey]interface{}{"semesterID": semester.ID, "count": len(courses)})
+		return courses, nil
 	}
-
-	var courses []ScheduleCourse
-	err = database.DB.
-		Model(&models.Course{}).
-		Where("semester_id = ?", semester.ID).
-		Find(&courses).Error
-	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get courses schedule", map[logging.ExtraKey]interface{}{"semesterID": semester.ID, "error": err.Error()})
-		return nil, errors.New("error getting courses data")
-	}
-
-	s.Logger.Info(logging.Mysql, logging.Select, "Fetched courses schedule successfully", map[logging.ExtraKey]interface{}{"semesterID": semester.ID, "count": len(courses)})
-	return courses, nil
-}
 
 type ScheduleInstructor struct {
 	ID   uint   `json:"id"`

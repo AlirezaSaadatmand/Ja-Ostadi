@@ -19,6 +19,7 @@ func (s *Services) GetCoursesBySemester(semesterID int) ([]CourseMinimal, error)
 		Model(&models.Course{}).
 		Select("ID, Name").
 		Where("semester_id = ?", semesterID).
+		Order("number ASC").
 		Find(&courses).Error
 
 	if err != nil {
@@ -48,6 +49,7 @@ func (s *Services) GetCoursesBySemesterAndDepartment(semesterID, departmentID in
 	err := database.DB.
 		Model(&models.Course{}).
 		Where("semester_id = ? AND department_id = ?", semesterID, departmentID).
+		Order("number ASC").
 		Find(&courses).Error
 
 	if err != nil {
