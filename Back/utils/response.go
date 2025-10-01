@@ -22,3 +22,11 @@ func Error(c *fiber.Ctx, code int, message string) error {
 		Message: message,
 	})
 }
+
+func ErrorWithData(c *fiber.Ctx, code int,data interface{}, message string) error {
+	return c.Status(code).JSON(APIResponse{
+		Status:  "error",
+		Message: message,
+		Data: data,
+	})
+}
