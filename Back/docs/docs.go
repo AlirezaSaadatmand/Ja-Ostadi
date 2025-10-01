@@ -681,7 +681,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Saves a list of course IDs for the authenticated user. Existing courses will be replaced.",
+                "description": "Saves a list of course IDs for the authenticated user. If any of the IDs do not exist in the courses table, none are saved and the invalid IDs are returned.",
                 "consumes": [
                     "application/json"
                 ],
@@ -705,15 +705,45 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "User courses saved successfully",
                         "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/handlers.UserCourseResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid course IDs",
                         "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "401": {
@@ -723,7 +753,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/utils.APIResponse"
                         }
@@ -798,6 +828,20 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/services.ScheduleTimeID"
                     }
+                }
+            }
+        },
+        "handlers.UserCourseResponse": {
+            "type": "object",
+            "properties": {
+                "course_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },

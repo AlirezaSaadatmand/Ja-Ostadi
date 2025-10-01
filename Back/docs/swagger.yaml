@@ -43,6 +43,15 @@ definitions:
           $ref: '#/definitions/services.ScheduleTimeID'
         type: array
     type: object
+  handlers.UserCourseResponse:
+    properties:
+      course_id:
+        type: integer
+      id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   handlers.UserCoursesRequest:
     properties:
       courseIds:
@@ -631,8 +640,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Saves a list of course IDs for the authenticated user. Existing
-        courses will be replaced.
+      description: Saves a list of course IDs for the authenticated user. If any of
+        the IDs do not exist in the courses table, none are saved and the invalid
+        IDs are returned.
       parameters:
       - description: Course IDs
         in: body
@@ -644,19 +654,33 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
+          description: User courses saved successfully
           schema:
-            $ref: '#/definitions/utils.APIResponse'
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/handlers.UserCourseResponse'
+                  type: array
+              type: object
         "400":
-          description: Bad Request
+          description: Invalid course IDs
           schema:
-            $ref: '#/definitions/utils.APIResponse'
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    type: integer
+                  type: array
+              type: object
         "401":
           description: Unauthorized
           schema:
             $ref: '#/definitions/utils.APIResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
             $ref: '#/definitions/utils.APIResponse'
       security:
