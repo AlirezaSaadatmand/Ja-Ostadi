@@ -2,6 +2,7 @@ package scripts
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
@@ -230,6 +231,54 @@ func createOrUpdateClassTime(item types.CourseJSON, course models.Course) error 
 
 	return nil
 }
+
+func CleanUpCourses(semesterName string, dataMap map[string]types.CourseJSON) error {
+	db := database.DB
+
+	var semester models.Semester
+	if err := db.Where("name = ?", semesterName).First(&semester).Error; err != nil {
+		return fmt.Errorf("semester not found: %v", err)
+	}
+	semesterID := semester.ID
+
+	var courses []models.Course
+	if err := db.Where("semester_id = ?", semesterID).Find(&courses).Error; err != nil {
+		return fmt.Errorf("failed to fetch courses: %v", err)
+	}
+
+	for _, course := range courses {
+		if _, exists := dataMap[course.Number]; !exists {
+
+			if err := db.Unscoped().Where("course_id = ?", course.ID).Delete(&models.ClassTime{}).Error; err != nil {
+				return fmt.Errorf("failed to delete class_times for course %d: %v", course.ID, err)
+			}
+
+			if err := db.Unscoped().
+				Where("course_number = ? AND semester = ?", course.Number, semesterName).
+				Delete(&models.Base_course_data{}).Error; err != nil {
+				return fmt.Errorf("failed to delete base_course_data for course %d: %v", course.ID, err)
+			}
+
+			if err := db.Unscoped().
+				Where("semester_id = ?", semesterID).
+				Delete(&models.InstructorDepartment{}).Error; err != nil {
+				return fmt.Errorf("failed to delete instructor_departments for semester %d: %v", semesterID, err)
+			}
+
+
+			if err := db.Unscoped().Where("course_id = ?", course.ID).Delete(&models.UserCourse{}).Error; err != nil {
+				return fmt.Errorf("failed to delete user_courses for course %d: %v", course.ID, err)
+			}
+
+
+			if err := db.Unscoped().Delete(&course).Error; err != nil {
+				return fmt.Errorf("failed to delete course %d: %v", course.ID, err)
+			}
+		}
+	}
+	return nil
+}
+
 
 func SaveData(rawCourses []types.CourseJSON) error {
 

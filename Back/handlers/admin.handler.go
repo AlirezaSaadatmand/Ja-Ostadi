@@ -45,7 +45,16 @@ func (h *Handler) UploadJson(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusBadRequest, "Invalid JSON file")
 	}
 
+	dataMap := make(map[string]types.CourseJSON)
+	for _, i := range data {
+		dataMap[i.CourseNumber] = i
+	}
+
 	scripts.SaveData(data)
+
+	if err := scripts.CleanUpCourses("اول - 1404", dataMap); err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
 
 	return utils.Success(c, fiber.StatusOK, fiber.Map{"count": len(data)}, "JSON file uploaded successfully")
 }
