@@ -247,7 +247,7 @@ func CleanUpCourses(semesterName string, dataMap map[string]types.CourseJSON) er
 	}
 
 	for _, course := range courses {
-		if _, exists := dataMap[course.Number]; !exists {
+		if _, exists := dataMap[fmt.Sprintf("%s-%s", course.Number, course.Group)]; !exists {
 
 			if err := db.Unscoped().Where("course_id = ?", course.ID).Delete(&models.ClassTime{}).Error; err != nil {
 				return fmt.Errorf("failed to delete class_times for course %d: %v", course.ID, err)

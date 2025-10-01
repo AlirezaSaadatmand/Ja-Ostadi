@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/scripts"
@@ -47,7 +48,8 @@ func (h *Handler) UploadJson(c *fiber.Ctx) error {
 
 	dataMap := make(map[string]types.CourseJSON)
 	for _, i := range data {
-		dataMap[i.CourseNumber] = i
+		key := fmt.Sprintf("%s-%s", i.CourseNumber, i.Group)
+		dataMap[key] = i
 	}
 
 	scripts.SaveData(data)
