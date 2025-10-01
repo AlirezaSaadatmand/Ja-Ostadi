@@ -18,6 +18,14 @@ func (s *Services) GetSemesters() ([]SemesterData, error) {
 	err := database.DB.
 		Model(&models.Semester{}).
 		Select("ID, Name").
+		Order(`
+			CAST(SUBSTRING_INDEX(name, ' - ', -1) AS UNSIGNED) DESC,
+			CASE 
+				WHEN name LIKE 'اول%' OR name LIKE '%اول' THEN 1
+				WHEN name LIKE 'دوم%' OR name LIKE '%دوم' THEN 2
+				ELSE 3
+			END DESC
+		`).
 		Find(&semesters).Error
 	if err != nil {
 		s.Logger.Error(logging.Mysql, logging.Select, "Failed to fetch semesters", map[logging.ExtraKey]interface{}{"error": err.Error()})
