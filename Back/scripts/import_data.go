@@ -260,7 +260,7 @@ func CleanUpCourses(semesterName string, dataMap map[string]types.CourseJSON) er
 			}
 
 			if err := db.Unscoped().
-				Where("semester_id = ?", semesterID).
+				Where("semester_id = ? AND department_id = ? AND instructor_id = ? ", semesterID, course.DepartmentID , course.InstructorID).
 				Delete(&models.InstructorDepartment{}).Error; err != nil {
 				return fmt.Errorf("failed to delete instructor_departments for semester %d: %v", semesterID, err)
 			}
