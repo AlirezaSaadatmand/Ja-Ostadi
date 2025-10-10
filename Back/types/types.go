@@ -27,3 +27,20 @@ type GoogleUser struct {
 	Picture       string `json:"picture"`
 	Locale        string `json:"locale"`
 }
+
+type FoodWeekJSON struct {
+	Week  string       `json:"week"`
+	Meals []DayMealJSON `json:"meals"`
+}
+
+type DayMealJSON struct {
+	Day       string    `json:"day"`
+	Breakfast []MealJSON `json:"breakfast"`
+	Lunch     []MealJSON `json:"lunch"`
+	Dinner    []MealJSON `json:"dinner"`
+}
+
+type MealJSON struct {
+	Name  string `json:"name"`
+	Price string `json:"price"`
+}
