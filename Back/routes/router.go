@@ -55,4 +55,8 @@ func Router(app *fiber.App, logger logging.Logger) {
 	// User Routes
 	userRoutes := api.Group("/user", middleware.Auth())
 	userRoutes.Post("courses", h.SaveUserCourses)
+
+	// Food Routes 
+	foodRoutes := api.Group("/food")
+	foodRoutes.Post("/insert", h.GetWeeklyFood)
 }
