@@ -11,14 +11,14 @@ const (
 	Mysql           Category = "MySQL"
 	Validation      Category = "Validation"
 	RequestResponse Category = "RequestResponse"
-	Scraper 		Category = "Scraper"
+	Scraper         Category = "Scraper"
 )
 
 const (
 	// General
 	Startup         SubCategory = "Startup"
 	ExternalService SubCategory = "ExternalService"
-	Login 			SubCategory = "ScraperLogin"
+	Login           SubCategory = "ScraperLogin"
 
 	// MYSQL
 	Connection SubCategory = "Connection"
@@ -31,6 +31,7 @@ const (
 
 	// IO
 	RemoveFile SubCategory = "RemoveFile"
+	CreateFile SubCategory = "CreateFile"
 	API        SubCategory = "API"
 )
 

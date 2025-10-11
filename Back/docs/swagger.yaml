@@ -502,6 +502,45 @@ paths:
       summary: Get detailed department data
       tags:
       - departments
+  /food/image:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Uploads a meal image and saves its record to the database
+      parameters:
+      - description: Meal Image File
+        in: formData
+        name: image
+        required: true
+        type: file
+      - description: Admin authentication token
+        in: header
+        name: X-Admin-Token
+        required: true
+        type: string
+      - description: Comma-separated keywords for the image
+        in: formData
+        name: keywords
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Upload a meal image
+      tags:
+      - food
   /instructors/{instructorID}/detail:
     get:
       description: Returns detailed information about an instructor

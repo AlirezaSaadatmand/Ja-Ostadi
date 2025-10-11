@@ -64,6 +64,8 @@ func main() {
 		})
 	})
 
+	app.Static("/uploads", "./uploads")
+	
 	docs.SetupSwagger(app)
 	routes.Router(app, logger)
 
