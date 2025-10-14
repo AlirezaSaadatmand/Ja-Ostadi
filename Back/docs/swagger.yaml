@@ -502,6 +502,52 @@ paths:
       summary: Get detailed department data
       tags:
       - departments
+  /food/{mealId}/image:
+    patch:
+      consumes:
+      - multipart/form-data
+      description: Updates a meal's image if provided and updates its keywords
+      parameters:
+      - description: Meal ID
+        in: path
+        name: mealId
+        required: true
+        type: string
+      - description: New Meal Image File
+        in: formData
+        name: image
+        type: file
+      - description: Comma-separated keywords
+        in: formData
+        name: keywords
+        type: string
+      - description: Admin authentication token
+        in: header
+        name: X-Admin-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Update a meal image and keywords
+      tags:
+      - food
   /food/image:
     post:
       consumes:

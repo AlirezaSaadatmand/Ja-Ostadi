@@ -501,6 +501,75 @@
                 }
             }
         },
+        "/food/{mealId}/image": {
+            "patch": {
+                "description": "Updates a meal's image if provided and updates its keywords",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "food"
+                ],
+                "summary": "Update a meal image and keywords",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Meal ID",
+                        "name": "mealId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "New Meal Image File",
+                        "name": "image",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comma-separated keywords",
+                        "name": "keywords",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Admin authentication token",
+                        "name": "X-Admin-Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/instructors/courses/{instructorID}": {
             "get": {
                 "description": "Returns courses of an instructor per semester",

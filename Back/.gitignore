@@ -31,3 +31,4 @@ go.work.sum
 *.log
 tmp/
 logs/
+uploads/
