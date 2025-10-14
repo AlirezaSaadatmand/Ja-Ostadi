@@ -10,11 +10,60 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
-
 )
 
-func (s *Services) SaveMealImage(tempFilePath, fileExt, keywords string) (*models.MealImage, error) {
+
+func (s *Services) InsertMealImage(tempFilePath, fileExt, keywords string) (*models.MealImage, error) {
 	uploadDir := "./uploads/food"
+
+	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
+		s.Logger.Error(logging.General, logging.CreateFile, "Failed to create upload directory",
+			map[logging.ExtraKey]interface{}{"error": err.Error()})
+		return nil, errors.New("internal error creating upload directory")
+	}
+
+	timestamp := time.Now().UnixNano()
+	newFileName := fmt.Sprintf("meal_%d%s", timestamp, fileExt)
+	finalPath := filepath.Join(uploadDir, newFileName)
+
+	if err := os.Rename(tempFilePath, finalPath); err != nil {
+		s.Logger.Error(logging.General, logging.Update, "Failed to move uploaded file",
+			map[logging.ExtraKey]interface{}{
+				"error": err.Error(),
+				"src":   tempFilePath,
+				"dst":   finalPath,
+			})
+		return nil, errors.New("failed to store uploaded image")
+	}
+
+	image := models.MealImage{
+		ImageURL: fmt.Sprintf("/uploads/food/%s", newFileName),
+		Keywords: keywords,
+	}
+
+	if err := database.DB.Create(&image).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Insert, "Failed to insert meal image record",
+			map[logging.ExtraKey]interface{}{
+				"error": err.Error(),
+				"file":  newFileName,
+			})
+		return nil, errors.New("failed to save image record in database")
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Insert, "Meal image saved successfully",
+		map[logging.ExtraKey]interface{}{
+			"file": newFileName,
+		})
+
+	return &image, nil
+}
+
+
+
+
+func (s *Services) SaveMealImage(tempFilePath, fileExt string) (*models.MealImage, error) {
+	uploadDir := "./uploads/food"
+
 	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
 		s.Logger.Error(logging.General, logging.CreateFile, "Failed to create upload directory",
 			map[logging.ExtraKey]interface{}{"error": err.Error()})
@@ -31,20 +80,77 @@ func (s *Services) SaveMealImage(tempFilePath, fileExt, keywords string) (*model
 		return nil, errors.New("failed to store uploaded image")
 	}
 
-	image := models.MealImage{
+	image := &models.MealImage{
 		ImageURL: fmt.Sprintf("/uploads/food/%s", newFileName),
-		Keywords: keywords,
 	}
 
-	err := database.DB.Create(&image).Error
-	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Insert, "Failed to insert meal image record",
-			map[logging.ExtraKey]interface{}{"error": err.Error(), "file": newFileName})
-		return nil, errors.New("failed to save image record in database")
-	}
-
-	s.Logger.Info(logging.Mysql, logging.Insert, "Meal image saved successfully",
+	s.Logger.Info(logging.General, logging.Update, "Meal image file saved successfully",
 		map[logging.ExtraKey]interface{}{"file": newFileName})
 
-	return &image, nil
+	return image, nil
+}
+
+
+func (s *Services) CheckMealExists(mealId int) (*models.MealImage, error) {
+	var meal *models.MealImage
+
+	if err := database.DB.First(&meal, "id = ?", mealId).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Meal not found", map[logging.ExtraKey]interface{}{
+			"meal_id": mealId, "error": err.Error(),
+		})
+		return meal , errors.New("meal not found")
+	}
+	return meal , nil
+}	
+
+
+func (s *Services) UpdateMealImage(meal *models.MealImage, tempPath, ext, keywords string) (*models.MealImage, error) {
+	updateData := map[string]interface{}{}
+
+	if tempPath != "" {
+		if meal.ImageURL != "" {
+			fmt.Println(meal.ImageURL)
+			if err := os.Remove(meal.ImageURL); err != nil && !os.IsNotExist(err) {
+				s.Logger.Error(logging.General, logging.RemoveFile, "Failed to remove old meal image", map[logging.ExtraKey]interface{}{
+					"meal_id": meal.ID, "error": err.Error(),
+				})
+				return nil, fmt.Errorf("failed to remove old image: %v", err)
+			}
+		}
+
+		image, err := s.SaveMealImage(tempPath, ext)
+		if err != nil {
+			s.Logger.Error(logging.General, logging.CreateFile, "Failed to save new meal image", map[logging.ExtraKey]interface{}{
+				"meal_id": meal.ID, "error": err.Error(),
+			})
+			return nil, fmt.Errorf("failed to save new image: %v", err)
+		}
+
+		updateData["image_url"] = image.ImageURL
+	}
+
+	if keywords != "" {
+		updateData["keywords"] = keywords
+	}
+
+	if len(updateData) == 0 {
+		return nil, errors.New("no data to update")
+	}
+
+	if err := database.DB.Model(&meal).Updates(updateData).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Update, "Failed to update meal", map[logging.ExtraKey]interface{}{
+			"meal_id": meal.ID, "error": err.Error(),
+		})
+		return nil, fmt.Errorf("failed to update meal in database: %v", err)
+	}
+
+	if err := database.DB.First(&meal, meal.ID).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch updated meal: %v", err)
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Update, "Meal updated successfully", map[logging.ExtraKey]interface{}{
+		"meal_id": meal.ID,
+	})
+
+	return meal, nil
 }
