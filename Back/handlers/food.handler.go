@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/scripts"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
 	"github.com/gofiber/fiber/v2"
@@ -157,4 +158,31 @@ func (h *Handler) UpdateMealImage(c *fiber.Ctx) error {
 	return utils.Success(c, fiber.StatusOK, updatedMeal, "Meal image and/or keywords updated successfully")
 }
 
+// GetNewData godoc
+// @Summary Receive new food data and parse it
+// @Description Accepts JSON data containing week meals and sends it to the parser service
+// @Tags food
+// @Accept json
+// @Produce json
+// @Param data body types.FoodData true "Weekly food data JSON"
+// @Success 200 {object} utils.APIResponse{data}
+// @Failure 400 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /food/weekly [post]
+func (h *Handler) GetNewData(c *fiber.Ctx) error {
+	var foodData types.FoodData
 
+	// Parse JSON body into FoodData struct
+	if err := c.BodyParser(&foodData); err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid JSON body: "+err.Error())
+	}
+
+	// Pass parsed data to your parser service
+	if _, err := scripts.ParseAndUpdateFoodWeek(c.Body()); err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, "Failed to parse data: "+err.Error())
+	}
+
+	// Respond success
+	return utils.Success(c, fiber.StatusOK, nil, "Meal image and/or keywords updated successfully")
+
+}
