@@ -213,6 +213,50 @@ definitions:
       name:
         type: string
     type: object
+  types.DayFoodData:
+    properties:
+      breakfast:
+        items:
+          $ref: '#/definitions/types.MealData'
+        type: array
+      date:
+        type: string
+      day:
+        type: string
+      dinner:
+        items:
+          $ref: '#/definitions/types.MealData'
+        type: array
+      lunch:
+        items:
+          $ref: '#/definitions/types.MealData'
+        type: array
+    type: object
+  types.FoodData:
+    properties:
+      meals:
+        items:
+          $ref: '#/definitions/types.DayFoodData'
+        type: array
+      week:
+        type: string
+    type: object
+  types.MealData:
+    properties:
+      description:
+        type: string
+      imageAddress:
+        type: string
+      name:
+        type: string
+      place:
+        type: string
+      price:
+        type: string
+      rating:
+        format: float32
+        type: number
+    type: object
   utils.APIResponse:
     properties:
       data: {}
@@ -585,6 +629,31 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
       summary: Upload a meal image
+      tags:
+      - food
+  /food/weekly:
+    get:
+      consumes:
+      - application/json
+      description: Returns the most recent week's food plan, including all days and
+        their respective breakfast, lunch, and dinner meals.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.FoodData'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get weekly food schedule
       tags:
       - food
   /instructors/{instructorID}/detail:

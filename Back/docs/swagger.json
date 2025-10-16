@@ -501,6 +501,47 @@
                 }
             }
         },
+        "/food/weekly": {
+            "get": {
+                "description": "Returns the most recent week's food plan, including all days and their respective breakfast, lunch, and dinner meals.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "food"
+                ],
+                "summary": "Get weekly food schedule",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/types.FoodData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/food/{mealId}/image": {
             "patch": {
                 "description": "Updates a meal's image if provided and updates its keywords",
@@ -1207,6 +1248,73 @@
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "types.DayFoodData": {
+            "type": "object",
+            "properties": {
+                "breakfast": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.MealData"
+                    }
+                },
+                "date": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "dinner": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.MealData"
+                    }
+                },
+                "lunch": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.MealData"
+                    }
+                }
+            }
+        },
+        "types.FoodData": {
+            "type": "object",
+            "properties": {
+                "meals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.DayFoodData"
+                    }
+                },
+                "week": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.MealData": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "imageAddress": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "place": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number",
+                    "format": "float32"
                 }
             }
         },

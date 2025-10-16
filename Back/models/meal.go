@@ -9,7 +9,7 @@ type Meal struct {
 	Name        string
 	Price       string
 	Rating      float64
-	Discription string
+	Description string
 	Place       string
 
 	ImageID *uint
