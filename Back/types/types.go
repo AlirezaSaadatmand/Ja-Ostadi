@@ -44,3 +44,25 @@ type MealJSON struct {
 	Name  string `json:"name"`
 	Price string `json:"price"`
 }
+
+type MealData struct {
+	Name string
+	Price string
+	Rating float32
+	Description string
+	Place string
+	ImageAddress string
+}
+
+type DayFoodData struct {
+	Day string
+	Date string
+	Breakfast []MealData
+	Lunch []MealData
+	Dinner []MealData
+}
+
+type FoodData struct {
+	Week string 
+	Meals []DayFoodData
+}
