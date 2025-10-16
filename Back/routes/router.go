@@ -58,8 +58,8 @@ func Router(app *fiber.App, logger logging.Logger) {
 
 	// Food Routes 
 	foodRoutes := api.Group("/food")
-	// foodRoutes.Get("/", h.GetWeeklyFood)
-	// foodRoutes.Post("/")
+	foodRoutes.Get("/weekly", h.GetWeeklyFood)
+	foodRoutes.Post("/weekly", h.GetWeeklyFood)
 	foodRoutes.Post("/image", middleware.AdminMiddleware(), h.UploadMealImage)
 	foodRoutes.Patch("/:mealId/image", middleware.AdminMiddleware(), h.UpdateMealImage)
 }
