@@ -209,12 +209,5 @@ func (s *Services) GetMealsByDayID(dayId int) ([]models.Meal, error) {
 		return nil, errors.New("failed to fetch meals for the given day")
 	}
 
-	if len(meals) == 0 {
-		s.Logger.Warn(logging.Mysql, logging.Select, "No meals found for the given day", map[logging.ExtraKey]interface{}{
-			"day_id": dayId,
-		})
-		return nil, errors.New("no meals found for this day")
-	}
-
 	return meals, nil
 }

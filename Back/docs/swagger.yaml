@@ -656,6 +656,36 @@ paths:
       summary: Get weekly food schedule
       tags:
       - food
+    post:
+      consumes:
+      - application/json
+      description: Accepts JSON data containing week meals and sends it to the parser
+        service
+      parameters:
+      - description: Weekly food data JSON
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/types.FoodData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Receive new food data and parse it
+      tags:
+      - food
   /instructors/{instructorID}/detail:
     get:
       description: Returns detailed information about an instructor
