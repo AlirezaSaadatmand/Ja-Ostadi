@@ -154,3 +154,67 @@ func (s *Services) UpdateMealImage(meal *models.MealImage, tempPath, ext, keywor
 
 	return meal, nil
 }
+
+
+
+func (s *Services) GetLastWeekMeals() (*models.WeekMeals, error) {
+	var lastWeek models.WeekMeals
+
+	if err := database.DB.Preload("Meals").Last(&lastWeek).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to fetch last week meals", map[logging.ExtraKey]interface{}{
+			"error": err.Error(),
+		})
+		return nil, errors.New("no week meals found")
+	}
+
+	return &lastWeek, nil
+}
+
+func (s *Services) GetDaysByWeekID(weekId int) ([]models.DayMeals, error) {
+	var days []models.DayMeals
+
+	if err := database.DB.
+		Preload("Meals").
+		Where("week_id = ?", weekId).
+		Find(&days).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to fetch days by week ID", map[logging.ExtraKey]interface{}{
+			"week_id": weekId,
+			"error":   err.Error(),
+		})
+		return nil, errors.New("failed to fetch days for the given week")
+	}
+
+	if len(days) == 0 {
+		s.Logger.Warn(logging.Mysql, logging.Select, "No days found for the given week", map[logging.ExtraKey]interface{}{
+			"week_id": weekId,
+		})
+		return nil, errors.New("no days found for this week")
+	}
+
+	return days, nil
+}
+
+
+func (s *Services) GetMealsByDayID(dayId int) ([]models.Meal, error) {
+	var meals []models.Meal
+
+	if err := database.DB.
+		Preload("Image").
+		Where("day_id = ?", dayId).
+		Find(&meals).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to fetch meals by day ID", map[logging.ExtraKey]interface{}{
+			"day_id": dayId,
+			"error":  err.Error(),
+		})
+		return nil, errors.New("failed to fetch meals for the given day")
+	}
+
+	if len(meals) == 0 {
+		s.Logger.Warn(logging.Mysql, logging.Select, "No meals found for the given day", map[logging.ExtraKey]interface{}{
+			"day_id": dayId,
+		})
+		return nil, errors.New("no meals found for this day")
+	}
+
+	return meals, nil
+}
