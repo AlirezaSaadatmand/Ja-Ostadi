@@ -220,12 +220,18 @@ func (s *Services) SubmitOrUpdateRating(userID uint, req types.SubmitRatingReque
 			return nil, errors.New("failed to update rating")
 		}
 
+		if err := s.UpdateMealAverageRating(req.MealID); err != nil {
+			s.Logger.Error(logging.Mysql, logging.Update, "Failed to update average rating", map[logging.ExtraKey]interface{}{
+				"meal_id": req.MealID, "error": err.Error(),
+			})
+		}
+
 		return &existing, nil
 	}
 
 	newRating := models.RateMeal{
-		UserId:  uint(userID),
-		MealId:  uint(req.MealID),
+		UserId:  userID,
+		MealId:  req.MealID,
 		Rating:  req.Rating,
 		Comment: req.Comment,
 	}
@@ -237,5 +243,38 @@ func (s *Services) SubmitOrUpdateRating(userID uint, req types.SubmitRatingReque
 		return nil, errors.New("failed to save rating")
 	}
 
+	if err := s.UpdateMealAverageRating(req.MealID); err != nil {
+		s.Logger.Error(logging.Mysql, logging.Update, "Failed to update average rating", map[logging.ExtraKey]interface{}{
+			"meal_id": req.MealID, "error": err.Error(),
+		})
+	}
+
 	return &newRating, nil
+}
+
+func (s *Services) UpdateMealAverageRating(mealID uint) error {
+	var avgResult struct {
+		Average float64
+	}
+
+	if err := database.DB.Model(&models.RateMeal{}).
+		Select("AVG(rating) as average").
+		Where("meal_id = ?", mealID).
+		Scan(&avgResult).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to calculate average rating", map[logging.ExtraKey]interface{}{
+			"meal_id": mealID, "error": err.Error(),
+		})
+		return errors.New("failed to calculate average rating")
+	}
+
+	if err := database.DB.Model(&models.Meal{}).
+		Where("id = ?", mealID).
+		Update("rating", avgResult.Average).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Update, "Failed to update meal average rating", map[logging.ExtraKey]interface{}{
+			"meal_id": mealID, "error": err.Error(),
+		})
+		return errors.New("failed to update meal rating")
+	}
+
+	return nil
 }
