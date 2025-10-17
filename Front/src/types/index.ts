@@ -135,3 +135,27 @@ export interface CourseDetailResponseData {
   ClassTime: CourseDetailClassTime[]
   Semeter: CourseDetailSemester
 }
+
+export interface MealData {
+  id : string
+  name: string
+  price: number
+  rating: number
+  description: string
+  place: string
+  imageAddress: string
+  commented: boolean
+}
+
+export interface DayFoodData {
+  day: string
+  date: string
+  breakfast: MealData[] | null
+  lunch: MealData[] | null
+  dinner: MealData[] | null
+}
+
+export interface FoodData {
+  week: string
+  meals: DayFoodData[]
+}
