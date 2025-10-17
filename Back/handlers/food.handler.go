@@ -9,6 +9,7 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // GetWeeklyFood retrieves the current week's meal schedule
@@ -47,6 +48,7 @@ func (h *Handler) GetWeeklyFood(c *fiber.Ctx) error {
 
 		for _, meal := range meals {
 			m := types.MealData{
+				ID:          strconv.Itoa(int(meal.ID)),
 				Name:        meal.Name,
 				Price:       meal.Price,
 				Rating:      float32(meal.Rating),
@@ -185,4 +187,40 @@ func (h *Handler) GetNewData(c *fiber.Ctx) error {
 	// Respond success
 	return utils.Success(c, fiber.StatusOK, nil, "Meal image and/or keywords updated successfully")
 
+}
+
+// SubmitRating godoc
+// @Summary Submit or update a meal rating
+// @Description Allows a user to rate a meal (0–5 stars) and leave an optional comment
+// @Tags food
+// @Accept json
+// @Produce json
+// @Param data body services.SubmitRatingRequest true "Meal rating data"
+// @Success 200 {object} utils.APIResponse{data}
+// @Failure 400 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /food/rate [post]
+func (h *Handler) SubmitRating(c *fiber.Ctx) error {
+	userClaims := c.Locals("user").(jwt.MapClaims)
+	userIDFloat, ok := userClaims["user_id"].(float64)
+	if !ok {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid user_id in claims")
+	}
+	userID := uint(userIDFloat)
+
+	var body types.SubmitRatingRequest
+	if err := c.BodyParser(&body); err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid JSON body: "+err.Error())
+	}
+
+	if body.MealID == 0 || body.Rating < 0 || body.Rating > 5 {
+		return utils.Error(c, fiber.StatusBadRequest, "Meal ID and valid rating (0–5) are required")
+	}
+
+	rating, err := h.Services.SubmitOrUpdateRating(userID, body)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return utils.Success(c, fiber.StatusOK, rating, "Rating submitted successfully")
 }

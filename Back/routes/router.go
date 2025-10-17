@@ -62,4 +62,5 @@ func Router(app *fiber.App, logger logging.Logger) {
 	foodRoutes.Post("/weekly", h.GetNewData)
 	foodRoutes.Post("/image", middleware.AdminMiddleware(), h.UploadMealImage)
 	foodRoutes.Patch("/:mealId/image", middleware.AdminMiddleware(), h.UpdateMealImage)
+	foodRoutes.Post("/rate", middleware.Auth(), h.SubmitRating)
 }
