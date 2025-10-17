@@ -10,6 +10,7 @@ import InstructorDetailPage from "./pages/InstructorDetailPage"
 import CoursesPage from "./pages/CoursesPage"
 import CourseDetailPage from "./pages/CourseDetailPage"
 import AuthPage from "./pages/AuthPage"
+import FoodPage from "./pages/foodPage"
 
 const AppRoutes = () => {
   const [initialized, setInitialized] = useState(false)
@@ -55,6 +56,10 @@ const AppRoutes = () => {
     {
       path: "/courses/:courseId",
       element: isAuthenticated ? <CourseDetailPage /> : <Navigate to="/login" replace />,
+    },
+    {
+      path: "/food",
+      element: isAuthenticated ? <FoodPage /> : <Navigate to="/login" replace />
     },
     { path: "*", element: <NotFoundPage /> },
   ])

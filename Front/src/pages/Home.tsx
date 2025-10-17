@@ -67,7 +67,7 @@ const HomePage: React.FC = () => {
       title: "سلف",
       description: "اطلاعات و برنامه هفتگی کالینان دانشگاه.",
       icon: <UtensilsCrossed className="w-12 h-12 text-[#AB8A58]" />,
-      comingSoon: true,
+      link: "/food"
     },
   ]
 
