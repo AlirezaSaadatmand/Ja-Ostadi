@@ -22,6 +22,25 @@ import (
 // @Failure 500 {object} utils.APIResponse
 // @Router /food/weekly [get]
 func (h *Handler) GetWeeklyFood(c *fiber.Ctx) error {
+	userClaims := c.Locals("user").(jwt.MapClaims)
+	userIDFloat, ok := userClaims["user_id"].(float64)
+	if !ok {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid user_id in claims")
+	}
+	userID := uint(userIDFloat)
+
+	userRatings, err := h.Services.GetUserRatings(userID)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	commentedMeals := make(map[int]bool)
+	for _, rating := range userRatings {
+		if strings.TrimSpace(rating.Comment) != "" {
+			commentedMeals[rating.MealId] = true
+		}
+	}
+
 	var data types.FoodData
 
 	week, err := h.Services.GetLastWeekMeals()
@@ -54,10 +73,11 @@ func (h *Handler) GetWeeklyFood(c *fiber.Ctx) error {
 				Rating:      float32(meal.Rating),
 				Description: meal.Description,
 				Place:       meal.Place,
+				Commented:   commentedMeals[int(meal.ID)],
 			}
 
 			// if meal.Image != nil {
-			// 	m.ImageAddress = meal.Image.URL // change field name if needed (e.g. `meal.Image.Address`)
+			// 	m.ImageAddress = meal.Image.URL
 			// }
 
 			switch strings.ToLower(meal.Type) {
@@ -73,8 +93,7 @@ func (h *Handler) GetWeeklyFood(c *fiber.Ctx) error {
 		data.Meals = append(data.Meals, dayFood)
 	}
 
-	return utils.Success(c, fiber.StatusOK, data, "Meal image uploaded successfully")
-
+	return utils.Success(c, fiber.StatusOK, data, "Weekly meals retrieved successfully")
 }
 
 // UploadMealImage uploads an image and stores metadata
@@ -200,6 +219,7 @@ func (h *Handler) GetNewData(c *fiber.Ctx) error {
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
 // @Router /food/rate [post]
+// Handler: SubmitRating
 func (h *Handler) SubmitRating(c *fiber.Ctx) error {
 	userClaims := c.Locals("user").(jwt.MapClaims)
 	userIDFloat, ok := userClaims["user_id"].(float64)
@@ -214,13 +234,23 @@ func (h *Handler) SubmitRating(c *fiber.Ctx) error {
 	}
 
 	if body.MealID == 0 || body.Rating < 0 || body.Rating > 5 {
-		return utils.Error(c, fiber.StatusBadRequest, "Meal ID and valid rating (0–5) are required")
+		return utils.Error(c, fiber.StatusBadRequest, "Meal ID and a valid rating (0–5) are required")
 	}
 
-	rating, err := h.Services.SubmitOrUpdateRating(userID, body)
+	exists, err := h.Services.CheckIfUserRatedMeal(userID, body.MealID)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, "Failed to check existing rating: "+err.Error())
+	}
+
+	if exists {
+		return utils.Error(c, fiber.StatusBadRequest, "You have already rated this meal")
+	}
+
+	rating, err := h.Services.SubmitRating(userID, body)
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return utils.Success(c, fiber.StatusOK, rating, "Rating submitted successfully")
 }
+
