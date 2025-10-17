@@ -29,40 +29,46 @@ type GoogleUser struct {
 }
 
 type FoodWeekJSON struct {
-	Week  string       `json:"week"`
+	Week  string        `json:"week"`
 	Meals []DayMealJSON `json:"meals"`
 }
 
 type DayMealJSON struct {
-	Day       string    `json:"day"`
+	Day       string     `json:"day"`
 	Breakfast []MealJSON `json:"breakfast"`
 	Lunch     []MealJSON `json:"lunch"`
 	Dinner    []MealJSON `json:"dinner"`
 }
 
 type MealJSON struct {
-	Name  string `json:"name"`
-	Price string `json:"price"`
+	Name string `json:"name"`
 }
 
 type MealData struct {
-	Name string
-	Price string
-	Rating float32
-	Description string
-	Place string
-	ImageAddress string
+	ID           string  `json:"id"`
+	Name         string  `json:"name"`
+	Price        string  `json:"price"`
+	Rating       float32 `json:"rating"`
+	Description  string  `json:"description"`
+	Place        string  `json:"place"`
+	ImageAddress string  `json:"imageAddress"`
 }
 
 type DayFoodData struct {
-	Day string
-	Date string
-	Breakfast []MealData
-	Lunch []MealData
-	Dinner []MealData
+	Day       string     `json:"day"`
+	Date      string     `json:"date"`
+	Breakfast []MealData `json:"breakfast"`
+	Lunch     []MealData `json:"lunch"`
+	Dinner    []MealData `json:"dinner"`
 }
 
 type FoodData struct {
-	Week string 
-	Meals []DayFoodData
+	Week  string        `json:"week"`
+	Meals []DayFoodData `json:"meals"`
+}
+
+type SubmitRatingRequest struct {
+	MealID  uint   `json:"meal_id"`
+	Rating  int    `json:"rating"`
+	Comment string `json:"comment"`
 }
