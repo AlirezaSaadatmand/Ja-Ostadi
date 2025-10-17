@@ -11,8 +11,8 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
+	"gorm.io/gorm"
 )
-
 
 func (s *Services) InsertMealImage(tempFilePath, fileExt, keywords string) (*models.MealImage, error) {
 	uploadDir := "./uploads/food"
@@ -95,10 +95,10 @@ func (s *Services) CheckMealExists(mealId int) (*models.MealImage, error) {
 		s.Logger.Error(logging.Mysql, logging.Select, "Meal not found", map[logging.ExtraKey]interface{}{
 			"meal_id": mealId, "error": err.Error(),
 		})
-		return meal , errors.New("meal not found")
+		return meal, errors.New("meal not found")
 	}
-	return meal , nil
-}	
+	return meal, nil
+}
 
 func (s *Services) UpdateMealImage(meal *models.MealImage, tempPath, ext, keywords string) (*models.MealImage, error) {
 	updateData := map[string]interface{}{}
@@ -205,30 +205,27 @@ func (s *Services) GetMealsByDayID(dayId int) ([]models.Meal, error) {
 	return meals, nil
 }
 
-func (s *Services) SubmitOrUpdateRating(userID uint, req types.SubmitRatingRequest) (*models.RateMeal, error) {
+func (s *Services) CheckIfUserRatedMeal(userID uint, mealID int) (bool, error) {
 	var existing models.RateMeal
 
-	result := database.DB.Where("user_id = ? AND meal_id = ?", userID, req.MealID).First(&existing)
-	if result.Error == nil {
-		existing.Rating = req.Rating
-		existing.Comment = req.Comment
-
-		if err := database.DB.Save(&existing).Error; err != nil {
-			s.Logger.Error(logging.Mysql, logging.Update, "Failed to update rating", map[logging.ExtraKey]interface{}{
-				"user_id": userID, "meal_id": req.MealID, "error": err.Error(),
-			})
-			return nil, errors.New("failed to update rating")
+	err := database.DB.Where("user_id = ? AND meal_id = ?", userID, mealID).First(&existing).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
 		}
 
-		if err := s.UpdateMealAverageRating(req.MealID); err != nil {
-			s.Logger.Error(logging.Mysql, logging.Update, "Failed to update average rating", map[logging.ExtraKey]interface{}{
-				"meal_id": req.MealID, "error": err.Error(),
-			})
-		}
-
-		return &existing, nil
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to check existing rating", map[logging.ExtraKey]interface{}{
+			"user_id": userID,
+			"meal_id": mealID,
+			"error":   err.Error(),
+		})
+		return false, err
 	}
 
+	return true, nil
+}
+
+func (s *Services) SubmitRating(userID uint, req types.SubmitRatingRequest) (*models.RateMeal, error) {
 	newRating := models.RateMeal{
 		UserId:  userID,
 		MealId:  req.MealID,
@@ -238,21 +235,24 @@ func (s *Services) SubmitOrUpdateRating(userID uint, req types.SubmitRatingReque
 
 	if err := database.DB.Create(&newRating).Error; err != nil {
 		s.Logger.Error(logging.Mysql, logging.Insert, "Failed to create rating", map[logging.ExtraKey]interface{}{
-			"user_id": userID, "meal_id": req.MealID, "error": err.Error(),
+			"user_id": userID,
+			"meal_id": req.MealID,
+			"error":   err.Error(),
 		})
 		return nil, errors.New("failed to save rating")
 	}
 
 	if err := s.UpdateMealAverageRating(req.MealID); err != nil {
 		s.Logger.Error(logging.Mysql, logging.Update, "Failed to update average rating", map[logging.ExtraKey]interface{}{
-			"meal_id": req.MealID, "error": err.Error(),
+			"meal_id": req.MealID,
+			"error":   err.Error(),
 		})
 	}
 
 	return &newRating, nil
 }
 
-func (s *Services) UpdateMealAverageRating(mealID uint) error {
+func (s *Services) UpdateMealAverageRating(mealID int) error {
 	var avgResult struct {
 		Average float64
 	}
@@ -277,4 +277,18 @@ func (s *Services) UpdateMealAverageRating(mealID uint) error {
 	}
 
 	return nil
+}
+
+func (s *Services) GetUserRatings(userId uint) ([]models.RateMeal, error) {
+	var ratings []models.RateMeal
+
+	err := database.DB.Where("user_id = ?", userId).Find(&ratings).Error
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get user ratings", map[logging.ExtraKey]interface{}{
+			"user_id": userId, "error": err.Error(),
+		})
+		return nil, errors.New("failed to get user ratings")
+	}
+
+	return ratings, nil
 }
