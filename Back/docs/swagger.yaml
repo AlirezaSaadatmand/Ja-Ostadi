@@ -213,6 +213,15 @@ definitions:
       name:
         type: string
     type: object
+  services.SubmitRatingRequest:
+    properties:
+      comment:
+        type: string
+      meal_id:
+        type: integer
+      rating:
+        type: integer
+    type: object
   types.DayFoodData:
     properties:
       breakfast:
@@ -245,6 +254,8 @@ definitions:
     properties:
       description:
         type: string
+      id:
+        type: string
       imageAddress:
         type: string
       name:
@@ -254,7 +265,6 @@ definitions:
       price:
         type: string
       rating:
-        format: float32
         type: number
     type: object
   utils.APIResponse:
@@ -629,6 +639,37 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
       summary: Upload a meal image
+      tags:
+      - food
+  /food/rate:
+    post:
+      consumes:
+      - application/json
+      description: Allows a user to rate a meal (0–5 stars) and leave an optional
+        comment
+      parameters:
+      - description: Meal rating data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/services.SubmitRatingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Submit or update a meal rating
       tags:
       - food
   /food/weekly:

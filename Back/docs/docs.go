@@ -512,6 +512,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/food/rate": {
+            "post": {
+                "description": "Allows a user to rate a meal (0–5 stars) and leave an optional comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "food"
+                ],
+                "summary": "Submit or update a meal rating",
+                "parameters": [
+                    {
+                        "description": "Meal rating data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/services.SubmitRatingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/food/weekly": {
             "get": {
                 "description": "Returns the most recent week's food plan, including all days and their respective breakfast, lunch, and dinner meals.",
@@ -1306,6 +1352,20 @@ const docTemplate = `{
                 }
             }
         },
+        "services.SubmitRatingRequest": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "meal_id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "integer"
+                }
+            }
+        },
         "types.DayFoodData": {
             "type": "object",
             "properties": {
@@ -1355,6 +1415,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "imageAddress": {
                     "type": "string"
                 },
@@ -1368,8 +1431,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "rating": {
-                    "type": "number",
-                    "format": "float32"
+                    "type": "number"
                 }
             }
         },
