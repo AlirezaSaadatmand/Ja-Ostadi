@@ -10,6 +10,7 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
 )
 
 
@@ -58,9 +59,6 @@ func (s *Services) InsertMealImage(tempFilePath, fileExt, keywords string) (*mod
 	return &image, nil
 }
 
-
-
-
 func (s *Services) SaveMealImage(tempFilePath, fileExt string) (*models.MealImage, error) {
 	uploadDir := "./uploads/food"
 
@@ -90,7 +88,6 @@ func (s *Services) SaveMealImage(tempFilePath, fileExt string) (*models.MealImag
 	return image, nil
 }
 
-
 func (s *Services) CheckMealExists(mealId int) (*models.MealImage, error) {
 	var meal *models.MealImage
 
@@ -102,7 +99,6 @@ func (s *Services) CheckMealExists(mealId int) (*models.MealImage, error) {
 	}
 	return meal , nil
 }	
-
 
 func (s *Services) UpdateMealImage(meal *models.MealImage, tempPath, ext, keywords string) (*models.MealImage, error) {
 	updateData := map[string]interface{}{}
@@ -155,8 +151,6 @@ func (s *Services) UpdateMealImage(meal *models.MealImage, tempPath, ext, keywor
 	return meal, nil
 }
 
-
-
 func (s *Services) GetLastWeekMeals() (*models.WeekMeals, error) {
 	var lastWeek models.WeekMeals
 
@@ -194,7 +188,6 @@ func (s *Services) GetDaysByWeekID(weekId int) ([]models.DayMeals, error) {
 	return days, nil
 }
 
-
 func (s *Services) GetMealsByDayID(dayId int) ([]models.Meal, error) {
 	var meals []models.Meal
 
@@ -210,4 +203,39 @@ func (s *Services) GetMealsByDayID(dayId int) ([]models.Meal, error) {
 	}
 
 	return meals, nil
+}
+
+func (s *Services) SubmitOrUpdateRating(userID uint, req types.SubmitRatingRequest) (*models.RateMeal, error) {
+	var existing models.RateMeal
+
+	result := database.DB.Where("user_id = ? AND meal_id = ?", userID, req.MealID).First(&existing)
+	if result.Error == nil {
+		existing.Rating = req.Rating
+		existing.Comment = req.Comment
+
+		if err := database.DB.Save(&existing).Error; err != nil {
+			s.Logger.Error(logging.Mysql, logging.Update, "Failed to update rating", map[logging.ExtraKey]interface{}{
+				"user_id": userID, "meal_id": req.MealID, "error": err.Error(),
+			})
+			return nil, errors.New("failed to update rating")
+		}
+
+		return &existing, nil
+	}
+
+	newRating := models.RateMeal{
+		UserId:  uint(userID),
+		MealId:  uint(req.MealID),
+		Rating:  req.Rating,
+		Comment: req.Comment,
+	}
+
+	if err := database.DB.Create(&newRating).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Insert, "Failed to create rating", map[logging.ExtraKey]interface{}{
+			"user_id": userID, "meal_id": req.MealID, "error": err.Error(),
+		})
+		return nil, errors.New("failed to save rating")
+	}
+
+	return &newRating, nil
 }
