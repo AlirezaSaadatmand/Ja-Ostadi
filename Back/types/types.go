@@ -52,6 +52,7 @@ type MealData struct {
 	Description  string  `json:"description"`
 	Place        string  `json:"place"`
 	ImageAddress string  `json:"imageAddress"`
+	Commented    bool    `json:"commented"`
 }
 
 type DayFoodData struct {
@@ -68,7 +69,7 @@ type FoodData struct {
 }
 
 type SubmitRatingRequest struct {
-	MealID  uint   `json:"meal_id"`
+	MealID  int   `json:"mealId"`
 	Rating  int    `json:"rating"`
 	Comment string `json:"comment"`
 }
