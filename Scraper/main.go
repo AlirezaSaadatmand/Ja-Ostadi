@@ -36,6 +36,7 @@ func main() {
 
 	url := launcher.New().
 		Headless(true).
+		Append("--no-sandbox").
 		MustLaunch()
 
 	browser := rod.New().ControlURL(url).MustConnect()

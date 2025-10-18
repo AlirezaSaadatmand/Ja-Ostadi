@@ -23,6 +23,8 @@ type Config struct {
 	GoogleCallbackUrl  string
 	Secret_Token       string
 	Front_URL          string
+	SCRAPERHOST        string
+	SCRAPERPORT        string
 }
 
 var appConfig *Config
@@ -52,6 +54,8 @@ func LoadConfig() *Config {
 		GoogleCallbackUrl:  os.Getenv("GOOGLE_CALLBACK_URL"),
 		Secret_Token:       os.Getenv("TOKEN_SECRET"),
 		Front_URL:          os.Getenv("FRONT_URL"),
+		SCRAPERHOST:   		os.Getenv("SCRAPERHOST"),
+		SCRAPERPORT:  		os.Getenv("SCRAPERPORT"),
 	}
 
 	return appConfig

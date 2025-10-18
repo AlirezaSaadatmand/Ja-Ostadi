@@ -1,10 +1,16 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/scripts"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
@@ -181,31 +187,46 @@ func (h *Handler) UpdateMealImage(c *fiber.Ctx) error {
 
 // GetNewData godoc
 // @Summary Receive new food data and parse it
-// @Description Accepts JSON data containing week meals and sends it to the parser service
+// @Description Fetches weekly food data from an external API and sends it to the parser service
 // @Tags food
-// @Accept json
-// @Produce json
-// @Param data body types.FoodData true "Weekly food data JSON"
+// @Param X-Admin-Token header string true "Admin authentication token"
 // @Success 200 {object} utils.APIResponse{data}
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
 // @Router /food/weekly [post]
 func (h *Handler) GetNewData(c *fiber.Ctx) error {
-	var foodData types.FoodData
+	cfg := config.GetConfig()
 
-	// Parse JSON body into FoodData struct
-	if err := c.BodyParser(&foodData); err != nil {
-		return utils.Error(c, fiber.StatusBadRequest, "Invalid JSON body: "+err.Error())
+	apiURL := fmt.Sprintf("http://%s:%s/scrape/this", cfg.SCRAPERHOST, cfg.SCRAPERPORT)
+
+	client := &http.Client{Timeout: 20 * time.Second}
+
+	resp, err := client.Get(apiURL)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, fmt.Sprintf("Failed to fetch external data: %v", err))
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return utils.Error(c, fiber.StatusBadGateway, fmt.Sprintf("External API returned %d: %s", resp.StatusCode, string(body)))
 	}
 
-	// Pass parsed data to your parser service
-	if _, err := scripts.ParseAndUpdateFoodWeek(c.Body()); err != nil {
-		return utils.Error(c, fiber.StatusInternalServerError, "Failed to parse data: "+err.Error())
+	var foodData types.FoodWeekJSON
+	if err := json.NewDecoder(resp.Body).Decode(&foodData); err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, fmt.Sprintf("Failed to decode external JSON: %v", err))
 	}
 
-	// Respond success
-	return utils.Success(c, fiber.StatusOK, nil, "Meal image and/or keywords updated successfully")
+	dataBytes, err := json.Marshal(foodData)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, fmt.Sprintf("Failed to marshal fetched data: %v", err))
+	}
 
+	if _, err := scripts.ParseAndUpdateFoodWeek(dataBytes); err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, fmt.Sprintf("Failed to parse data: %v", err))
+	}
+
+	return utils.Success(c, fiber.StatusOK, nil, "New weekly food data successfully fetched and parsed")
 }
 
 // SubmitRating godoc
@@ -214,7 +235,7 @@ func (h *Handler) GetNewData(c *fiber.Ctx) error {
 // @Tags food
 // @Accept json
 // @Produce json
-// @Param data body services.SubmitRatingRequest true "Meal rating data"
+// @Param data body types.SubmitRatingRequest true "Meal rating data"
 // @Success 200 {object} utils.APIResponse{data}
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
@@ -253,4 +274,3 @@ func (h *Handler) SubmitRating(c *fiber.Ctx) error {
 
 	return utils.Success(c, fiber.StatusOK, rating, "Rating submitted successfully")
 }
-

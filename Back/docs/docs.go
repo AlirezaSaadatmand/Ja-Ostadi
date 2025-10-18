@@ -532,7 +532,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.SubmitRatingRequest"
+                            "$ref": "#/definitions/types.SubmitRatingRequest"
                         }
                     }
                 ],
@@ -599,26 +599,18 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Accepts JSON data containing week meals and sends it to the parser service",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                "description": "Fetches weekly food data from an external API and sends it to the parser service",
                 "tags": [
                     "food"
                 ],
                 "summary": "Receive new food data and parse it",
                 "parameters": [
                     {
-                        "description": "Weekly food data JSON",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/types.FoodData"
-                        }
+                        "type": "string",
+                        "description": "Admin authentication token",
+                        "name": "X-Admin-Token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1352,20 +1344,6 @@ const docTemplate = `{
                 }
             }
         },
-        "services.SubmitRatingRequest": {
-            "type": "object",
-            "properties": {
-                "comment": {
-                    "type": "string"
-                },
-                "meal_id": {
-                    "type": "integer"
-                },
-                "rating": {
-                    "type": "integer"
-                }
-            }
-        },
         "types.DayFoodData": {
             "type": "object",
             "properties": {
@@ -1412,6 +1390,9 @@ const docTemplate = `{
         "types.MealData": {
             "type": "object",
             "properties": {
+                "commented": {
+                    "type": "boolean"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -1432,6 +1413,20 @@ const docTemplate = `{
                 },
                 "rating": {
                     "type": "number"
+                }
+            }
+        },
+        "types.SubmitRatingRequest": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "mealId": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "integer"
                 }
             }
         },
