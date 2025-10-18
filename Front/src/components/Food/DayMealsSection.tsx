@@ -32,7 +32,7 @@ const DayMealsSection: React.FC = () => {
     <>
       <div
         className="fixed bottom-0 left-0 right-0 bg-white shadow-xl w-full max-w-md mx-auto p-6 text-right border-t border-gray-200"
-        style={{ height: "550px", overflowY: "auto" }}
+        style={{ height: "300px", overflowY: "auto" }}
       >
         <h2 className="font-bold text-lg text-gray-900 text-center mb-4">{selectedDay.day}</h2>
 
