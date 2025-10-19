@@ -1,5 +1,5 @@
 import type React from "react"
-import { Building2, BookOpen, Info, UtensilsCrossed } from "lucide-react"
+import { Building2, BookOpen, Info, UtensilsCrossed, BookA } from "lucide-react"
 import ContributorsSection from "../components/Contributors/ContributorsSection"
 import Header from "../components/Header"
 
@@ -64,6 +64,13 @@ const HomePage: React.FC = () => {
       link: "/food"
     },
     {
+      title: "محتوای آموزشی",
+      description: "منابع یادگیری که طی سال‌ها تهیه شده",
+      icon: <BookA className="w-12 h-12 text-[#AB8A58]"/>,
+      link: "/learning-hub",
+      // comingSoon: true,
+    },
+    {
       title: "اطلاعات به درد بخور",
       description: "نکات و اطلاعات مفید برای دانشجوها.",
       icon: <Info className="w-12 h-12 text-[#AB8A58]" />,
@@ -81,7 +88,7 @@ const HomePage: React.FC = () => {
         <ContributorsSection />
       </div>
 
-      <h1 className="text-3xl  sm:text-4xl pt-20 md:text-5xl lg:text-6xl font-extrabold mb-8 sm:mb-12 text-gray-900 text-center px-4">
+      <h1 className="my-12 text-3xl  sm:text-4xl pt-20 md:text-5xl lg:text-6xl font-extrabold mb-8 sm:mb-12 text-gray-900 text-center px-4">
         داشبورد جا استادی دانشگاه فسا‍!
       </h1>
 
