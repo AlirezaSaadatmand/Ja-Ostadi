@@ -10,7 +10,8 @@ import InstructorDetailPage from "./pages/InstructorDetailPage"
 import CoursesPage from "./pages/CoursesPage"
 import CourseDetailPage from "./pages/CourseDetailPage"
 import AuthPage from "./pages/AuthPage"
-import FoodPage from "./pages/foodPage"
+import FoodPage from "./pages/FoodPage"
+import { LearningHub } from "./pages/Learning"
 
 const AppRoutes = () => {
   const [initialized, setInitialized] = useState(false)
@@ -60,6 +61,10 @@ const AppRoutes = () => {
     {
       path: "/food",
       element: <FoodPage />
+    },
+    {
+      path: "/learning-hub",
+      element: <LearningHub />
     },
     { path: "*", element: <NotFoundPage /> },
   ])
