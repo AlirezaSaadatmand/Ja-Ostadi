@@ -5,7 +5,7 @@ const headerItems = [
   { label: "دپارتمان", href: "/departments" },
   { label: "اساتید", href: "/instructors?mode=department" },
   { label: "دروس", href: "/courses" },
-  { label: "سلف", href: "/food" },
+  { label: "چی داریم!", href: "/food" },
   { label: "داشبورد دانشگاه", href: "/" },
 ];
 
