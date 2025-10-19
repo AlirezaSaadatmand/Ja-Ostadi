@@ -37,7 +37,7 @@ const ContributorsSection: React.FC = () => {
         flex justify-center gap-2 
         overflow-x-auto sm:overflow-x-hidden 
         scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pb-2
-        flex-wrap sm:flex-nowrap
+        flex-wrap sm:flex-nowrap 
       `}
     >
       {contributors.map((contributor) => (
@@ -105,14 +105,14 @@ const ContributorsSection: React.FC = () => {
             </div>
           ) : error ? (
             <>
-              <Github className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+              <Github className="cursor-pointer w-8 h-8 text-gray-400 mx-auto mb-3" />
               <a
                 href={config.projectUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                className="inline-flex  items-center px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
               >
-                <Github className="w-4 h-4 ml-2" />
+                <Github className="cursor-pointer w-4 h-4 ml-2" />
                 مشاهده پروژه
                 <ExternalLink className="w-4 h-4 mr-2" />
               </a>
