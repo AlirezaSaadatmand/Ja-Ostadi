@@ -58,13 +58,13 @@ const HomePage: React.FC = () => {
       link: "/courses",
     },
     {
-      title: "سلف",
+      title: "چی داریم!",
       description: "اطلاعات و برنامه هفتگی کالینان دانشگاه.",
       icon: <UtensilsCrossed className="w-12 h-12 text-[#AB8A58]" />,
       link: "/food"
     },
     {
-      title: "اطلاعات بدرد بخور",
+      title: "اطلاعات به درد بخور",
       description: "نکات و اطلاعات مفید برای دانشجوها.",
       icon: <Info className="w-12 h-12 text-[#AB8A58]" />,
       comingSoon: true,
@@ -82,7 +82,7 @@ const HomePage: React.FC = () => {
       </div>
 
       <h1 className="text-3xl  sm:text-4xl pt-20 md:text-5xl lg:text-6xl font-extrabold mb-8 sm:mb-12 text-gray-900 text-center px-4">
-        داشبورد جا استادی فسا‍!
+        داشبورد جا استادی دانشگاه فسا‍!
       </h1>
 
       <p className="max-w-xl mb-8 sm:mb-10 text-center text-gray-600 text-base sm:text-lg md:text-xl px-4">
