@@ -139,7 +139,7 @@ export interface CourseDetailResponseData {
 export interface MealData {
   id : string
   name: string
-  price: number
+  price: string
   rating: number
   description: string
   place: string

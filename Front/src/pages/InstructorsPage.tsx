@@ -103,7 +103,6 @@ const InstructorsPage: React.FC = () => {
         </div>
       </div>
 
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 lg:mt-20 sm:mt-0">
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-8 mb-8">
           <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">فیلتر اساتید</h2>

@@ -28,21 +28,21 @@ const FoodPage: React.FC = () => {
   return (
     <div
       dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center p-4 sm:p-6 font-sans"
+      className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center px-3 pb-32 sm:px-6 font-sans relative"
     >
       <Header />
 
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mt-20 mb-6 text-gray-900">
-        برنامه غذایی سلف دانشگاه
-      </h1>
-
-      <p className="text-gray-600 mb-6 text-center text-sm sm:text-base max-w-md">
-        برای مشاهده منوی هر روز روی کارت مربوطه کلیک کنید 🍴
-      </p>
+      <div className="text-center sm:mt-20 lg:mt-30 mb-4">
+        <h1 className="text-2xl sm:text-3xl mt-10 font-extrabold text-gray-900 mb-2">
+          🍽️ برنامه غذایی سلف دانشگاه
+        </h1>
+        <p className="text-gray-600 text-sm sm:text-base">
+          برای مشاهده منوی هر روز روی کارت مربوطه کلیک کنید
+        </p>
+      </div>
 
       <DaySelector />
       <DayMealsSection />
-
     </div>
   );
 };

@@ -59,7 +59,7 @@ const AppRoutes = () => {
     },
     {
       path: "/food",
-      element: isAuthenticated ? <FoodPage /> : <Navigate to="/login" replace />
+      element: <FoodPage />
     },
     { path: "*", element: <NotFoundPage /> },
   ])
