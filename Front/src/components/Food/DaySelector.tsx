@@ -18,9 +18,10 @@ const DaySelector: React.FC = () => {
           <h2 className="text-gray-800 font-semibold text-sm mb-1">{dayMeal.day}</h2>
           <h2 className="text-gray-600 text-xs mb-2">{dayMeal.date}</h2>
           <div className="flex justify-center gap-2 text-gray-500">
-            {dayMeal.breakfast?.length > 0 && <Coffee className="w-5 h-5 text-yellow-600" />}
-            {dayMeal.lunch?.length > 0 && <Soup className="w-5 h-5 text-green-600" />}
-            {dayMeal.dinner?.length > 0 && <Moon className="w-5 h-5 text-indigo-600" />}
+            {dayMeal?.breakfast?.length ? <Coffee className="w-5 h-5 text-yellow-600" /> : null}
+            {dayMeal?.lunch?.length ? <Soup className="w-5 h-5 text-green-600" /> : null}
+            {dayMeal?.dinner?.length ? <Moon className="w-5 h-5 text-indigo-600" /> : null}
+
           </div>
         </button>
       ))}
