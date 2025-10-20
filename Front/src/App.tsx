@@ -60,7 +60,7 @@ const AppRoutes = () => {
     },
     {
       path: "/food",
-      element: <FoodPage />
+      element: isAuthenticated ? <FoodPage /> : <Navigate to="/login" replace />
     },
     {
       path: "/learning-hub",

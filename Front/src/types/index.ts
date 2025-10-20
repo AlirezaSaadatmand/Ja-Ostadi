@@ -71,6 +71,7 @@ export interface Semester {
 export interface CourseInSemester {
   id: number
   name: string
+  time: CourseDetailClassTime[]
 }
 
 export interface InstructorCoursesBySemester {

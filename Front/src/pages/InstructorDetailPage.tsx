@@ -4,6 +4,7 @@ import type React from "react"
 import { useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore"
+import WeeklyTableView from "../components/Instructor/WeeklyTableView"
 import {
   BookOpen,
   CalendarDays,
@@ -118,11 +119,16 @@ const InstructorDetailPage: React.FC = () => {
           )}
         </div>
 
+        <div className="bg-white rounded-2xl shadow-lg">
+
+        <WeeklyTableView />
+        </div>
         <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
           <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center flex items-center justify-center">
             <BookOpen className="w-6 sm:w-7 h-6 sm:h-7 text-emerald-600 ml-2" />
             دروس ارائه شده
           </h3>
+
 
           {instructorCoursesBySemester.length === 0 ? (
             <p className="text-center text-gray-500 py-4 sm:py-6 text-sm sm:text-base">
