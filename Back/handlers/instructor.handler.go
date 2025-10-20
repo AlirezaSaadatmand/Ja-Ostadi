@@ -51,7 +51,13 @@ func (h *Handler) GetInstructorData(c *fiber.Ctx) error {
 
 type InstructorCoursesData struct {
 	Semester services.SemesterData       `json:"semester"`
-	Courses  []services.InstructorCourse `json:"courses"`
+	Courses  []InstructorCourseTimeData `json:"courses"`
+}
+
+type InstructorCourseTimeData struct {
+	ID   uint                      `json:"id"`
+	Name string                    `json:"name"`
+	Time []services.ScheduleTimeID `json:"time"`
 }
 
 // GetInstructorCourses returns courses for a specific instructor grouped by semester
@@ -77,6 +83,12 @@ func (h *Handler) GetInstructorCourses(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
+	times, _ := h.Services.GetAllTimesSchedule()
+	timeMap := make(map[int][]services.ScheduleTimeID)
+	for _, t := range times {
+		timeMap[int(t.CourseID)] = append(timeMap[int(t.CourseID)], t)
+	}
+
 	var result []InstructorCoursesData
 
 	for _, semester := range semesters {
@@ -89,9 +101,18 @@ func (h *Handler) GetInstructorCourses(c *fiber.Ctx) error {
 			continue
 		}
 
+		var courseData []InstructorCourseTimeData
+		for _, course := range courses {
+			courseData = append(courseData, InstructorCourseTimeData{
+				ID: course.ID,
+				Name: course.Name,
+				Time: timeMap[int(course.ID)],
+			})
+		}
+
 		result = append(result, InstructorCoursesData{
 			Semester: semester,
-			Courses:  courses,
+			Courses:  courseData,
 		})
 	}
 
@@ -117,6 +138,6 @@ func (h *Handler) GetInstructorDetail(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.Error(c, fiber.StatusBadRequest, "invalid instructor ID")
 	}
-	
+
 	return utils.Success(c, fiber.StatusOK, data, "Data fetched successfully")
 }
