@@ -83,10 +83,10 @@ const WeeklyTableView: React.FC = () => {
                     >
                       {course ? (
                         <div className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center">
-                          <div className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate">
+                          <div className="text-[9px] sm:text-xs lg:text-center font-semibold text-indigo-900 truncate sm:pb1 lg:pb-2">
                             {course.name}
                           </div>
-                          <div className="text-[8px] sm:text-xs text-indigo-700 truncate">
+                          <div className="text-[8px] sm:text-xs text-center text-indigo-700 truncate">
                             {
                               course.time.find(
                                 (t) =>
