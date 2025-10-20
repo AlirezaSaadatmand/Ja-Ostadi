@@ -1,20 +1,20 @@
-import DepartmentList from "../components/Schedule/DepartmentList";
-import { useScheduleDataStore } from "../store/schedule/useScheduleDataStore";
+// import DepartmentList from "../components/Schedule/DepartmentList";
+// import { useScheduleDataStore } from "../store/schedule/useScheduleDataStore";
 
-const topics = [
-    {  
-    id: 1,
-    name: 'برنامه نویسی',
-    instructors_count: 1,
-    courses_count: 1
-    },
-    {  
-    id: 2,
-    name: 'ریاضی',
-    instructors_count: 1,
-    courses_count: 1
-    },
-];
+// const topics = [
+//     {  
+//     id: 1,
+//     name: 'برنامه نویسی',
+//     instructors_count: 1,
+//     courses_count: 1
+//     },
+//     {  
+//     id: 2,
+//     name: 'ریاضی',
+//     instructors_count: 1,
+//     courses_count: 1
+//     },
+// ];
 
 export const LearningHub = () => {
     //   const {
