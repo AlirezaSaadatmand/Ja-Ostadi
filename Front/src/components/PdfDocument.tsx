@@ -50,6 +50,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
       </div>
 
       <div className="flex gap-8">
+        {/* Weekly Table */}
         <div className="flex-[3]">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
             برنامه هفتگی
@@ -64,29 +65,30 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
                   className="p-4 text-right font-bold text-gray-800 border-b border-gray-300 text-lg"
                   style={{ width: "15%" }}
                 >
-                  ساعت
+                  روز / ساعت
                 </th>
-                {days.map((day) => (
+                {timeSlots.map((slot) => (
                   <th
-                    key={day}
+                    key={slot.key}
                     className="p-4 text-center font-bold text-gray-800 border-b border-gray-300 text-lg"
-                    style={{ width: "17%" }}
+                    style={{ width: `${85 / timeSlots.length}%` }}
                   >
-                    {day}
+                    {slot.label}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {timeSlots.map((slot) => (
-                <tr key={slot.key} className="hover:bg-gray-50 transition-colors">
+              {days.map((day) => (
+                <tr key={day} className="hover:bg-gray-50 transition-colors">
                   <td
                     className="p-4 font-semibold text-gray-700 bg-gray-50 border-b border-gray-200 text-md text-center"
                     style={{ height: "140px" }}
                   >
-                    {slot.label}
+                    {day}
                   </td>
-                  {days.map((day) => {
+
+                  {timeSlots.map((slot) => {
                     const slotData = getCourseForSlot(day, slot.key)
                     return (
                       <td
@@ -123,6 +125,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
           </table>
         </div>
 
+        {/* Scheduled Courses */}
         <div className="flex-[1] flex flex-col">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
             دروس برنامه ریزی شده

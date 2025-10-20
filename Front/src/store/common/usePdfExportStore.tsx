@@ -70,7 +70,7 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
           allowTaint: true,
           logging: false,
         },
-        jsPDF: { unit: "pt", format: [1920, 1200], orientation: "landscape" },
+        jsPDF: { unit: "pt", format: [1920, 1400], orientation: "landscape" },
       }
 
       await html2pdf().set(opt).from(tempDiv).save()

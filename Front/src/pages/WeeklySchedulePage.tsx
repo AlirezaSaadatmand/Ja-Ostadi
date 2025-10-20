@@ -99,7 +99,7 @@ const WeeklySchedulePage: React.FC = () => {
           </div>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-1 sm:gap-4 lg:gap-6 items-stretch min-h-[350px] sm:min-h-[500px]">
+        <div className="flex flex-col lg:flex-row gap-1 sm:gap-4 lg:gap-6 items-stretch min-h-[500px] sm:min-h-[500px]">
           <div className="lg:w-1/4 flex-shrink-0 order-2 lg:order-1">
             <div className="lg:sticky lg:top-14">
               <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />

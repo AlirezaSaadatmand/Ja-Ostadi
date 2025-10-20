@@ -34,8 +34,7 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
           onClick={() => onExportPdf({ scheduledCourses, table, days, timeSlots })}
           disabled={isExporting}
           data-pdf-exclude
-          className="mb-2 sm:mb-4 bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-3 rounded-lg text-xs sm:text-sm lg:text-base font-medium flex items-center gap-1 sm:gap-2 w-full justify-center
-                 lg:absolute lg:top-6 lg:left-6 lg:w-auto lg:justify-start lg:mb-0"
+          className="mb-2 sm:mb-4 bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-3 rounded-lg text-xs sm:text-sm lg:text-base flex items-center gap-1 sm:gap-2 w-full justify-center lg:absolute lg:top-6 lg:left-6 lg:w-auto lg:justify-start lg:mb-0"
         >
           {isExporting ? (
             <>
@@ -75,41 +74,37 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
         </div>
 
         <div ref={wrapperRef} className="lg:overflow-x-auto flex justify-center" dir="rtl">
-          <div
-            ref={ref}
-            style={{
-              width: window.innerWidth < 1024 ? "100vw" : "100%",
-            }}
-          >
-            <table className="border-collapse bg-white rounded-lg overflow-hidden shadow-sm w-full lg:min-w-[700px]">
+          <div ref={ref} className="w-full">
+            <table className="border-collapse bg-white rounded-lg overflow-hidden shadow-sm w-full lg:min-w-[700px] table-fixed">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="p-1 sm:p-2 lg:p-5 text-right font-semibold text-gray-700 border-b border-gray-200 w-16 sm:min-w-16 lg:w-40 text-xs sm:text-sm lg:text-base">
-                    ساعت
+                  <th className="p-1 sm:p-2 lg:p-5 text-right font-semibold text-gray-700 border-b border-gray-200 text-xs sm:text-sm">
+                    روز / ساعت
                   </th>
-                  {days.map((day) => (
+                  {timeSlots.map((slot) => (
                     <th
-                      key={day}
-                      className="p-1 sm:p-2 lg:p-5 text-center font-semibold text-gray-700 border-b border-gray-200 text-xs sm:text-sm lg:text-base lg:w-56"
-                      style={{ width: window.innerWidth >= 1024 ? undefined : `${(100 - 16) / days.length}%` }}
+                      key={slot.key}
+                      className="p-1 sm:p-2 lg:p-5 text-center font-semibold text-gray-700 border-b border-gray-200 text-xs sm:text-sm lg:text-base"
                     >
-                      {day}
+                      {slot.label}
                     </th>
                   ))}
                 </tr>
               </thead>
+
               <tbody>
-                {timeSlots.map((slot) => (
-                  <tr key={slot.key} className="hover:bg-gray-50 transition-colors">
-                    <td className="p-1 sm:p-1.5 lg:p-5 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-xs sm:text-sm lg:text-base w-16 sm:min-w-16 lg:w-40">
-                      {slot.label}
+                {days.map((day) => (
+                  <tr key={day} className="hover:bg-gray-50 transition-colors text-center">
+                    <td className="p-1 sm:p-2 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-xs sm:text-sm">
+                      {day}
                     </td>
-                    {days.map((day) => {
+
+                    {timeSlots.map((slot) => {
                       const course = getCourseForSlot(day, slot.key)
                       return (
                         <td
                           key={day + slot.key}
-                          className="border-b border-gray-200 h-16 sm:h-10 lg:h-24 transition-colors relative border-l group lg:w-56"
+                          className="border-b border-gray-200 h-16 sm:h-20 lg:h-24 transition-colors relative border-l group"
                         >
                           {course ? (
                             <div className="absolute inset-0.5 lg:inset-1 bg-indigo-100 border border-indigo-300 rounded lg:rounded-xl p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center">

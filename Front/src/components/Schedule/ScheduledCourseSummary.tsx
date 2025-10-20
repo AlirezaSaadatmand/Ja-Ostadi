@@ -12,7 +12,7 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({ schedul
   const totalUnits = scheduledCourses.reduce((sum, course) => sum + parseFloat(course.course.units), 0)
 
   return (
-    <div className="bg-white rounded-lg shadow-sm flex flex-col h-full max-h-[400px] sm:max-h-[500px] lg:max-h-[600px]">
+    <div className="bg-white rounded-lg shadow-sm flex flex-col h-full max-h-[450px] sm:max-h-[550px] lg:max-h-[650px]">
       <div className="p-2 sm:p-3 border-b border-gray-200 flex-shrink-0">
         <h3 className="text-sm sm:text-base font-semibold text-gray-900 flex items-center justify-center">
           <svg

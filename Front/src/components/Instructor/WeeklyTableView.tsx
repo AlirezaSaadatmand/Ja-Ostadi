@@ -24,7 +24,10 @@ const WeeklyTableView: React.FC = () => {
     )
 
     const map: Record<string, CourseInSemester> = {}
-    semester?.courses.forEach((course) => {
+    if (!semester || !semester.courses) return map
+
+    semester.courses.forEach((course) => {
+      if (!course.time) return
       course.time.forEach((t) => {
         const key = `${t.day}-${t.start_time}-${t.end_time}`
         map[key] = course
@@ -49,32 +52,32 @@ const WeeklyTableView: React.FC = () => {
         </p>
       </div>
 
-      <div className="overflow-x-auto w-full">
+      <div className="overflow-x-auto w-full text-center">
         <table className="w-full table-fixed border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
           <thead>
             <tr className="bg-gray-50">
               <th className="p-2 text-right font-semibold text-gray-700 border-b border-gray-200 text-xs sm:text-sm">
-                ساعت
+                روز / ساعت
               </th>
-              {DEFAULT_DAYS.map((day) => (
+              {DEFAULT_TIME_SLOTS.map((slot) => (
                 <th
-                  key={day}
+                  key={slot.key}
                   className="p-1 sm:p-2 text-center font-semibold text-gray-700 border-b border-gray-200 text-[10px] sm:text-sm"
                 >
-                  {day}
+                  {slot.label}
                 </th>
               ))}
             </tr>
           </thead>
 
           <tbody>
-            {DEFAULT_TIME_SLOTS.map((slot) => (
-              <tr key={slot.key} className="hover:bg-gray-50 transition-colors">
+            {DEFAULT_DAYS.map((day) => (
+              <tr key={day} className="hover:bg-gray-50 transition-colors">
                 <td className="p-1 sm:p-2 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-[10px] sm:text-sm">
-                  {slot.label}
+                  {day}
                 </td>
 
-                {DEFAULT_DAYS.map((day) => {
+                {DEFAULT_TIME_SLOTS.map((slot) => {
                   const course = tableData[`${day}-${slot.start}-${slot.end}`]
                   return (
                     <td
@@ -83,10 +86,10 @@ const WeeklyTableView: React.FC = () => {
                     >
                       {course ? (
                         <div className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center">
-                          <div className="text-[9px] sm:text-xs lg:text-center font-semibold text-indigo-900 truncate sm:pb1 lg:pb-2">
+                          <div className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate sm:pb1 lg:pb-2 text-center">
                             {course.name}
                           </div>
-                          <div className="text-[8px] sm:text-xs text-center text-indigo-700 truncate">
+                          <div className="text-[8px] sm:text-xs text-indigo-700 truncate text-center">
                             {
                               course.time.find(
                                 (t) =>
