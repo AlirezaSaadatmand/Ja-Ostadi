@@ -8,13 +8,18 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 )
 
-func (s *Services) GetAllUniqueRooms() ([]string, error) {
-	var rooms []string
+type ClassRooms struct {
+	ID       uint   `json:"id"`
+	Room     string `json:"room"`
+	CourseID uint   `json:"courseId"`
+}
+
+func (s *Services) GetAllUniqueRooms() ([]ClassRooms, error) {
+	var rooms []ClassRooms
 
 	err := database.DB.
 		Model(&models.ClassTime{}).
-		Distinct("room").
-		Pluck("room", &rooms).Error
+		Find(&rooms).Error
 
 	if err != nil {
 		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get unique rooms", map[logging.ExtraKey]interface{}{
