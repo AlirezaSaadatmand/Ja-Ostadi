@@ -8,7 +8,7 @@ interface PdfDocumentProps {
   table: Record<string, TableCell>
 }
 
-const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) => {
+const PdfDocument: React.FC<PdfDocumentProps> = ({  table }) => {
   const findMatchingSlotKey = (start: string, end: string) => {
     const normalizedStart = start.padStart(5, "0")
     const normalizedEnd = end.padStart(5, "0")
@@ -28,11 +28,6 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
 
     return { course: cell.course, room: time?.room || "" }
   }
-
-  const totalUnits = scheduledCourses.reduce(
-    (sum, course) => sum + parseFloat(course.course.units),
-    0
-  )
 
   return (
     <div
@@ -125,53 +120,6 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ scheduledCourses, table }) =>
           </table>
         </div>
 
-        {/* Scheduled Courses */}
-        <div className="flex-[1] flex flex-col">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            دروس برنامه ریزی شده
-          </h2>
-          <div className="p-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center text-md font-semibold text-gray-700 rounded-t-lg">
-            <span>تعداد کل واحدها:</span>
-            <span className="text-purple-700 text-2xl font-bold">{totalUnits}</span>
-          </div>
-          {scheduledCourses.length === 0 ? (
-            <div className="p-6 text-center border border-gray-200 rounded-b-lg text-gray-500 text-lg">
-              هیچ درسی در برنامه شما نیست
-            </div>
-          ) : (
-            <div className="flex-1 flex flex-col gap-3 p-4 border border-gray-200 rounded-b-lg overflow-hidden">
-              {scheduledCourses.map((course) => (
-                <div
-                  key={course.course.id}
-                  className="p-4 rounded-lg bg-gray-50 border border-gray-200 shadow-sm flex justify-between items-center mb-4"
-                >
-                  <div className="flex flex-col w-full">
-                    <span className="font-bold text-gray-900 text-lg">{course.course.name}</span>
-                    <span className="text-sm text-gray-600">
-                      استاد: {course.instructor.name || "—"}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col w-1/3">
-                    <span className="text-sm bg-purple-100 text-purple-800 px-1 py-1 rounded text-center">
-                      {course.course.units} واحد
-                    </span>
-                    {course.course.number && (
-                      <span className="text-sm bg-blue-100 text-blue-800 px-1 py-1 rounded text-center">
-                        شماره درس: {course.course.number}
-                      </span>
-                    )}
-                    {course.course.group && (
-                      <span className="text-sm bg-green-100 text-green-800 px-1 py-1 rounded text-center">
-                        گروه: {course.course.group}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   )
