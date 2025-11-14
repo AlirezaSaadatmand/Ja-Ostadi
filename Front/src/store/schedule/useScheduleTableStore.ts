@@ -6,6 +6,7 @@ export const days = ["شنبه", "يک شنبه", "دو شنبه", "سه شنب�
 export const timeSlots = [
   { label: "8:00 - 10:00", key: "8-10", start: "08:00", end: "10:00" },
   { label: "10:00 - 12:00", key: "10-12", start: "10:00", end: "12:00" },
+  { label: "12:00 - 13:30", key: "12_00-13_30", start: "12:00", end: "13:30" },
   { label: "13:30 - 15:30", key: "13_30-15_30", start: "13:30", end: "15:30" },
   { label: "15:30 - 17:30", key: "15_30-17_30", start: "15:30", end: "17:30" },
   { label: "17:30 - 19:30", key: "17_30-19_30", start: "17:30", end: "19:30" },
@@ -50,32 +51,38 @@ const findMatchingSlotKey = (start: string, end: string) => {
 const loadState = () => {
   try {
     const serializedState = localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (serializedState === null) {
-      return {
+    if (!serializedState) {
+      const newState = {
         version: STORAGE_VERSION,
         scheduledCourses: [],
         table: generateEmptyTable(),
       }
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
+      return newState
     }
 
     const state = JSON.parse(serializedState)
 
     if (!state.version || state.version !== STORAGE_VERSION) {
-      return {
+      const newState = {
         version: STORAGE_VERSION,
         scheduledCourses: [],
         table: generateEmptyTable(),
       }
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
+      return newState
     }
 
     return state
   } catch (error) {
     console.error("Error loading state from localStorage:", error)
-    return {
+    const newState = {
       version: STORAGE_VERSION,
       scheduledCourses: [],
       table: generateEmptyTable(),
     }
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
+    return newState
   }
 }
 
