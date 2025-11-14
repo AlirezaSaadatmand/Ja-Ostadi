@@ -14,11 +14,22 @@ definitions:
       semeter:
         $ref: '#/definitions/services.SemesterData'
     type: object
+  handlers.InstructorCourseTimeData:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      time:
+        items:
+          $ref: '#/definitions/services.ScheduleTimeID'
+        type: array
+    type: object
   handlers.InstructorCoursesData:
     properties:
       courses:
         items:
-          $ref: '#/definitions/services.InstructorCourse'
+          $ref: '#/definitions/handlers.InstructorCourseTimeData'
         type: array
       semester:
         $ref: '#/definitions/services.SemesterData'
@@ -119,13 +130,6 @@ definitions:
     properties:
       field:
         type: string
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  services.InstructorCourse:
-    properties:
       id:
         type: integer
       name:
@@ -832,6 +836,30 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
       summary: Get schedule data
+      tags:
+      - schedule
+  /schedule/rooms:
+    get:
+      description: Returns all unique room names from the schedule
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    type: string
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get all rooms
       tags:
       - schedule
   /semesters/:

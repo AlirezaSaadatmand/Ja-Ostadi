@@ -883,6 +883,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/schedule/rooms": {
+            "get": {
+                "description": "Returns all unique room names from the schedule",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedule"
+                ],
+                "summary": "Get all rooms",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/semesters/": {
             "get": {
                 "description": "Returns all semesters",
@@ -1036,13 +1077,30 @@ const docTemplate = `{
                 }
             }
         },
+        "handlers.InstructorCourseTimeData": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/services.ScheduleTimeID"
+                    }
+                }
+            }
+        },
         "handlers.InstructorCoursesData": {
             "type": "object",
             "properties": {
                 "courses": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/services.InstructorCourse"
+                        "$ref": "#/definitions/handlers.InstructorCourseTimeData"
                     }
                 },
                 "semester": {
@@ -1198,17 +1256,6 @@ const docTemplate = `{
                 "field": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "services.InstructorCourse": {
-            "type": "object",
-            "properties": {
                 "id": {
                     "type": "integer"
                 },
