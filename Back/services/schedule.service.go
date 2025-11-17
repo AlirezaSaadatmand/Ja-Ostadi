@@ -9,14 +9,16 @@ import (
 )
 
 type ScheduleCourse struct {
-	ID           uint   `json:"id"`
-	Name         string `json:"name"`
-	Number       string `json:"number"`
-	Group        string `json:"group"`
-	Units        string `json:"units"`
-	SemesterID   uint   `json:"semester_id"`
-	DepartmentID uint   `json:"department_id"`
-	InstructorID uint   `json:"instructor_id"`
+	ID            uint   `json:"id"`
+	Name          string `json:"name"`
+	Number        string `json:"number"`
+	Group         string `json:"group"`
+	Units         string `json:"units"`
+	FinalExamTime string `json:"final_exam_time"`
+	FinalExamDate string `json:"final_exam_date"`
+	SemesterID    uint   `json:"semester_id"`
+	DepartmentID  uint   `json:"department_id"`
+	InstructorID  uint   `json:"instructor_id"`
 }
 
 func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
