@@ -4,6 +4,8 @@ export interface Course {
   number: string
   group: string
   units: string
+  final_exam_time: string
+  final_exam_date: string
   semester_id: number
   department_id: number
   instructor_id: number
