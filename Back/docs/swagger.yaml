@@ -41,6 +41,19 @@ definitions:
       relations:
         $ref: '#/definitions/services.InstructorRelations'
     type: object
+  handlers.RoomScheduleResponse:
+    properties:
+      courseId:
+        type: integer
+      courseName:
+        type: string
+      instructor:
+        type: string
+      time:
+        items:
+          $ref: '#/definitions/services.ScheduleTimeID'
+        type: array
+    type: object
   handlers.ScheduleData:
     properties:
       course:
@@ -157,6 +170,10 @@ definitions:
     properties:
       department_id:
         type: integer
+      final_exam_date:
+        type: string
+      final_exam_time:
+        type: string
       group:
         type: string
       id:
@@ -860,6 +877,37 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
       summary: Get all rooms
+      tags:
+      - schedule
+  /schedule/rooms/{roomID}:
+    get:
+      description: Returns the list of courses (with name, instructor, and time slots)
+        that have classes in the given room
+      parameters:
+      - description: Room name or room ID
+        in: path
+        name: roomID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/handlers.RoomScheduleResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get schedule for a specific room
       tags:
       - schedule
   /semesters/:

@@ -924,6 +924,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/schedule/rooms/{roomID}": {
+            "get": {
+                "description": "Returns the list of courses (with name, instructor, and time slots) that have classes in the given room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedule"
+                ],
+                "summary": "Get schedule for a specific room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Room name or room ID",
+                        "name": "roomID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/handlers.RoomScheduleResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/semesters/": {
             "get": {
                 "description": "Returns all semesters",
@@ -1119,6 +1169,26 @@ const docTemplate = `{
                 }
             }
         },
+        "handlers.RoomScheduleResponse": {
+            "type": "object",
+            "properties": {
+                "courseId": {
+                    "type": "integer"
+                },
+                "courseName": {
+                    "type": "string"
+                },
+                "instructor": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/services.ScheduleTimeID"
+                    }
+                }
+            }
+        },
         "handlers.ScheduleData": {
             "type": "object",
             "properties": {
@@ -1297,6 +1367,12 @@ const docTemplate = `{
             "properties": {
                 "department_id": {
                     "type": "integer"
+                },
+                "final_exam_date": {
+                    "type": "string"
+                },
+                "final_exam_time": {
+                    "type": "string"
                 },
                 "group": {
                     "type": "string"
