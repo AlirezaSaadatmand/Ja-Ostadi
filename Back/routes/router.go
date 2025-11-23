@@ -48,6 +48,7 @@ func Router(app *fiber.App, logger logging.Logger) {
 	scheduleRouter := api.Group("/schedule")
 	scheduleRouter.Get("/data", h.GetScheduleData)
 	scheduleRouter.Get("/rooms", h.GetAllRooms)
+	scheduleRouter.Get("/rooms/:roomID", h.GetRoomSchedule)
 
 	// Admin Routes
 	adminRoutes := api.Group("/admin", middleware.AdminMiddleware())
