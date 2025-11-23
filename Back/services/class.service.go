@@ -33,4 +33,30 @@ func (s *Services) GetAllUniqueRooms() ([]ClassRooms, error) {
 	})
 
 	return rooms, nil
+} 	
+
+
+
+func (s *Services) GetRecordsByRoom(room string) ([]models.ClassTime, error) {
+	var records []models.ClassTime
+
+	err := database.DB.
+		Where("room = ?", room).
+		Distinct().
+		Find(&records).Error
+
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get records by room", map[logging.ExtraKey]interface{}{
+			"error": err.Error(),
+			"room":  room,
+		})
+		return nil, errors.New("error getting records by room")
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched records by room successfully", map[logging.ExtraKey]interface{}{
+		"room":  room,
+		"count": len(records),
+	})
+
+	return records, nil
 }
