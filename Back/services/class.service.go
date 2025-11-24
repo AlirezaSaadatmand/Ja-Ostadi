@@ -11,14 +11,13 @@ import (
 type ClassRooms struct {
 	ID       uint   `json:"id"`
 	Room     string `json:"room"`
-	CourseID uint   `json:"courseId"`
 }
 
 func (s *Services) GetAllUniqueRooms() ([]ClassRooms, error) {
 	var rooms []ClassRooms
 
 	err := database.DB.
-		Model(&models.ClassTime{}).
+		Model(&models.Class{}).
 		Find(&rooms).Error
 
 	if err != nil {
@@ -35,7 +34,25 @@ func (s *Services) GetAllUniqueRooms() ([]ClassRooms, error) {
 	return rooms, nil
 } 	
 
+func (s *Services) GetRoomByID(id string) (ClassRooms, error) {
+	var room ClassRooms
 
+	err := database.DB.
+		Where("id = ?", id).
+		Model(&models.Class{}).
+		Find(&room).Error
+
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get unique rooms", map[logging.ExtraKey]interface{}{
+			"error": err.Error(),
+		})
+		return room, errors.New("error getting rooms")
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched room successfully", map[logging.ExtraKey]interface{}{})
+
+	return room, nil
+} 	
 
 func (s *Services) GetRecordsByRoom(room string) ([]models.ClassTime, error) {
 	var records []models.ClassTime

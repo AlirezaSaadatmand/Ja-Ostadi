@@ -44,9 +44,14 @@ type RoomScheduleResponse struct {
 // @Failure 500 {object} utils.APIResponse
 // @Router /schedule/rooms/{roomID} [get]
 func (h *Handler) GetRoomSchedule(c *fiber.Ctx) error {
-	selectedRoom := c.Params("roomID")
+	selectedRoomID := c.Params("roomID")
 
-	coursesIDs, err := h.Services.GetRecordsByRoom(selectedRoom)
+	selectedRoom, err := h.Services.GetRoomByID(selectedRoomID)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	coursesIDs, err := h.Services.GetRecordsByRoom(selectedRoom.Room)
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -95,7 +100,7 @@ func (h *Handler) GetRoomSchedule(c *fiber.Ctx) error {
 
 		var filteredTimes []services.ScheduleTimeID
 		for _, t := range classTime {
-			if t.CourseID == class.CourseID && t.Room == selectedRoom {
+			if t.CourseID == class.CourseID && t.Room == selectedRoom.Room {
 				filteredTimes = append(filteredTimes, t)
 			}
 		}
