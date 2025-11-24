@@ -12,6 +12,8 @@
   "dependencies": {
     "@types/react-icons": "^2.2.7",
     "axios": "^1.11.0",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "html2pdf.js": "^0.10.3",
     "lucide-react": "^0.536.0",
     "react": "^19.1.0",
@@ -24,6 +26,7 @@
   "devDependencies": {
     "@eslint/js": "^9.30.1",
     "@tailwindcss/postcss": "^4.1.11",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
