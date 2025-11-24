@@ -18,6 +18,7 @@ func (s *Services) GetAllUniqueRooms() ([]ClassRooms, error) {
 
 	err := database.DB.
 		Model(&models.Class{}).
+		Order("room ASC").
 		Find(&rooms).Error
 
 	if err != nil {
