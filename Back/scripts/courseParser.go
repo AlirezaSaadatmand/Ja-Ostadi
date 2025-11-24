@@ -192,14 +192,15 @@ func createOrUpdateClassTime(item types.CourseJSON, course models.Course) error 
 	lines := strings.Split(item.TimeRoom, "\n")
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
+        if line == "" {
+            continue
+        }
 
 		parts := strings.SplitN(line, "-", 2)
 		if len(parts) != 2 {
 			continue
 		}
+
 		day := parts[0]
 		timeAndRoom := parts[1]
 
@@ -207,7 +208,21 @@ func createOrUpdateClassTime(item types.CourseJSON, course models.Course) error 
 		if len(timeParts) != 2 {
 			continue
 		}
+
 		room := strings.TrimRight(timeParts[1], ")")
+
+		var class models.Class
+		err := db.Where("room = ?", room).First(&class).Error
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				class = models.Class{Room: room}
+				if err := db.Create(&class).Error; err != nil {
+					return err
+				}
+			} else {
+				return err
+			}
+		}
 
 		times := strings.Split(timeParts[0], ":")
 		if len(times) < 4 {
