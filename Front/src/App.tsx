@@ -11,6 +11,7 @@ import CoursesPage from "./pages/CoursesPage"
 import CourseDetailPage from "./pages/CourseDetailPage"
 import AuthPage from "./pages/AuthPage"
 import FoodPage from "./pages/FoodPage"
+import RoomsPage from "./pages/RoomsPage"
 import { LearningHub } from "./pages/Learning"
 
 const AppRoutes = () => {
@@ -61,6 +62,10 @@ const AppRoutes = () => {
     {
       path: "/food",
       element: isAuthenticated ? <FoodPage /> : <Navigate to="/login" replace />
+    },
+    {
+      path: "/classes",
+      element: isAuthenticated ? <RoomsPage /> : <Navigate to="/login" replace />
     },
     {
       path: "/learning-hub",
