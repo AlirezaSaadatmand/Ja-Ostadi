@@ -162,3 +162,24 @@ export interface FoodData {
   week: string
   meals: DayFoodData[]
 }
+
+export interface RoomItem {
+  id: number
+  room: string
+}
+
+export interface ClassTime {
+  course_id: number
+  day: string
+  start_time: string
+  end_time: string
+  room: string
+}
+
+export interface RoomScheduleCourse {
+  courseId: number
+  courseName: string
+  instructor: string
+  time: ClassTime[]
+}
+
