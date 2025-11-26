@@ -2,17 +2,8 @@
 
 import React from "react"
 import type { RoomScheduleCourse } from "../../types"
+import { DAYS, TIME_SLOTS } from "../../store/usefull/useRoomScheduleStore"
 
-const TIME_SLOTS = [
-  { label: "08:00 - 10:00", key: "08:00-10:00", start: "08:00", end: "10:00" },
-  { label: "10:00 - 12:00", key: "10:00-12:00", start: "10:00", end: "12:00" },
-  { label: "12:00 - 13:30", key: "12:00-13:30", start: "12:00", end: "13:30" },
-  { label: "13:30 - 15:30", key: "13:30-15:30", start: "13:30", end: "15:30" },
-  { label: "15:30 - 17:30", key: "15:30-17:30", start: "15:30", end: "17:30" },
-  { label: "17:30 - 19:30", key: "17:30-19:30", start: "17:30", end: "19:30" },
-]
-
-const DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"]
 
 interface Props {
   roomSchedule: RoomScheduleCourse[]
