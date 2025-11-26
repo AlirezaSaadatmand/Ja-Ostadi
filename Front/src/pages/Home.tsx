@@ -4,79 +4,98 @@ import ContributorsSection from "../components/Contributors/ContributorsSection"
 import Header from "../components/Header"
 
 const HomePage: React.FC = () => {
-  const sections = [
-    {
-      title: "برنامه هفتگی",
-      description: "مشاهده و تنظیم برنامه هفتگی دروس.",
-      icon: (
-        <svg
-          className="w-12 h-12 text-[#AB8A58]"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-          <line x1="16" y1="2" x2="16" y2="6" />
-          <line x1="8" y1="2" x2="8" y2="6" />
-          <line x1="3" y1="10" x2="21" y2="10" />
-        </svg>
-      ),
-      link: "/schedule",
-    },
-    {
-      title: "دپارتمان‌ها",
-      description: "کاوش در دپارتمان‌های علمی مختلف.",
-      icon: <Building2 className="w-12 h-12 text-[#AB8A58]" />,
-      link: "/departments",
-    },
-    {
-      title: "اساتید",
-      description: "جزئیات درباره اساتید.",
-      icon: (
-        <svg
-          className="w-12 h-12 text-[#AB8A58]"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="7" r="4" />
-          <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
-        </svg>
-      ),
-      link: "/instructors",
-    },
-    {
-      title: "دروس",
-      description: "مشاهده و مدیریت دروس ارائه شده.",
-      icon: <BookOpen className="w-12 h-12 text-[#AB8A58]" />,
-      link: "/courses",
-    },
-    {
-      title: "چی داریم!",
-      description: "اطلاعات و برنامه هفتگی کالینان دانشگاه.",
-      icon: <UtensilsCrossed className="w-12 h-12 text-[#AB8A58]" />,
-      link: "/food"
-    },
-    {
-      title: "محتوای آموزشی",
-      description: "منابع یادگیری که طی سال‌ها تهیه شده",
-      icon: <BookA className="w-12 h-12 text-[#AB8A58]"/>,
-      link: "/learning-hub",
-      // comingSoon: true,
-    },
-    {
-      title: "اطلاعات به درد بخور",
-      description: "نکات و اطلاعات مفید برای دانشجوها.",
-      icon: <Info className="w-12 h-12 text-[#AB8A58]" />,
-      comingSoon: true,
-    },
-  ]
+const sections = [
+  {
+    title: "برنامه هفتگی",
+    description: "مشاهده و تنظیم برنامه هفتگی دروس.",
+    icon: (
+      <svg
+        className="w-12 h-12 text-[#AB8A58]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        viewBox="0 0 24 24"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+      </svg>
+    ),
+    link: "/schedule",
+  },
+  {
+    title: "برنامه کلاس‌ها",
+    description: "مشاهده زمان‌بندی و محل برگزاری کلاس‌ها.",
+    icon: (
+      <svg
+        className="w-12 h-12 text-[#AB8A58]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        viewBox="0 0 24 24"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 4h18v2H3z" /> 
+        <rect x="3" y="6" width="18" height="14" rx="2" />
+        <path d="M7 10h4M7 14h2M13 14h4M13 10h6" />
+      </svg>
+    ),
+    link: "/classes",
+  },
+  {
+    title: "دپارتمان‌ها",
+    description: "کاوش در دپارتمان‌های علمی مختلف.",
+    icon: <Building2 className="w-12 h-12 text-[#AB8A58]" />,
+    link: "/departments",
+  },
+  {
+    title: "اساتید",
+    description: "جزئیات درباره اساتید.",
+    icon: (
+      <svg
+        className="w-12 h-12 text-[#AB8A58]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        viewBox="0 0 24 24"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="7" r="4" />
+        <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
+      </svg>
+    ),
+    link: "/instructors",
+  },
+  {
+    title: "دروس",
+    description: "مشاهده و مدیریت دروس ارائه شده.",
+    icon: <BookOpen className="w-12 h-12 text-[#AB8A58]" />,
+    link: "/courses",
+  },
+  {
+    title: "چی داریم!",
+    description: "اطلاعات و برنامه هفتگی کالینان دانشگاه.",
+    icon: <UtensilsCrossed className="w-12 h-12 text-[#AB8A58]" />,
+    link: "/food"
+  },
+  {
+    title: "محتوای آموزشی",
+    description: "منابع یادگیری که طی سال‌ها تهیه شده",
+    icon: <BookA className="w-12 h-12 text-[#AB8A58]"/>,
+    link: "/learning-hub",
+  },
+  {
+    title: "اطلاعات به درد بخور",
+    description: "نکات و اطلاعات مفید برای دانشجوها.",
+    icon: <Info className="w-12 h-12 text-[#AB8A58]" />,
+    comingSoon: true,
+  },
+]
 
   return (
     <div

@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 
 const headerItems = [
   { label: "برنامه هفتگی", href: "/schedule" },
+  { label: "برنامه کلاس ها", href: "/classes" },
   { label: "دپارتمان", href: "/departments" },
   { label: "اساتید", href: "/instructors?mode=department" },
   { label: "دروس", href: "/courses" },
