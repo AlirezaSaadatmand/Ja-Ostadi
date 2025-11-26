@@ -65,7 +65,7 @@ const AppRoutes = () => {
     },
     {
       path: "/classes",
-      element: isAuthenticated ? <RoomsPage /> : <Navigate to="/login" replace />
+      element: <RoomsPage /> 
     },
     {
       path: "/learning-hub",
