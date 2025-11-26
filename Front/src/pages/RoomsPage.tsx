@@ -6,6 +6,8 @@ import Header from "../components/Header"
 import { useRoomStore } from "../store/usefull/useRoomScheduleStore"
 import RoomWeeklyTableView from "../components/Room/RoomWeeklyTableView"
 import { downloadRoomScheduleExcel } from "../components/Room/DownloadRoomScheduleExcel"
+import { useRoomPdfExportStore } from "../store/usefull/useRoomPdfExportStore"
+
 
 const RoomsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -45,10 +47,10 @@ const RoomsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100" dir="rtl">
+    <div className="min-h-screen bg-gray-100 lg:pt-28" dir="rtl">
       <Header />
       <div className="block md:hidden bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 text-center ">
           <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
             برنامه کلاس‌ها
           </h1>
@@ -104,16 +106,24 @@ const RoomsPage = () => {
             هیچ برنامه‌ای برای این کلاس یافت نشد.
           </div>
         )}
-
         {!isLoading && !error && roomSchedule.length > 0 && (
           <>
-            <div className="mb-4 text-center">
+            <div className="mb-4 text-center flex gap-3 justify-center">
+
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 onClick={() => downloadRoomScheduleExcel(roomSchedule)}
               >
                 دانلود Excel
               </button>
+
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                onClick={() => useRoomPdfExportStore.getState().exportRoomPdf(roomSchedule)}
+              >
+                دانلود PDF
+              </button>
+
             </div>
 
             <RoomWeeklyTableView roomSchedule={roomSchedule} />
