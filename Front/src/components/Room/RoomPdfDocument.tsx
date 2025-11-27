@@ -1,12 +1,14 @@
 import type { FC } from "react"
 import type { RoomScheduleCourse } from "../../types"
 import { DAYS, TIME_SLOTS } from "../../store/usefull/useRoomScheduleStore"
+import { useRoomStore } from "../../store/usefull/useRoomScheduleStore"
 
 interface Props {
   schedule: RoomScheduleCourse[]
 }
 
 const RoomPdfDocument: FC<Props> = ({ schedule }) => {
+  const { selectedRoom } = useRoomStore()
 
   const findClass = (day: string, slotKey: string) => {
     const slot = TIME_SLOTS.find(s => s.key === slotKey)
@@ -19,63 +21,90 @@ const RoomPdfDocument: FC<Props> = ({ schedule }) => {
     )
   }
 
+  const BOX_HEIGHT = 100
+  const BORDER_RADIUS = 6
+
   return (
-    <div className="p-10 bg-white text-gray-900" dir="rtl" style={{ width: "95%", minHeight: "100vh", fontSize: "20px" }}>
-      
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
-          برنامه هفتگی اتاق
+      <div
+        className="bg-white text-gray-900 flex flex-col items-center"
+        dir="rtl"
+        style={{
+          width: "95%",
+          fontSize: "12px",
+          margin: "0 auto",
+          borderRadius: `${BORDER_RADIUS}px`,
+        }}
+      >
+      <div className="text-center mb-4">
+        <h1 className="text-2xl font-bold mb-1">
+          برنامه هفتگی {selectedRoom?.room}
         </h1>
-        <p className="text-gray-700 text-xl">
-          برنامه کلاس‌های ثبت شده در اتاق
-        </p>
       </div>
 
-      <div className="flex-[3]">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">برنامه زمانی</h2>
+      <h2 className="text-lg font-semibold mb-4 text-center">برنامه زمانی</h2>
 
-        <table className="border-collapse bg-white rounded-xl overflow-hidden shadow-lg" style={{ width: "100%", tableLayout: "fixed" }}>
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-4 text-right font-bold border-b text-gray-800 text-lg" style={{ width: "15%" }}>
-                روز / ساعت
+      <table
+        className="border-collapse w-full"
+        style={{ tableLayout: "fixed", border: "1px solid #000" }}
+      >
+        <thead>
+          <tr>
+            <th
+              className="border p-1 text-center text-sm"
+              style={{ width: "12%", height: BOX_HEIGHT, borderRadius: BORDER_RADIUS }}
+            >
+              روز / ساعت
+            </th>
+            {TIME_SLOTS.map(slot => (
+              <th
+                key={slot.key}
+                className="border p-1 text-center text-sm"
+                style={{ height: BOX_HEIGHT, borderRadius: BORDER_RADIUS }}
+              >
+                {slot.label}
               </th>
-              {TIME_SLOTS.map(slot => (
-                <th key={slot.key} className="p-4 text-center font-bold border-b text-gray-800 text-lg">
-                  {slot.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {DAYS.map(day => (
-              <tr key={day} className="hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-semibold text-gray-700 bg-gray-50 border-b text-md text-center" style={{ height: "140px" }}>
-                  {day}
-                </td>
-
-                {TIME_SLOTS.map(slot => {
-                  const course = findClass(day, slot.key)
-
-                  return (
-                    <td key={day + slot.key} className="border-b border-gray-200 border-l text-center align-middle" style={{ height: "120px" }}>
-                      {course ? (
-                        <div className="bg-indigo-100 p-4 rounded-2xl border border-indigo-300 h-full flex flex-col justify-between">
-                          <div>
-                            <p className="text-xl font-bold text-indigo-900">{course.courseName}</p>
-                            <p className="text-md text-indigo-700 mt-1">{course.instructor}</p>
-                          </div>
-                        </div>
-                      ) : <div></div>}
-                    </td>
-                  )
-                })}
-              </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </tr>
+        </thead>
+
+        <tbody>
+          {DAYS.map(day => (
+            <tr key={day}>
+              <td
+                className="border p-1 text-center text-sm"
+                style={{ height: BOX_HEIGHT, borderRadius: BORDER_RADIUS }}
+              >
+                {day}
+              </td>
+
+              {TIME_SLOTS.map(slot => {
+                const course = findClass(day, slot.key)
+                return (
+                  <td
+                    key={day + slot.key}
+                    className="border text-center"
+                    style={{
+                      height: BOX_HEIGHT,
+                      verticalAlign: "middle",
+                      borderRadius: BORDER_RADIUS,
+                    }}
+                  >
+                    {course ? (
+                      <div
+                        className="flex flex-col items-center justify-center h-full"
+                        style={{ borderRadius: BORDER_RADIUS }}
+                      >
+                        <p className="text-base font-bold">{course.courseName}</p>
+                        <p className="text-sm">{course.instructor}</p>
+                      </div>
+                    ) : null}
+                  </td>
+                )
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

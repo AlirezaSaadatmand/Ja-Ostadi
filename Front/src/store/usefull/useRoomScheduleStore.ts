@@ -19,60 +19,58 @@ export const DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنب�
 interface RoomStore {
   rooms: RoomItem[]
   roomSchedule: RoomScheduleCourse[]
+  selectedRoom: RoomItem | null
   isLoading: boolean
   error: string | null
 
   fetchRooms: () => Promise<void>
   fetchRoomSchedule: (roomId: number | string) => Promise<void>
+
+  setSelectedRoom: (room: RoomItem | null) => void
 }
 
 export const useRoomStore = create<RoomStore>((set) => ({
   rooms: [],
   roomSchedule: [],
+  selectedRoom: null,
   isLoading: false,
   error: null,
+
+  setSelectedRoom: (room) => set({ selectedRoom: room }),
 
   fetchRooms: async () => {
     set({ isLoading: true, error: null, rooms: [] })
 
     try {
       const response = await api.get(`${config.apiUrl}/schedule/rooms`)
-      const data = Array.isArray(response.data.data)
-        ? response.data.data
-        : []
+      const data = Array.isArray(response.data.data) ? response.data.data : []
 
       set({ rooms: data })
     } catch (error) {
       console.error("Error fetching rooms:", error)
-      set({
-        error: error instanceof Error ? error.message : String(error),
-      })
+      set({ error: error instanceof Error ? error.message : String(error) })
     } finally {
       set({ isLoading: false })
     }
   },
 
-  fetchRoomSchedule: async (roomId) => {
-    set({ isLoading: true, error: null, roomSchedule: [] })
+fetchRoomSchedule: async (roomId) => {
+  set({ isLoading: true, error: null, roomSchedule: [] })
 
-    try {
-      const response = await api.get(
-        `${config.apiUrl}/schedule/rooms/${roomId}`
-      )
+  try {
+    const response = await api.get(`${config.apiUrl}/schedule/rooms/${roomId}`)
+    const data = Array.isArray(response.data.data) ? response.data.data : []
 
-      const data = Array.isArray(response.data.data)
-        ? response.data.data
-        : []
+    const store = useRoomStore.getState()
+    const selectedRoom = store.rooms.find(room => room.id.toString() === roomId.toString()) || null
 
-      set({ roomSchedule: data })
-    } catch (error) {
-      console.error(`Error fetching schedule for room ${roomId}:`, error)
-      set({
-        error: error instanceof Error ? error.message : String(error),
-      })
-    } finally {
-      set({ isLoading: false })
-    }
-  },
+    set({ roomSchedule: data, selectedRoom })
+  } catch (error) {
+    console.error(`Error fetching schedule for room ${roomId}:`, error)
+    set({ error: error instanceof Error ? error.message : String(error) })
+  } finally {
+    set({ isLoading: false })
+  }
+},
 
 }))
