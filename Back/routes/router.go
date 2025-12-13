@@ -24,23 +24,23 @@ func Router(app *fiber.App, logger logging.Logger) {
 	// remove.Post("/", h.DeleteSemesterData)
 
 	// Semester Routes
-	semesterRouter := api.Group("/semesters", middleware.Auth())
+	semesterRouter := api.Group("/semesters")
 	semesterRouter.Get("/", h.GetSemesters)
 
 	// Instructor Routes
-	instructorRouter := api.Group("/instructors", middleware.Auth())
+	instructorRouter := api.Group("/instructors")
 	instructorRouter.Get("/:instructorID/detail", h.GetInstructorDetail)
 	instructorRouter.Get("/data", h.GetInstructorData)
 	instructorRouter.Get("/courses/:instructorID", h.GetInstructorCourses)
 
 	// Course Routes
-	courseRouter := api.Group("/courses", middleware.Auth())
+	courseRouter := api.Group("/courses")
 	courseRouter.Get("/:courseId/detail", h.GetCourseByID)
 	courseRouter.Get("/semester/:semesterID", h.GetCoursesBySemester)
 	courseRouter.Get("/semester/:semesterID/department/:departmentID", h.GetCoursesBySemesterAndDepartment)
 
 	// Department Routes
-	departmentRouter := api.Group("/departments", middleware.Auth())
+	departmentRouter := api.Group("/departments")
 	departmentRouter.Get("/", h.GetDepartments)
 	departmentRouter.Get("/data", h.GetDepartmentsData)
 
@@ -55,7 +55,7 @@ func Router(app *fiber.App, logger logging.Logger) {
 	adminRoutes.Post("/update/data", h.UploadJson)
 
 	// User Routes
-	userRoutes := api.Group("/user", middleware.Auth())
+	userRoutes := api.Group("/user")
 	userRoutes.Post("/courses", h.SaveUserCourses)
 
 	// Food Routes 
