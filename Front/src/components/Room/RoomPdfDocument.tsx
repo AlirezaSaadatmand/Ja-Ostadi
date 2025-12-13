@@ -26,7 +26,7 @@ const RoomPdfDocument: FC<Props> = ({ schedule }) => {
 
   return (
       <div
-        className="bg-white text-gray-900 flex flex-col items-center"
+        className="bg-white text-gray-900 flex flex-col items-center font-[Vazirmatn]"
         dir="rtl"
         style={{
           width: "95%",

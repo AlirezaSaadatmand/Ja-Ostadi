@@ -36,11 +36,11 @@ export const useRoomPdfExportStore = create<RoomPdfExportStore>((set) => ({
         />
       )
 
-      await new Promise((resolve) => setTimeout(resolve, 150))
+      await new Promise((resolve) => setTimeout(resolve, 250))
 
       await html2pdf()
         .set({
-          filename: "برنامه_اتاق.pdf",
+          filename: "برنامه کلاس.pdf",
           image: { type: "jpeg", quality: 1 },
           html2canvas: { scale: 2 },
           jsPDF: { unit: "pt", format: "a4", orientation: "landscape" },

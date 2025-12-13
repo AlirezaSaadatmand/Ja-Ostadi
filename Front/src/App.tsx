@@ -37,27 +37,27 @@ const AppRoutes = () => {
 
     {
       path: "/schedule",
-      element: isAuthenticated ? <WeeklySchedulePage /> : <Navigate to="/login" replace />,
+      element: <WeeklySchedulePage />
     },
     {
       path: "/departments",
-      element: isAuthenticated ? <DepartmentsPage /> : <Navigate to="/login" replace />,
+      element: <DepartmentsPage />
     },
     {
       path: "/instructors",
-      element: isAuthenticated ? <InstructorsPage /> : <Navigate to="/login" replace />,
+      element: <InstructorsPage />
     },
     {
       path: "/instructors/:instructorId",
-      element: isAuthenticated ? <InstructorDetailPage /> : <Navigate to="/login" replace />,
+      element: <InstructorDetailPage />
     },
     {
       path: "/courses",
-      element: isAuthenticated ? <CoursesPage /> : <Navigate to="/login" replace />,
+      element: <CoursesPage />
     },
     {
       path: "/courses/:courseId",
-      element: isAuthenticated ? <CourseDetailPage /> : <Navigate to="/login" replace />,
+      element: <CourseDetailPage />
     },
     {
       path: "/food",
