@@ -14,6 +14,13 @@ definitions:
       semeter:
         $ref: '#/definitions/services.SemesterData'
     type: object
+  handlers.DirectorResponse:
+    properties:
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
   handlers.InstructorCourseTimeData:
     properties:
       id:
@@ -281,6 +288,19 @@ definitions:
       rating:
         type: number
     type: object
+  types.RegisterDirectorRequest:
+    properties:
+      password:
+        minLength: 8
+        type: string
+      username:
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
   types.SubmitRatingRequest:
     properties:
       comment:
@@ -301,6 +321,54 @@ definitions:
 info:
   contact: {}
 paths:
+  /admin/directors:
+    post:
+      consumes:
+      - application/json
+      description: Create a new department director account (admin only)
+      parameters:
+      - description: Admin authentication token
+        in: header
+        name: X-Admin-Token
+        required: true
+        type: string
+      - description: Director registration data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.RegisterDirectorRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Director created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.DirectorResponse'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: 'Unauthorized: missing or invalid admin token'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "409":
+          description: 'Conflict: username already exists'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Register department director
+      tags:
+      - Admin
   /admin/update/data:
     post:
       consumes:
