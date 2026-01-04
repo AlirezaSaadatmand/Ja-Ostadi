@@ -54,6 +54,7 @@ func Router(app *fiber.App, logger logging.Logger) {
 	adminRoutes.Post("/update/data", h.UploadJson)
 	adminRoutes.Post("/directors", h.RegisterDirector)
 	adminRoutes.Put("/directors/:id", h.UpdateDirector)
+	adminRoutes.Delete("/directors/:id", h.DeleteDirector)
 
 
 	// User Routes

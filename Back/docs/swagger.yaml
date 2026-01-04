@@ -310,6 +310,13 @@ definitions:
       rating:
         type: integer
     type: object
+  types.UpdateDirectorRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   utils.APIResponse:
     properties:
       data: {}
@@ -367,6 +374,102 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
       summary: Register department director
+      tags:
+      - Admin
+  /admin/directors/{id}:
+    delete:
+      description: Delete a department director account (admin only)
+      parameters:
+      - description: Admin authentication token
+        in: header
+        name: X-Admin-Token
+        required: true
+        type: string
+      - description: Director ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Director deleted successfully
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: 'Bad Request: invalid ID'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: 'Unauthorized: missing or invalid admin token'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "404":
+          description: 'Not Found: director not found'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Delete department director
+      tags:
+      - Admin
+    put:
+      consumes:
+      - application/json
+      description: Update a department director's information (admin only)
+      parameters:
+      - description: Admin authentication token
+        in: header
+        name: X-Admin-Token
+        required: true
+        type: string
+      - description: Director ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Director update data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.UpdateDirectorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Director updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.DirectorResponse'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: 'Unauthorized: missing or invalid admin token'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "404":
+          description: 'Not Found: director not found'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "409":
+          description: 'Conflict: username already exists'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Update department director
       tags:
       - Admin
   /admin/update/data:
