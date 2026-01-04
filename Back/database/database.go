@@ -50,6 +50,7 @@ func ConnectDB(zapLogger logging.Logger) error {
 		&models.Meal{},
 		&models.RateMeal{},
 		&models.Class{},
+		&models.DepartmentDirector{},
 	); err != nil {
 		zapLogger.Fatal(logging.Mysql, logging.Migration, "Failed to auto-migrate models", map[logging.ExtraKey]interface{}{"error": err})
 		return fmt.Errorf("failed to auto-migrate models: %w", err)
