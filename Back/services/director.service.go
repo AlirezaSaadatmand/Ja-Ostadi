@@ -98,3 +98,27 @@ func (s *Services) UpdateDepartmentDirector(id uint, updateData *models.Departme
 
 	return &director, nil
 }
+
+func (s *Services) DeleteDepartmentDirector(id uint) error {
+	result := database.DB.Delete(&models.DepartmentDirector{}, id)
+	if result.Error != nil {
+		s.Logger.Error(logging.Mysql, logging.Delete, "Failed to delete department director", map[logging.ExtraKey]interface{}{
+			"directorID": id,
+			"error":      result.Error.Error(),
+		})
+		return errors.New("failed to delete director")
+	}
+
+	if result.RowsAffected == 0 {
+		s.Logger.Warn(logging.Mysql, logging.Delete, "Department director not found for deletion", map[logging.ExtraKey]interface{}{
+			"directorID": id,
+		})
+		return errors.New("director not found")
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Delete, "Department director deleted successfully", map[logging.ExtraKey]interface{}{
+		"directorID": id,
+	})
+
+	return nil
+}
