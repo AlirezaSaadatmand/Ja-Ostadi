@@ -180,3 +180,33 @@ func (h *Handler) UpdateDirector(c *fiber.Ctx) error {
 
 	return utils.Success(c, fiber.StatusOK, response, "Director updated successfully")
 }
+
+// DeleteDirector deletes a department director (admin only)
+// @Summary Delete department director
+// @Description Delete a department director account (admin only)
+// @Tags Admin
+// @Produce json
+// @Param X-Admin-Token header string true "Admin authentication token"
+// @Param id path int true "Director ID"
+// @Success 200 {object} utils.APIResponse "Director deleted successfully"
+// @Failure 400 {object} utils.APIResponse "Bad Request: invalid ID"
+// @Failure 401 {object} utils.APIResponse "Unauthorized: missing or invalid admin token"
+// @Failure 404 {object} utils.APIResponse "Not Found: director not found"
+// @Failure 500 {object} utils.APIResponse "Internal Server Error"
+// @Router /admin/directors/{id} [delete]
+func (h *Handler) DeleteDirector(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid director ID")
+	}
+
+	err = h.Services.DeleteDepartmentDirector(uint(id))
+	if err != nil {
+		if err.Error() == "director not found" {
+			return utils.Error(c, fiber.StatusNotFound, "Director not found")
+		}
+		return utils.Error(c, fiber.StatusInternalServerError, "Failed to delete director")
+	}
+
+	return utils.Success(c, fiber.StatusOK, nil, "Director deleted successfully")
+}
