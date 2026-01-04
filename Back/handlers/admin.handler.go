@@ -117,3 +117,66 @@ func (h *Handler) RegisterDirector(c *fiber.Ctx) error {
 
 	return utils.Success(c, fiber.StatusCreated, response, "Department director registered successfully")
 }
+
+// UpdateDirector updates a department director's information (admin only)
+// @Summary Update department director
+// @Description Update a department director's information (admin only)
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param X-Admin-Token header string true "Admin authentication token"
+// @Param id path int true "Director ID"
+// @Param body body types.UpdateDirectorRequest true "Director update data"
+// @Success 200 {object} utils.APIResponse{data=DirectorResponse} "Director updated successfully"
+// @Failure 400 {object} utils.APIResponse "Bad Request: invalid input"
+// @Failure 401 {object} utils.APIResponse "Unauthorized: missing or invalid admin token"
+// @Failure 404 {object} utils.APIResponse "Not Found: director not found"
+// @Failure 409 {object} utils.APIResponse "Conflict: username already exists"
+// @Failure 500 {object} utils.APIResponse "Internal Server Error"
+// @Router /admin/directors/{id} [put]
+func (h *Handler) UpdateDirector(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid director ID")
+	}
+
+	var req types.UpdateDirectorRequest
+	if err := c.BodyParser(&req); err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid request body")
+	}
+
+	if req.Username == "" && req.Password == "" {
+		return utils.Error(c, fiber.StatusBadRequest, "At least one field (username or password) must be provided")
+	}
+
+	updateData := models.DepartmentDirector{
+		Username: req.Username,
+	}
+
+	if req.Password != "" {
+		hashedPassword, err := hashing.HashPassword(req.Password)
+		if err != nil {
+			return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+		}
+		updateData.Password = hashedPassword
+	}
+
+	updatedDirector, err := h.Services.UpdateDepartmentDirector(uint(id), &updateData)
+	if err != nil {
+		switch err.Error() {
+		case "director not found":
+			return utils.Error(c, fiber.StatusNotFound, "Director not found")
+		case "username already exists":
+			return utils.Error(c, fiber.StatusConflict, "Username already exists")
+		default:
+			return utils.Error(c, fiber.StatusInternalServerError, "Failed to update director")
+		}
+	}
+
+	response := DirectorResponse{
+		ID:       updatedDirector.ID,
+		Username: updatedDirector.Username,
+	}
+
+	return utils.Success(c, fiber.StatusOK, response, "Director updated successfully")
+}
