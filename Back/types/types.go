@@ -73,3 +73,8 @@ type SubmitRatingRequest struct {
 	Rating  int    `json:"rating"`
 	Comment string `json:"comment"`
 }
+
+type RegisterDirectorRequest struct {
+	Username string `json:"username" validate:"required,min=3,max=50"`
+	Password string `json:"password" validate:"required,min=8"`
+}
