@@ -923,6 +923,47 @@ paths:
       tags:
       - TempCourses
   /directors/temp-courses/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a temporary course
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Temp Course ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Temp course deleted
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: 'Bad Request: invalid ID'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Delete temp course
+      tags:
+      - TempCourses
     patch:
       consumes:
       - application/json

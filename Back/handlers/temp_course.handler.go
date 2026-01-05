@@ -81,3 +81,40 @@ func (h *Handler) UpdateTempCourse(c *fiber.Ctx) error {
 
 	return utils.Success(c, fiber.StatusOK, tempCourse, "Temp course updated successfully")
 }
+
+
+// DeleteTempCourse deletes a temp course
+// @Summary Delete temp course
+// @Description Delete a temporary course
+// @Tags TempCourses
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer {token}"
+// @Param id path int true "Temp Course ID"
+// @Success 200 {object} utils.APIResponse "Temp course deleted"
+// @Failure 400 {object} utils.APIResponse "Bad Request: invalid ID"
+// @Failure 401 {object} utils.APIResponse "Unauthorized"
+// @Failure 404 {object} utils.APIResponse "Not Found"
+// @Failure 500 {object} utils.APIResponse "Internal Server Error"
+// @Router /directors/temp-courses/{id} [delete]
+func (h *Handler) DeleteTempCourse(c *fiber.Ctx) error {
+	directorID, ok := c.Locals("directorID").(string)
+	if !ok || directorID == "" {
+		return utils.Error(c, fiber.StatusUnauthorized, "Unauthorized")
+	}
+
+	id, err := strconv.ParseUint(c.Params("id"), 10, 32)
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid temp course ID")
+	}
+
+	err = h.Services.DeleteTempCourse(directorID, uint(id))
+	if err != nil {
+		if err.Error() == "temp course not found" {
+			return utils.Error(c, fiber.StatusNotFound, "Temp course not found")
+		}
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return utils.Success(c, fiber.StatusOK, nil, "Temp course deleted successfully")
+}

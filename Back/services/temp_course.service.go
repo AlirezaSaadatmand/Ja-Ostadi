@@ -151,3 +151,30 @@ func (s *Services) UpdateTempCourse(directorID string, id uint, req types.TempCo
 
 	return &tempCourse, nil
 }
+
+func (s *Services) DeleteTempCourse(directorID string, id uint) error {
+	result := database.DB.Where("id = ? AND directors_id = ?", id, directorID).Delete(&models.TempCourse{})
+	if result.Error != nil {
+		s.Logger.Error(logging.Mysql, logging.Delete, "Failed to delete temp course", map[logging.ExtraKey]interface{}{
+			"tempCourseID": id,
+			"directorID":   directorID,
+			"error":        result.Error.Error(),
+		})
+		return errors.New("failed to delete temp course")
+	}
+
+	if result.RowsAffected == 0 {
+		s.Logger.Warn(logging.TempCourse, logging.Delete, "Temp course not found for deletion", map[logging.ExtraKey]interface{}{
+			"tempCourseID": id,
+			"directorID":   directorID,
+		})
+		return errors.New("temp course not found")
+	}
+
+	s.Logger.Info(logging.TempCourse, logging.Delete, "Temp course deleted successfully", map[logging.ExtraKey]interface{}{
+		"tempCourseID": id,
+		"directorID":   directorID,
+	})
+
+	return nil
+}
