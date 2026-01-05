@@ -57,8 +57,8 @@ func Router(app *fiber.App, logger logging.Logger) {
 	adminRoutes.Delete("/directors/:id", h.DeleteDirector)
 
 	api.Post("/directors/login", h.LoginDirector)
-	// directorRoutes := api.Group("/directors")
-
+	directorRoutes := api.Group("/directors", middleware.DirectorAuth())
+	directorRoutes.Post("/temp-courses", h.CreateTempCourse)
 
 	// User Routes
 	userRoutes := api.Group("/user")

@@ -144,7 +144,6 @@ func (s *Services) AuthenticateDirector(username, password string) (*models.Depa
 		return nil, "", errors.New("database error")
 	}
 
-	// Verify password using our utility
 	err = hashing.ComparePassword(director.Password, password)
 	if err != nil {
 		s.Logger.Warn(logging.Auth, logging.Verify, "Invalid password", map[logging.ExtraKey]interface{}{
@@ -156,7 +155,7 @@ func (s *Services) AuthenticateDirector(username, password string) (*models.Depa
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"directorID": director.ID,
 		"username":   director.Username,
-		"exp":        time.Now().Add(time.Hour * 24 * 7).Unix(), // 7 days
+		"exp":        time.Now().Add(time.Hour * 24 * 7).Unix(),
 		"role":       "director",
 	})
 
