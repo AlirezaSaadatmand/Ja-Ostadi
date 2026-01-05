@@ -2,10 +2,14 @@ package services
 
 import (
 	"errors"
+	"time"
 
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/hashing"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
+	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +19,7 @@ func (s *Services) CreateDepartmentDirector(director *models.DepartmentDirector)
 	if err == nil {
 		return errors.New("username already exists")
 	}
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != gorm.ErrRecordNotFound {
 		s.Logger.Error(logging.Mysql, logging.Select, "Failed to check existing director", map[logging.ExtraKey]interface{}{
 			"username": director.Username,
 			"error":    err.Error(),
@@ -67,7 +71,7 @@ func (s *Services) UpdateDepartmentDirector(id uint, updateData *models.Departme
 			})
 			return nil, errors.New("username already exists")
 		}
-		if err != nil && err != gorm.ErrRecordNotFound {
+		if err != gorm.ErrRecordNotFound {
 			s.Logger.Error(logging.Mysql, logging.Select, "Failed to check existing username", map[logging.ExtraKey]interface{}{
 				"username": updateData.Username,
 				"error":    err.Error(),
@@ -121,4 +125,56 @@ func (s *Services) DeleteDepartmentDirector(id uint) error {
 	})
 
 	return nil
+}
+
+func (s *Services) AuthenticateDirector(username, password string) (*models.DepartmentDirector, string, error) {
+	var director models.DepartmentDirector
+	err := database.DB.Where("username = ?", username).First(&director).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			s.Logger.Warn(logging.Auth, logging.Verify, "Director not found", map[logging.ExtraKey]interface{}{
+				"username": username,
+			})
+			return nil, "", errors.New("invalid credentials")
+		}
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to retrieve director", map[logging.ExtraKey]interface{}{
+			"username": username,
+			"error":    err.Error(),
+		})
+		return nil, "", errors.New("database error")
+	}
+
+	// Verify password using our utility
+	err = hashing.ComparePassword(director.Password, password)
+	if err != nil {
+		s.Logger.Warn(logging.Auth, logging.Verify, "Invalid password", map[logging.ExtraKey]interface{}{
+			"username": username,
+		})
+		return nil, "", errors.New("invalid credentials")
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"directorID": director.ID,
+		"username":   director.Username,
+		"exp":        time.Now().Add(time.Hour * 24 * 7).Unix(), // 7 days
+		"role":       "director",
+	})
+
+	cfg := config.GetConfig()
+
+	tokenString, err := token.SignedString([]byte(cfg.Secret_Token))
+	if err != nil {
+		s.Logger.Error(logging.Auth, logging.Generate, "Failed to generate JWT token", map[logging.ExtraKey]interface{}{
+			"directorID": director.ID,
+			"error":      err.Error(),
+		})
+		return nil, "", errors.New("failed to generate token")
+	}
+
+	s.Logger.Info(logging.Auth, logging.Login, "Director authenticated successfully", map[logging.ExtraKey]interface{}{
+		"directorID": director.ID,
+		"username":   director.Username,
+	})
+
+	return &director, tokenString, nil
 }
