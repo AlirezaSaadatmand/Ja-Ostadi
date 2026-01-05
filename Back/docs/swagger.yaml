@@ -48,6 +48,13 @@ definitions:
       relations:
         $ref: '#/definitions/services.InstructorRelations'
     type: object
+  handlers.LoginDirectorResponse:
+    properties:
+      director:
+        $ref: '#/definitions/handlers.DirectorResponse'
+      token:
+        type: string
+    type: object
   handlers.RoomScheduleResponse:
     properties:
       courseId:
@@ -268,6 +275,16 @@ definitions:
         type: array
       week:
         type: string
+    type: object
+  types.LoginDirectorRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
     type: object
   types.MealData:
     properties:
@@ -750,6 +767,45 @@ paths:
       summary: Get detailed department data
       tags:
       - departments
+  /directors/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate department director and return JWT token
+      parameters:
+      - description: Director login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.LoginDirectorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.LoginDirectorResponse'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: 'Unauthorized: invalid credentials'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Login department director
+      tags:
+      - Director
   /food/{mealId}/image:
     patch:
       consumes:

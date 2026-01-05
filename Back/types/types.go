@@ -83,3 +83,8 @@ type UpdateDirectorRequest struct {
 	Username string `json:"username,omitempty"`
 	Password string `json:"password,omitempty"`
 }
+
+type LoginDirectorRequest struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}

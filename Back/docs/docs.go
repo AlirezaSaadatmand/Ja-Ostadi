@@ -679,6 +679,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/directors/login": {
+            "post": {
+                "description": "Authenticate department director and return JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Director"
+                ],
+                "summary": "Login department director",
+                "parameters": [
+                    {
+                        "description": "Director login credentials",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.LoginDirectorRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/handlers.LoginDirectorResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: invalid credentials",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/food/image": {
             "post": {
                 "description": "Uploads a meal image and saves its record to the database",
@@ -1405,6 +1469,17 @@ const docTemplate = `{
                 }
             }
         },
+        "handlers.LoginDirectorResponse": {
+            "type": "object",
+            "properties": {
+                "director": {
+                    "$ref": "#/definitions/handlers.DirectorResponse"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "handlers.RoomScheduleResponse": {
             "type": "object",
             "properties": {
@@ -1742,6 +1817,21 @@ const docTemplate = `{
                     }
                 },
                 "week": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.LoginDirectorRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
