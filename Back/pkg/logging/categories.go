@@ -12,6 +12,7 @@ const (
 	Validation      Category = "Validation"
 	RequestResponse Category = "RequestResponse"
 	Scraper         Category = "Scraper"
+	Auth            Category = "Auth"
 )
 
 const (
@@ -33,6 +34,12 @@ const (
 	RemoveFile SubCategory = "RemoveFile"
 	CreateFile SubCategory = "CreateFile"
 	API        SubCategory = "API"
+
+	// Login
+	Verify SubCategory = "Verify"
+
+	// token
+	Generate SubCategory = "Generate"
 )
 
 const (
