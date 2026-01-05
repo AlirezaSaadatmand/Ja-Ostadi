@@ -732,6 +732,77 @@
                 }
             }
         },
+        "/directors/temp-courses": {
+            "post": {
+                "description": "Create a new temporary course",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TempCourses"
+                ],
+                "summary": "Create temp course",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Temp course data",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.TempCourseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Temp course created",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/types.TempCourseRequest"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/food/image": {
             "post": {
                 "description": "Uploads a meal image and saves its record to the database",
@@ -1883,6 +1954,60 @@
                 },
                 "rating": {
                     "type": "integer"
+                }
+            }
+        },
+        "types.TempCourseRequest": {
+            "type": "object",
+            "required": [
+                "course_name",
+                "department",
+                "group",
+                "target_term",
+                "units"
+            ],
+            "properties": {
+                "course_name": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "final_exam_date": {
+                    "type": "string"
+                },
+                "final_exam_time": {
+                    "type": "string"
+                },
+                "first_day": {
+                    "type": "string"
+                },
+                "first_room": {
+                    "type": "string"
+                },
+                "first_time": {
+                    "type": "string"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "instructor": {
+                    "type": "string"
+                },
+                "second_day": {
+                    "type": "string"
+                },
+                "second_room": {
+                    "type": "string"
+                },
+                "second_time": {
+                    "type": "string"
+                },
+                "target_term": {
+                    "type": "string"
+                },
+                "units": {
+                    "type": "string"
                 }
             }
         },

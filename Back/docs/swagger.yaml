@@ -327,6 +327,43 @@ definitions:
       rating:
         type: integer
     type: object
+  types.TempCourseRequest:
+    properties:
+      course_name:
+        type: string
+      department:
+        type: string
+      final_exam_date:
+        type: string
+      final_exam_time:
+        type: string
+      first_day:
+        type: string
+      first_room:
+        type: string
+      first_time:
+        type: string
+      group:
+        type: string
+      instructor:
+        type: string
+      second_day:
+        type: string
+      second_room:
+        type: string
+      second_time:
+        type: string
+      target_term:
+        type: string
+      units:
+        type: string
+    required:
+    - course_name
+    - department
+    - group
+    - target_term
+    - units
+    type: object
   types.UpdateDirectorRequest:
     properties:
       password:
@@ -806,6 +843,50 @@ paths:
       summary: Login department director
       tags:
       - Director
+  /directors/temp-courses:
+    post:
+      consumes:
+      - application/json
+      description: Create a new temporary course
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Temp course data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.TempCourseRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Temp course created
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.TempCourseRequest'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Create temp course
+      tags:
+      - TempCourses
   /food/{mealId}/image:
     patch:
       consumes:

@@ -13,6 +13,7 @@ const (
 	RequestResponse Category = "RequestResponse"
 	Scraper         Category = "Scraper"
 	Auth            Category = "Auth"
+	TempCourse      Category = "TempCourse"
 )
 
 const (
@@ -20,6 +21,7 @@ const (
 	Startup         SubCategory = "Startup"
 	ExternalService SubCategory = "ExternalService"
 	Login           SubCategory = "ScraperLogin"
+	Create          SubCategory = "Create"
 
 	// MYSQL
 	Connection SubCategory = "Connection"

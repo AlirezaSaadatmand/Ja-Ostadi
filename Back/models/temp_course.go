@@ -9,6 +9,7 @@ type TempCourse struct {
 	Group      string
 	Units      string
 	Instructor string
+	TargetTerm string
 
 	FirstRoom string
 	FirstDay  string
