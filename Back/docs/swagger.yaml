@@ -364,6 +364,41 @@ definitions:
     - target_term
     - units
     type: object
+  types.TempCourseUpdateRequest:
+    properties:
+      course_name:
+        type: string
+      department:
+        type: string
+      final_exam_date:
+        type: string
+      final_exam_time:
+        type: string
+      first_day:
+        type: string
+      first_lock:
+        type: boolean
+      first_room:
+        type: string
+      first_time:
+        type: string
+      group:
+        type: string
+      instructor:
+        type: string
+      second_day:
+        type: string
+      second_lock:
+        type: boolean
+      second_room:
+        type: string
+      second_time:
+        type: string
+      target_term:
+        type: string
+      units:
+        type: string
+    type: object
   types.UpdateDirectorRequest:
     properties:
       password:
@@ -470,7 +505,7 @@ paths:
       summary: Delete department director
       tags:
       - Admin
-    put:
+    patch:
       consumes:
       - application/json
       description: Update a department director's information (admin only)
@@ -885,6 +920,59 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
       summary: Create temp course
+      tags:
+      - TempCourses
+  /directors/temp-courses/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update an existing temporary course
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Temp Course ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Temp course update data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.TempCourseUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Temp course updated
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.TempCourseUpdateRequest'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Update temp course
       tags:
       - TempCourses
   /food/{mealId}/image:

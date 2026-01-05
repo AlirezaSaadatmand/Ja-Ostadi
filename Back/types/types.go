@@ -69,7 +69,7 @@ type FoodData struct {
 }
 
 type SubmitRatingRequest struct {
-	MealID  int   `json:"mealId"`
+	MealID  int    `json:"mealId"`
 	Rating  int    `json:"rating"`
 	Comment string `json:"comment"`
 }
@@ -90,21 +90,43 @@ type LoginDirectorRequest struct {
 }
 
 type TempCourseRequest struct {
-	Department      string `json:"department" validate:"required"`
-	CourseName      string `json:"course_name" validate:"required"`
-	Group           string `json:"group" validate:"required"`
-	Units           string `json:"units" validate:"required"`
-	Instructor      string `json:"instructor"`
-	TargetTerm      string `json:"target_term" validate:"required"`
-	
-	FirstRoom       string `json:"first_room"`
-	FirstDay        string `json:"first_day"`
-	FirstTime       string `json:"first_time"`
-	
-	SecondRoom      string `json:"second_room"`
-	SecondDay       string `json:"second_day"`
-	SecondTime      string `json:"second_time"`
-	
-	FinalExamTime   string `json:"final_exam_time"`
-	FinalExamDate   string `json:"final_exam_date"`
+	Department string `json:"department" validate:"required"`
+	CourseName string `json:"course_name" validate:"required"`
+	Group      string `json:"group" validate:"required"`
+	Units      string `json:"units" validate:"required"`
+	Instructor string `json:"instructor"`
+	TargetTerm string `json:"target_term" validate:"required"`
+
+	FirstRoom string `json:"first_room"`
+	FirstDay  string `json:"first_day"`
+	FirstTime string `json:"first_time"`
+
+	SecondRoom string `json:"second_room"`
+	SecondDay  string `json:"second_day"`
+	SecondTime string `json:"second_time"`
+
+	FinalExamTime string `json:"final_exam_time"`
+	FinalExamDate string `json:"final_exam_date"`
+}
+
+type TempCourseUpdateRequest struct {
+	Department string `json:"department"`
+	CourseName string `json:"course_name"`
+	Group      string `json:"group"`
+	Units      string `json:"units"`
+	Instructor string `json:"instructor"`
+	TargetTerm string `json:"target_term"`
+
+	FirstRoom string `json:"first_room"`
+	FirstDay  string `json:"first_day"`
+	FirstTime string `json:"first_time"`
+	FirstLock *bool  `json:"first_lock"`
+
+	SecondRoom string `json:"second_room"`
+	SecondDay  string `json:"second_day"`
+	SecondTime string `json:"second_time"`
+	SecondLock *bool  `json:"second_lock"`
+
+	FinalExamTime string `json:"final_exam_time"`
+	FinalExamDate string `json:"final_exam_date"`
 }

@@ -93,7 +93,65 @@ const docTemplate = `{
             }
         },
         "/admin/directors/{id}": {
-            "put": {
+            "delete": {
+                "description": "Delete a department director account (admin only)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete department director",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin authentication token",
+                        "name": "X-Admin-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Director ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Director deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: invalid ID",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: missing or invalid admin token",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found: director not found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
                 "description": "Update a department director's information (admin only)",
                 "consumes": [
                     "application/json"
@@ -169,64 +227,6 @@ const docTemplate = `{
                     },
                     "409": {
                         "description": "Conflict: username already exists",
-                        "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete a department director account (admin only)",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Delete department director",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Admin authentication token",
-                        "name": "X-Admin-Token",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Director ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Director deleted successfully",
-                        "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request: invalid ID",
-                        "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized: missing or invalid admin token",
-                        "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found: director not found",
                         "schema": {
                             "$ref": "#/definitions/utils.APIResponse"
                         }
@@ -801,6 +801,90 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/directors/temp-courses/{id}": {
+            "patch": {
+                "description": "Update an existing temporary course",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "TempCourses"
+                ],
+                "summary": "Update temp course",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Temp Course ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Temp course update data",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.TempCourseUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Temp course updated",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.APIResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/types.TempCourseUpdateRequest"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/utils.APIResponse"
                         }
@@ -2007,6 +2091,59 @@ const docTemplate = `{
                 },
                 "second_day": {
                     "type": "string"
+                },
+                "second_room": {
+                    "type": "string"
+                },
+                "second_time": {
+                    "type": "string"
+                },
+                "target_term": {
+                    "type": "string"
+                },
+                "units": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.TempCourseUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "course_name": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "final_exam_date": {
+                    "type": "string"
+                },
+                "final_exam_time": {
+                    "type": "string"
+                },
+                "first_day": {
+                    "type": "string"
+                },
+                "first_lock": {
+                    "type": "boolean"
+                },
+                "first_room": {
+                    "type": "string"
+                },
+                "first_time": {
+                    "type": "string"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "instructor": {
+                    "type": "string"
+                },
+                "second_day": {
+                    "type": "string"
+                },
+                "second_lock": {
+                    "type": "boolean"
                 },
                 "second_room": {
                     "type": "string"
