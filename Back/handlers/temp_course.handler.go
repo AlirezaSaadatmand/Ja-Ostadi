@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
 	"github.com/gofiber/fiber/v2"
@@ -36,4 +38,46 @@ func (h *Handler) CreateTempCourse(c *fiber.Ctx) error {
 	}
 
 	return utils.Success(c, fiber.StatusCreated, tempCourse, "Temp course created successfully")
+}
+
+// UpdateTempCourse updates a temp course
+// @Summary Update temp course
+// @Description Update an existing temporary course
+// @Tags TempCourses
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer {token}"
+// @Param id path int true "Temp Course ID"
+// @Param body body types.TempCourseUpdateRequest true "Temp course update data"
+// @Success 200 {object} utils.APIResponse{data=types.TempCourseUpdateRequest} "Temp course updated"
+// @Failure 400 {object} utils.APIResponse "Bad Request: invalid input"
+// @Failure 401 {object} utils.APIResponse "Unauthorized"
+// @Failure 404 {object} utils.APIResponse "Not Found"
+// @Failure 500 {object} utils.APIResponse "Internal Server Error"
+// @Router /directors/temp-courses/{id} [patch]
+func (h *Handler) UpdateTempCourse(c *fiber.Ctx) error {
+	directorID, ok := c.Locals("directorID").(string)
+	if !ok || directorID == "" {
+		return utils.Error(c, fiber.StatusUnauthorized, "Unauthorized")
+	}
+
+	id, err := strconv.ParseUint(c.Params("id"), 10, 32)
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid temp course ID")
+	}
+
+	var req types.TempCourseUpdateRequest
+	if err := c.BodyParser(&req); err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid request body")
+	}
+
+	tempCourse, err := h.Services.UpdateTempCourse(directorID, uint(id), req)
+	if err != nil {
+		if err.Error() == "temp course not found" {
+			return utils.Error(c, fiber.StatusNotFound, "Temp course not found")
+		}
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	return utils.Success(c, fiber.StatusOK, tempCourse, "Temp course updated successfully")
 }

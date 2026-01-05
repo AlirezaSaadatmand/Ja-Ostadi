@@ -62,3 +62,92 @@ func (s *Services) CreateTempCourse(directorID string, req types.TempCourseReque
 
 	return &tempCourse, nil
 }
+
+
+
+func (s *Services) UpdateTempCourse(directorID string, id uint, req types.TempCourseUpdateRequest) (*models.TempCourse, error) {
+	var tempCourse models.TempCourse
+
+	err := database.DB.Where("id = ? AND directors_id = ?", id, directorID).First(&tempCourse).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			s.Logger.Warn(logging.TempCourse, logging.Update, "Temp course not found for update", map[logging.ExtraKey]interface{}{
+				"tempCourseID": id,
+				"directorID":   directorID,
+			})
+			return nil, errors.New("temp course not found")
+		}
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to find temp course for update", map[logging.ExtraKey]interface{}{
+			"tempCourseID": id,
+			"directorID":   directorID,
+			"error":        err.Error(),
+		})
+		return nil, errors.New("database error")
+	}
+
+	if req.Department != "" {
+		tempCourse.Department = req.Department
+	}
+	if req.CourseName != "" {
+		tempCourse.CourseName = req.CourseName
+	}
+	if req.Group != "" {
+		tempCourse.Group = req.Group
+	}
+	if req.Units != "" {
+		tempCourse.Units = req.Units
+	}
+	if req.Instructor != "" {
+		tempCourse.Instructor = req.Instructor
+	}
+	if req.TargetTerm != "" {
+		tempCourse.TargetTerm = req.TargetTerm
+	}
+	if req.FirstRoom != "" {
+		tempCourse.FirstRoom = req.FirstRoom
+	}
+	if req.FirstDay != "" {
+		tempCourse.FirstDay = req.FirstDay
+	}
+	if req.FirstTime != "" {
+		tempCourse.FirstTime = req.FirstTime
+	}
+	if req.FirstLock != nil {
+		tempCourse.FirstLock = *req.FirstLock
+	}
+	if req.SecondRoom != "" {
+		tempCourse.SecondRoom = req.SecondRoom
+	}
+	if req.SecondDay != "" {
+		tempCourse.SecondDay = req.SecondDay
+	}
+	if req.SecondTime != "" {
+		tempCourse.SecondTime = req.SecondTime
+	}
+	if req.SecondLock != nil {
+		tempCourse.SecondLock = *req.SecondLock
+	}
+	if req.FinalExamTime != "" {
+		tempCourse.FinalExamTime = req.FinalExamTime
+	}
+	if req.FinalExamDate != "" {
+		tempCourse.FinalExamDate = req.FinalExamDate
+	}
+
+	err = database.DB.Save(&tempCourse).Error
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Update, "Failed to update temp course", map[logging.ExtraKey]interface{}{
+			"tempCourseID": id,
+			"directorID":   directorID,
+			"error":        err.Error(),
+		})
+		return nil, errors.New("failed to update temp course")
+	}
+
+	s.Logger.Info(logging.TempCourse, logging.Update, "Temp course updated successfully", map[logging.ExtraKey]interface{}{
+		"tempCourseID": id,
+		"directorID":   directorID,
+	})
+
+	return &tempCourse, nil
+}

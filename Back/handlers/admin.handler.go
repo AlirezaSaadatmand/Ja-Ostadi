@@ -133,7 +133,7 @@ func (h *Handler) RegisterDirector(c *fiber.Ctx) error {
 // @Failure 404 {object} utils.APIResponse "Not Found: director not found"
 // @Failure 409 {object} utils.APIResponse "Conflict: username already exists"
 // @Failure 500 {object} utils.APIResponse "Internal Server Error"
-// @Router /admin/directors/{id} [put]
+// @Router /admin/directors/{id} [patch]
 func (h *Handler) UpdateDirector(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
