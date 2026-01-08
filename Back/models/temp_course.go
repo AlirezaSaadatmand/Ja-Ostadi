@@ -24,5 +24,5 @@ type TempCourse struct {
 	FinalExamTime string
 	FinalExamDate string
 
-	DirectorsID string
+	DirectorID string
 }

@@ -74,17 +74,19 @@ type SubmitRatingRequest struct {
 	Comment string `json:"comment"`
 }
 
-type RegisterDirectorRequest struct {
+type RegisterClientRequest struct {
 	Username string `json:"username" validate:"required,min=3,max=50"`
 	Password string `json:"password" validate:"required,min=8"`
+	Role     string `json:"role"`
 }
 
-type UpdateDirectorRequest struct {
+type UpdateClientRequest struct {
 	Username string `json:"username,omitempty"`
 	Password string `json:"password,omitempty"`
+	Role     string `json:"role,omitempty"`
 }
 
-type LoginDirectorRequest struct {
+type LoginRequest struct {
 	Username string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }

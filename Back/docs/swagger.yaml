@@ -1,4 +1,13 @@
 definitions:
+  handlers.ClientResponse:
+    properties:
+      id:
+        type: integer
+      role:
+        type: string
+      username:
+        type: string
+    type: object
   handlers.CourseDetail:
     properties:
       classTime:
@@ -13,13 +22,6 @@ definitions:
         $ref: '#/definitions/services.InstructorByID'
       semeter:
         $ref: '#/definitions/services.SemesterData'
-    type: object
-  handlers.DirectorResponse:
-    properties:
-      id:
-        type: integer
-      username:
-        type: string
     type: object
   handlers.InstructorCourseTimeData:
     properties:
@@ -48,10 +50,8 @@ definitions:
       relations:
         $ref: '#/definitions/services.InstructorRelations'
     type: object
-  handlers.LoginDirectorResponse:
+  handlers.LoginResponse:
     properties:
-      director:
-        $ref: '#/definitions/handlers.DirectorResponse'
       token:
         type: string
     type: object
@@ -276,7 +276,7 @@ definitions:
       week:
         type: string
     type: object
-  types.LoginDirectorRequest:
+  types.LoginRequest:
     properties:
       password:
         type: string
@@ -305,10 +305,12 @@ definitions:
       rating:
         type: number
     type: object
-  types.RegisterDirectorRequest:
+  types.RegisterClientRequest:
     properties:
       password:
         minLength: 8
+        type: string
+      role:
         type: string
       username:
         maxLength: 50
@@ -399,9 +401,11 @@ definitions:
       units:
         type: string
     type: object
-  types.UpdateDirectorRequest:
+  types.UpdateClientRequest:
     properties:
       password:
+        type: string
+      role:
         type: string
       username:
         type: string
@@ -417,34 +421,34 @@ definitions:
 info:
   contact: {}
 paths:
-  /admin/directors:
+  /admin/clients:
     post:
       consumes:
       - application/json
-      description: Create a new department director account (admin only)
+      description: Create a new client account (admin only)
       parameters:
       - description: Admin authentication token
         in: header
         name: X-Admin-Token
         required: true
         type: string
-      - description: Director registration data
+      - description: Client registration data
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/types.RegisterDirectorRequest'
+          $ref: '#/definitions/types.RegisterClientRequest'
       produces:
       - application/json
       responses:
         "201":
-          description: Director created successfully
+          description: Client created successfully
           schema:
             allOf:
             - $ref: '#/definitions/utils.APIResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/handlers.DirectorResponse'
+                  $ref: '#/definitions/handlers.ClientResponse'
               type: object
         "400":
           description: 'Bad Request: invalid input'
@@ -462,19 +466,19 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.APIResponse'
-      summary: Register department director
+      summary: Register client
       tags:
       - Admin
-  /admin/directors/{id}:
+  /admin/clients/{id}:
     delete:
-      description: Delete a department director account (admin only)
+      description: Delete a client account (admin only)
       parameters:
       - description: Admin authentication token
         in: header
         name: X-Admin-Token
         required: true
         type: string
-      - description: Director ID
+      - description: Client ID
         in: path
         name: id
         required: true
@@ -483,7 +487,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Director deleted successfully
+          description: Client deleted successfully
           schema:
             $ref: '#/definitions/utils.APIResponse'
         "400":
@@ -495,48 +499,48 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
         "404":
-          description: 'Not Found: director not found'
+          description: 'Not Found: client not found'
           schema:
             $ref: '#/definitions/utils.APIResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.APIResponse'
-      summary: Delete department director
+      summary: Delete client
       tags:
       - Admin
     patch:
       consumes:
       - application/json
-      description: Update a department director's information (admin only)
+      description: Update a client's information (admin only)
       parameters:
       - description: Admin authentication token
         in: header
         name: X-Admin-Token
         required: true
         type: string
-      - description: Director ID
+      - description: Client ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Director update data
+      - description: Client update data
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/types.UpdateDirectorRequest'
+          $ref: '#/definitions/types.UpdateClientRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: Director updated successfully
+          description: Client updated successfully
           schema:
             allOf:
             - $ref: '#/definitions/utils.APIResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/handlers.DirectorResponse'
+                  $ref: '#/definitions/handlers.ClientResponse'
               type: object
         "400":
           description: 'Bad Request: invalid input'
@@ -547,7 +551,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
         "404":
-          description: 'Not Found: director not found'
+          description: 'Not Found: client not found'
           schema:
             $ref: '#/definitions/utils.APIResponse'
         "409":
@@ -558,7 +562,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.APIResponse'
-      summary: Update department director
+      summary: Update client
       tags:
       - Admin
   /admin/update/data:
@@ -671,9 +675,48 @@ paths:
       summary: Generate Google OAuth login URL
       tags:
       - Auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate Client and return JWT token
+      parameters:
+      - description: Client login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.LoginResponse'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: 'Unauthorized: invalid credentials'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Login Client
+      tags:
+      - Auth
   /auth/status:
     get:
-      description: Checks if the user is authenticated based on JWT (sent via Authorization
+      description: Checks if the client is authenticated based on JWT (sent via Authorization
         header)
       responses:
         "200":
@@ -839,183 +882,6 @@ paths:
       summary: Get detailed department data
       tags:
       - departments
-  /directors/login:
-    post:
-      consumes:
-      - application/json
-      description: Authenticate department director and return JWT token
-      parameters:
-      - description: Director login credentials
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/types.LoginDirectorRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Login successful
-          schema:
-            allOf:
-            - $ref: '#/definitions/utils.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/handlers.LoginDirectorResponse'
-              type: object
-        "400":
-          description: 'Bad Request: invalid input'
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "401":
-          description: 'Unauthorized: invalid credentials'
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-      summary: Login department director
-      tags:
-      - Director
-  /directors/temp-courses:
-    post:
-      consumes:
-      - application/json
-      description: Create a new temporary course
-      parameters:
-      - description: Bearer {token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Temp course data
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/types.TempCourseRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Temp course created
-          schema:
-            allOf:
-            - $ref: '#/definitions/utils.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/types.TempCourseRequest'
-              type: object
-        "400":
-          description: 'Bad Request: invalid input'
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-      summary: Create temp course
-      tags:
-      - TempCourses
-  /directors/temp-courses/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a temporary course
-      parameters:
-      - description: Bearer {token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Temp Course ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Temp course deleted
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "400":
-          description: 'Bad Request: invalid ID'
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-      summary: Delete temp course
-      tags:
-      - TempCourses
-    patch:
-      consumes:
-      - application/json
-      description: Update an existing temporary course
-      parameters:
-      - description: Bearer {token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Temp Course ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Temp course update data
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/types.TempCourseUpdateRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Temp course updated
-          schema:
-            allOf:
-            - $ref: '#/definitions/utils.APIResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/types.TempCourseUpdateRequest'
-              type: object
-        "400":
-          description: 'Bad Request: invalid input'
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.APIResponse'
-      summary: Update temp course
-      tags:
-      - TempCourses
   /food/{mealId}/image:
     patch:
       consumes:
@@ -1371,6 +1237,180 @@ paths:
       summary: Get semesters
       tags:
       - semesters
+  /temp-courses:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all temporary courses with optional filtering
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Instructor filter
+        in: query
+        name: instructor
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Temp courses retrieved
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: 'Bad Request: invalid query'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get temp courses
+      tags:
+      - TempCourses
+    post:
+      consumes:
+      - application/json
+      description: Create a new temporary course
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Temp course data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.TempCourseRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Temp course created
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.TempCourseRequest'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Create temp course
+      tags:
+      - TempCourses
+  /temp-courses/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a temporary course
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Temp Course ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Temp course deleted
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: 'Bad Request: invalid ID'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Delete temp course
+      tags:
+      - TempCourses
+    patch:
+      consumes:
+      - application/json
+      description: Update an existing temporary course
+      parameters:
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Temp Course ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Temp course update data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.TempCourseUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Temp course updated
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/types.TempCourseUpdateRequest'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Update temp course
+      tags:
+      - TempCourses
   /user/courses:
     post:
       consumes:

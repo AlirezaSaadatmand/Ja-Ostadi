@@ -20,7 +20,7 @@ import (
 // @Failure 400 {object} utils.APIResponse "Bad Request: invalid input"
 // @Failure 401 {object} utils.APIResponse "Unauthorized"
 // @Failure 500 {object} utils.APIResponse "Internal Server Error"
-// @Router /directors/temp-courses [post]
+// @Router /temp-courses [post]
 func (h *Handler) CreateTempCourse(c *fiber.Ctx) error {
 	directorID, ok := c.Locals("directorID").(string)
 	if !ok || directorID == "" {
@@ -37,7 +37,7 @@ func (h *Handler) CreateTempCourse(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return utils.Success(c, fiber.StatusCreated, tempCourse, "Temp course created successfully")
+	return utils.Success(c, fiber.StatusCreated, tempCourse, "TempCourse created successfully")
 }
 
 // UpdateTempCourse updates a temp course
@@ -54,7 +54,7 @@ func (h *Handler) CreateTempCourse(c *fiber.Ctx) error {
 // @Failure 401 {object} utils.APIResponse "Unauthorized"
 // @Failure 404 {object} utils.APIResponse "Not Found"
 // @Failure 500 {object} utils.APIResponse "Internal Server Error"
-// @Router /directors/temp-courses/{id} [patch]
+// @Router /temp-courses/{id} [patch]
 func (h *Handler) UpdateTempCourse(c *fiber.Ctx) error {
 	directorID, ok := c.Locals("directorID").(string)
 	if !ok || directorID == "" {
@@ -96,7 +96,7 @@ func (h *Handler) UpdateTempCourse(c *fiber.Ctx) error {
 // @Failure 401 {object} utils.APIResponse "Unauthorized"
 // @Failure 404 {object} utils.APIResponse "Not Found"
 // @Failure 500 {object} utils.APIResponse "Internal Server Error"
-// @Router /directors/temp-courses/{id} [delete]
+// @Router /temp-courses/{id} [delete]
 func (h *Handler) DeleteTempCourse(c *fiber.Ctx) error {
 	directorID, ok := c.Locals("directorID").(string)
 	if !ok || directorID == "" {
@@ -117,4 +117,32 @@ func (h *Handler) DeleteTempCourse(c *fiber.Ctx) error {
 	}
 
 	return utils.Success(c, fiber.StatusOK, nil, "Temp course deleted successfully")
+}
+
+// GetTempCourses retrieves all temp courses with filtering
+// @Summary Get temp courses
+// @Description Retrieve all temporary courses with optional filtering
+// @Tags TempCourses
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer {token}"
+// @Param instructor query string false "Instructor filter"
+// @Success 200 {object} utils.APIResponse{} "Temp courses retrieved"
+// @Failure 400 {object} utils.APIResponse "Bad Request: invalid query"
+// @Failure 401 {object} utils.APIResponse "Unauthorized"
+// @Failure 500 {object} utils.APIResponse "Internal Server Error"
+// @Router /temp-courses [get]
+func (h *Handler) GetTempCourses(c *fiber.Ctx) error {
+	directorID, ok := c.Locals("directorID").(string)
+	if !ok || directorID == "" {
+		return utils.Error(c, fiber.StatusUnauthorized, "Unauthorized")
+	}
+
+	tempCourses, err := h.Services.GetTempCourses(directorID)
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+
+	return utils.Success(c, fiber.StatusOK, tempCourses, "Temp courses retrieved successfully")
 }

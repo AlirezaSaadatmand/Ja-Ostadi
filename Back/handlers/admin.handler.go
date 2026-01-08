@@ -63,33 +63,34 @@ func (h *Handler) UploadJson(c *fiber.Ctx) error {
 	return utils.Success(c, fiber.StatusOK, fiber.Map{"count": len(data)}, "JSON file uploaded successfully")
 }
 
-type DirectorResponse struct {
+type ClientResponse struct {
 	ID       uint   `json:"id"`
 	Username string `json:"username"`
+	Role     string `json:"role"`
 }
 
-// RegisterDirector registers a new department director (admin only)
-// @Summary Register department director
-// @Description Create a new department director account (admin only)
+// RegisterClient registers a new client (admin only)
+// @Summary Register client
+// @Description Create a new client account (admin only)
 // @Tags Admin
 // @Accept json
 // @Produce json
 // @Param X-Admin-Token header string true "Admin authentication token"
-// @Param body body types.RegisterDirectorRequest true "Director registration data"
-// @Success 201 {object} utils.APIResponse{data=DirectorResponse} "Director created successfully"
+// @Param body body types.RegisterClientRequest true "Client registration data"
+// @Success 201 {object} utils.APIResponse{data=ClientResponse} "Client created successfully"
 // @Failure 400 {object} utils.APIResponse "Bad Request: invalid input"
 // @Failure 401 {object} utils.APIResponse "Unauthorized: missing or invalid admin token"
 // @Failure 409 {object} utils.APIResponse "Conflict: username already exists"
 // @Failure 500 {object} utils.APIResponse "Internal Server Error"
-// @Router /admin/directors [post]
-func (h *Handler) RegisterDirector(c *fiber.Ctx) error {
-	var req types.RegisterDirectorRequest
+// @Router /admin/clients [post]
+func (h *Handler) RegisterClient(c *fiber.Ctx) error {
+	var req types.RegisterClientRequest
 	if err := c.BodyParser(&req); err != nil {
 		return utils.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	if req.Username == "" || req.Password == "" {
-		return utils.Error(c, fiber.StatusBadRequest, "Username and password are required")
+	if req.Username == "" || req.Password == "" || req.Role == "" {
+		return utils.Error(c, fiber.StatusBadRequest, "Username and password and role are required")
 	}
 
 	hashedPassword, err := hashing.HashPassword(req.Password)
@@ -97,60 +98,63 @@ func (h *Handler) RegisterDirector(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	director := models.DepartmentDirector{
+	client := models.Client{
 		Username: req.Username,
 		Password: hashedPassword,
+		Role:     req.Role,
 	}
 
-	err = h.Services.CreateDepartmentDirector(&director)
+	err = h.Services.CreateClient(&client)
 	if err != nil {
 		if err.Error() == "username already exists" {
 			return utils.Error(c, fiber.StatusConflict, "Username already exists")
 		}
-		return utils.Error(c, fiber.StatusInternalServerError, "Failed to create director")
+		return utils.Error(c, fiber.StatusInternalServerError, "Failed to create client")
 	}
 
-	response := DirectorResponse{
-		ID:       director.ID,
-		Username: director.Username,
+	response := ClientResponse{
+		ID:       client.ID,
+		Username: client.Username,
+		Role:     client.Role,
 	}
 
-	return utils.Success(c, fiber.StatusCreated, response, "Department director registered successfully")
+	return utils.Success(c, fiber.StatusCreated, response, "Department client registered successfully")
 }
 
-// UpdateDirector updates a department director's information (admin only)
-// @Summary Update department director
-// @Description Update a department director's information (admin only)
+// UpdateClient updates a client's information (admin only)
+// @Summary Update client
+// @Description Update a client's information (admin only)
 // @Tags Admin
 // @Accept json
 // @Produce json
 // @Param X-Admin-Token header string true "Admin authentication token"
-// @Param id path int true "Director ID"
-// @Param body body types.UpdateDirectorRequest true "Director update data"
-// @Success 200 {object} utils.APIResponse{data=DirectorResponse} "Director updated successfully"
+// @Param id path int true "Client ID"
+// @Param body body types.UpdateClientRequest true "Client update data"
+// @Success 200 {object} utils.APIResponse{data=ClientResponse} "Client updated successfully"
 // @Failure 400 {object} utils.APIResponse "Bad Request: invalid input"
 // @Failure 401 {object} utils.APIResponse "Unauthorized: missing or invalid admin token"
-// @Failure 404 {object} utils.APIResponse "Not Found: director not found"
+// @Failure 404 {object} utils.APIResponse "Not Found: client not found"
 // @Failure 409 {object} utils.APIResponse "Conflict: username already exists"
 // @Failure 500 {object} utils.APIResponse "Internal Server Error"
-// @Router /admin/directors/{id} [patch]
-func (h *Handler) UpdateDirector(c *fiber.Ctx) error {
+// @Router /admin/clients/{id} [patch]
+func (h *Handler) UpdateClient(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
-		return utils.Error(c, fiber.StatusBadRequest, "Invalid director ID")
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid client ID")
 	}
 
-	var req types.UpdateDirectorRequest
+	var req types.UpdateClientRequest
 	if err := c.BodyParser(&req); err != nil {
 		return utils.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	if req.Username == "" && req.Password == "" {
+	if req.Username == "" && req.Password == "" && req.Role == "" {
 		return utils.Error(c, fiber.StatusBadRequest, "At least one field (username or password) must be provided")
 	}
 
-	updateData := models.DepartmentDirector{
+	updateData := models.Client{
 		Username: req.Username,
+		Role:     req.Role,
 	}
 
 	if req.Password != "" {
@@ -161,52 +165,53 @@ func (h *Handler) UpdateDirector(c *fiber.Ctx) error {
 		updateData.Password = hashedPassword
 	}
 
-	updatedDirector, err := h.Services.UpdateDepartmentDirector(uint(id), &updateData)
+	updatedClient, err := h.Services.UpdateClient(uint(id), &updateData)
 	if err != nil {
 		switch err.Error() {
-		case "director not found":
-			return utils.Error(c, fiber.StatusNotFound, "Director not found")
+		case "client not found":
+			return utils.Error(c, fiber.StatusNotFound, "Client not found")
 		case "username already exists":
 			return utils.Error(c, fiber.StatusConflict, "Username already exists")
 		default:
-			return utils.Error(c, fiber.StatusInternalServerError, "Failed to update director")
+			return utils.Error(c, fiber.StatusInternalServerError, "Failed to update client")
 		}
 	}
 
-	response := DirectorResponse{
-		ID:       updatedDirector.ID,
-		Username: updatedDirector.Username,
+	response := ClientResponse{
+		ID:       updatedClient.ID,
+		Username: updatedClient.Username,
+		Role:     updateData.Role,
 	}
 
-	return utils.Success(c, fiber.StatusOK, response, "Director updated successfully")
+	return utils.Success(c, fiber.StatusOK, response, "Client updated successfully")
 }
 
-// DeleteDirector deletes a department director (admin only)
-// @Summary Delete department director
-// @Description Delete a department director account (admin only)
+// DeleteClient deletes a client (admin only)
+// @Summary Delete client
+// @Description Delete a client account (admin only)
 // @Tags Admin
 // @Produce json
 // @Param X-Admin-Token header string true "Admin authentication token"
-// @Param id path int true "Director ID"
-// @Success 200 {object} utils.APIResponse "Director deleted successfully"
+// @Param id path int true "Client ID"
+// @Success 200 {object} utils.APIResponse "Client deleted successfully"
 // @Failure 400 {object} utils.APIResponse "Bad Request: invalid ID"
 // @Failure 401 {object} utils.APIResponse "Unauthorized: missing or invalid admin token"
-// @Failure 404 {object} utils.APIResponse "Not Found: director not found"
+// @Failure 404 {object} utils.APIResponse "Not Found: client not found"
 // @Failure 500 {object} utils.APIResponse "Internal Server Error"
-// @Router /admin/directors/{id} [delete]
-func (h *Handler) DeleteDirector(c *fiber.Ctx) error {
+// @Router /admin/clients/{id} [delete]
+func (h *Handler) DeleteClient(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
-		return utils.Error(c, fiber.StatusBadRequest, "Invalid director ID")
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid client ID")
 	}
 
-	err = h.Services.DeleteDepartmentDirector(uint(id))
+	err = h.Services.DeleteClient(uint(id))
 	if err != nil {
-		if err.Error() == "director not found" {
-			return utils.Error(c, fiber.StatusNotFound, "Director not found")
+		if err.Error() == "client not found" {
+			return utils.Error(c, fiber.StatusNotFound, "client not found")
 		}
-		return utils.Error(c, fiber.StatusInternalServerError, "Failed to delete director")
+		return utils.Error(c, fiber.StatusInternalServerError, "Failed to delete client")
 	}
 
-	return utils.Success(c, fiber.StatusOK, nil, "Director deleted successfully")
+	return utils.Success(c, fiber.StatusOK, nil, "client deleted successfully")
 }

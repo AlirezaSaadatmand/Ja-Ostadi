@@ -10,18 +10,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *Services) CreateTempCourse(directorID string, req types.TempCourseRequest) (*models.TempCourse, error) {
-	var director models.DepartmentDirector
-	err := database.DB.Where("id = ?", directorID).First(&director).Error
+func (s *Services) CreateTempCourse(DirectorID string, req types.TempCourseRequest) (*models.TempCourse, error) {
+	var client models.Client
+	err := database.DB.Where("id = ?", DirectorID).First(&client).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			s.Logger.Warn(logging.Auth, logging.Verify, "Director not found", map[logging.ExtraKey]interface{}{
-				"directorID": directorID,
+			s.Logger.Warn(logging.Auth, logging.Verify, "Client not found", map[logging.ExtraKey]interface{}{
+				"DirectorID": DirectorID,
 			})
-			return nil, errors.New("director not found")
+			return nil, errors.New("client not found")
 		}
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to retrieve director", map[logging.ExtraKey]interface{}{
-			"directorID": directorID,
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to retrieve client", map[logging.ExtraKey]interface{}{
+			"DirectorID": DirectorID,
 			"error":      err.Error(),
 		})
 		return nil, errors.New("database error")
@@ -41,13 +41,13 @@ func (s *Services) CreateTempCourse(directorID string, req types.TempCourseReque
 		SecondTime:    req.SecondTime,
 		FinalExamTime: req.FinalExamTime,
 		FinalExamDate: req.FinalExamDate,
-		DirectorsID:   directorID,
+		DirectorID:   DirectorID,
 	}
 
 	err = database.DB.Create(&tempCourse).Error
 	if err != nil {
 		s.Logger.Error(logging.Mysql, logging.Insert, "Failed to create temp course", map[logging.ExtraKey]interface{}{
-			"directorID": directorID,
+			"DirectorID": DirectorID,
 			"courseName": req.CourseName,
 			"error":      err.Error(),
 		})
@@ -56,7 +56,7 @@ func (s *Services) CreateTempCourse(directorID string, req types.TempCourseReque
 
 	s.Logger.Info(logging.TempCourse, logging.Create, "Temp course created successfully", map[logging.ExtraKey]interface{}{
 		"tempCourseID": tempCourse.ID,
-		"directorID":   directorID,
+		"DirectorID":   DirectorID,
 		"courseName":   req.CourseName,
 	})
 
@@ -65,21 +65,21 @@ func (s *Services) CreateTempCourse(directorID string, req types.TempCourseReque
 
 
 
-func (s *Services) UpdateTempCourse(directorID string, id uint, req types.TempCourseUpdateRequest) (*models.TempCourse, error) {
+func (s *Services) UpdateTempCourse(DirectorID string, id uint, req types.TempCourseUpdateRequest) (*models.TempCourse, error) {
 	var tempCourse models.TempCourse
 
-	err := database.DB.Where("id = ? AND directors_id = ?", id, directorID).First(&tempCourse).Error
+	err := database.DB.Where("id = ? AND director_id = ?", id, DirectorID).First(&tempCourse).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			s.Logger.Warn(logging.TempCourse, logging.Update, "Temp course not found for update", map[logging.ExtraKey]interface{}{
 				"tempCourseID": id,
-				"directorID":   directorID,
+				"DirectorID":   DirectorID,
 			})
 			return nil, errors.New("temp course not found")
 		}
 		s.Logger.Error(logging.Mysql, logging.Select, "Failed to find temp course for update", map[logging.ExtraKey]interface{}{
 			"tempCourseID": id,
-			"directorID":   directorID,
+			"DirectorID":   DirectorID,
 			"error":        err.Error(),
 		})
 		return nil, errors.New("database error")
@@ -138,7 +138,7 @@ func (s *Services) UpdateTempCourse(directorID string, id uint, req types.TempCo
 	if err != nil {
 		s.Logger.Error(logging.Mysql, logging.Update, "Failed to update temp course", map[logging.ExtraKey]interface{}{
 			"tempCourseID": id,
-			"directorID":   directorID,
+			"DirectorID":   DirectorID,
 			"error":        err.Error(),
 		})
 		return nil, errors.New("failed to update temp course")
@@ -146,18 +146,18 @@ func (s *Services) UpdateTempCourse(directorID string, id uint, req types.TempCo
 
 	s.Logger.Info(logging.TempCourse, logging.Update, "Temp course updated successfully", map[logging.ExtraKey]interface{}{
 		"tempCourseID": id,
-		"directorID":   directorID,
+		"DirectorID":   DirectorID,
 	})
 
 	return &tempCourse, nil
 }
 
-func (s *Services) DeleteTempCourse(directorID string, id uint) error {
-	result := database.DB.Where("id = ? AND directors_id = ?", id, directorID).Delete(&models.TempCourse{})
+func (s *Services) DeleteTempCourse(DirectorID string, id uint) error {
+	result := database.DB.Where("id = ? AND clients_id = ?", id, DirectorID).Delete(&models.TempCourse{})
 	if result.Error != nil {
 		s.Logger.Error(logging.Mysql, logging.Delete, "Failed to delete temp course", map[logging.ExtraKey]interface{}{
 			"tempCourseID": id,
-			"directorID":   directorID,
+			"DirectorID":   DirectorID,
 			"error":        result.Error.Error(),
 		})
 		return errors.New("failed to delete temp course")
@@ -166,15 +166,37 @@ func (s *Services) DeleteTempCourse(directorID string, id uint) error {
 	if result.RowsAffected == 0 {
 		s.Logger.Warn(logging.TempCourse, logging.Delete, "Temp course not found for deletion", map[logging.ExtraKey]interface{}{
 			"tempCourseID": id,
-			"directorID":   directorID,
+			"DirectorID":   DirectorID,
 		})
 		return errors.New("temp course not found")
 	}
 
 	s.Logger.Info(logging.TempCourse, logging.Delete, "Temp course deleted successfully", map[logging.ExtraKey]interface{}{
 		"tempCourseID": id,
-		"directorID":   directorID,
+		"DirectorID":   DirectorID,
 	})
 
 	return nil
+}
+
+
+func (s *Services) GetTempCourses(DirectorID string) ([]models.TempCourse, error) {
+	var tempCourses []models.TempCourse
+
+	db := database.DB.Model(&models.TempCourse{}).Where("clients_id = ?", DirectorID)
+	err := db.Find(&tempCourses).Error
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to retrieve temp courses", map[logging.ExtraKey]interface{}{
+			"DirectorID": DirectorID,
+			"error":      err.Error(),
+		})
+		return nil,errors.New("failed to retrieve temp courses")
+	}
+
+	s.Logger.Info(logging.TempCourse, logging.Select, "Temp courses retrieved", map[logging.ExtraKey]interface{}{
+		"DirectorID": DirectorID,
+		"count":      len(tempCourses),
+	})
+
+	return tempCourses, nil
 }

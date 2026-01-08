@@ -1,60 +1,38 @@
-package middleware
+package middlewares
 
 import (
-	"fmt"
-	"strings"
+    "fmt"
 
-	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
-	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
+    "github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
+    "github.com/gofiber/fiber/v2"
+    "github.com/golang-jwt/jwt/v5"
 )
 
-func DirectorAuth() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		var tokenString string
-		authHeader := c.Get("Authorization")
-		if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
-			tokenString = strings.TrimPrefix(authHeader, "Bearer ")
-		}
+func (m *Middlewares) DirectorAuth() fiber.Handler {
+    return func(c *fiber.Ctx) error {
+        claims := c.Locals("client")
+        if claims == nil {
+            return utils.Error(c, fiber.StatusUnauthorized, "Authentication required")
+        }
 
-		if tokenString == "" {
-			return utils.Error(c, fiber.StatusUnauthorized, "Authentication token required")
-		}
+        jwtClaims := claims.(jwt.MapClaims)
 
-		cfg := config.GetConfig()
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid token signing method")
-			}
-			return []byte(cfg.Secret_Token), nil
-		})
+        if role, ok := jwtClaims["role"].(string); !ok || role != "director" {
+            return utils.Error(c, fiber.StatusForbidden, "Access denied. Director role required")
+        }
 
-		if err != nil || !token.Valid {
-			return utils.Error(c, fiber.StatusUnauthorized, "Invalid or expired token")
-		}
+        directorID, ok := jwtClaims["clientID"]
+        if !ok {
+            return utils.Error(c, fiber.StatusUnauthorized, "Invalid token payload: ID missing")
+        }
 
-		claims, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			return utils.Error(c, fiber.StatusUnauthorized, "Invalid token claims")
-		}
+        directorIDStr := fmt.Sprintf("%v", directorID)
+        c.Locals("directorID", directorIDStr)
+        
+        if username, ok := jwtClaims["username"].(string); ok {
+            c.Locals("username", username)
+        }
 
-		if role, ok := claims["role"].(string); !ok || role != "director" {
-			return utils.Error(c, fiber.StatusForbidden, "Access denied. Director role required")
-		}
-
-		directorID, ok := claims["directorID"]
-		if !ok {
-			return utils.Error(c, fiber.StatusUnauthorized, "Invalid token payload: directorID missing")
-		}
-
-		var directorIDStr = fmt.Sprintf("%v", directorID) 
-
-		c.Locals("directorID", directorIDStr)		
-		if username, ok := claims["username"].(string); ok {
-			c.Locals("username", username)
-		}
-
-		return c.Next()
-	}
+        return c.Next()
+    }
 }

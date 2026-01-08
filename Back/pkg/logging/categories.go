@@ -42,6 +42,9 @@ const (
 
 	// token
 	Generate SubCategory = "Generate"
+
+	// Admin
+	AdminAccess SubCategory = "AdminAccess"
 )
 
 const (
