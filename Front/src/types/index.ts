@@ -186,3 +186,25 @@ export interface RoomScheduleCourse {
   instructor: string;
   time: ClassTime[];
 }
+
+
+export interface LoginResponse {
+  status: string
+  message: string
+  data: {
+    token: string
+  }
+}
+
+export interface JwtPayload {
+  clientID: number
+  username: string
+  role: string
+  exp: number
+}
+
+export interface AuthUser {
+  clientID: number
+  username: string
+  role: string
+}
