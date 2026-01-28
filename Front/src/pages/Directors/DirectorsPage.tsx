@@ -1,13 +1,24 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Book, LogOut, Shield, Calendar, BookOpen, Building2 } from "lucide-react"
+import { Book, LogOut, Shield } from "lucide-react"
+
 import { useAuthStore } from "../../store/auth/useAuthStore"
+import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore"
 import Header from "../../components/Header"
 import ContributorsSection from "../../components/Contributors/ContributorsSection"
 
+const TERMS = ["2", "4", "6", "8"]
+
 const DirectorsPage: React.FC = () => {
-  const { user, isAuthenticated, hasHydrated, logout } = useAuthStore()
   const navigate = useNavigate()
+
+  const { user, isAuthenticated, hasHydrated, logout } =
+    useAuthStore()
+
+  const { tempCourses, fetchTempCourses, isLoading } =
+    useTempCourseStore()
+
+  const [selectedTerm, setSelectedTerm] = useState("")
 
   useEffect(() => {
     if (!hasHydrated) return
@@ -21,43 +32,21 @@ const DirectorsPage: React.FC = () => {
       navigate("/", { replace: true })
       return
     }
-  }, [hasHydrated, isAuthenticated, user, navigate])
+
+    fetchTempCourses()
+  }, [hasHydrated, isAuthenticated, user, navigate, fetchTempCourses])
 
   const handleLogout = () => {
     logout()
     navigate("/login", { replace: true })
   }
 
-  const adminActions = [
-    {
-      title: "افزودن درس جدید",
-      description: "اضافه کردن درس برای ترم جدید",
-      icon: <Book className="w-8 h-8 text-[#AB8A58]" />,
-      link: "/instructors",
-      color: "bg-blue-50 hover:bg-blue-100",
-    },
-    {
-      title: "ویرایش درس",
-      description: "ویرایش و مدیریت دروس",
-      icon: <BookOpen className="w-8 h-8 text-[#AB8A58]" />,
-      link: "/courses",
-      color: "bg-green-50 hover:bg-green-100",
-    },
-    {
-      title: "مدیریت دپارتمان‌ها",
-      description: "ویرایش اطلاعات دپارتمان‌ها",
-      icon: <Building2 className="w-8 h-8 text-[#AB8A58]" />,
-      link: "/departments",
-      color: "bg-purple-50 hover:bg-purple-100",
-    },
-    {
-      title: "برنامه هفتگی",
-      description: "تنظیم برنامه هفتگی دروس",
-      icon: <Calendar className="w-8 h-8 text-[#AB8A58]" />,
-      link: "/schedule",
-      color: "bg-yellow-50 hover:bg-yellow-100",
-    },
-  ]
+  const filteredCourses = useMemo(() => {
+    if (!selectedTerm) return []
+    return tempCourses.filter(
+      (c) => c.targetTerm === selectedTerm
+    )
+  }, [tempCourses, selectedTerm])
 
   if (!hasHydrated) return null
 
@@ -71,9 +60,11 @@ const DirectorsPage: React.FC = () => {
         <ContributorsSection />
       </div>
 
-      <div className="w-full max-w-7xl mt-20">
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="w-full max-w-7xl mt-20 space-y-8">
+
+        {/* HEADER CARD */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="flex flex-col sm:flex-row justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-[#AB8A58]/10 rounded-xl">
                 <Shield className="w-10 h-10 text-[#AB8A58]" />
@@ -90,7 +81,7 @@ const DirectorsPage: React.FC = () => {
 
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg"
             >
               <LogOut size={18} />
               خروج
@@ -98,27 +89,103 @@ const DirectorsPage: React.FC = () => {
           </div>
         </div>
 
-        <h2 className="text-xl font-bold text-gray-900 mb-6">
-          عملیات مدیریتی
-        </h2>
+        {/* ACTIONS */}
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold text-gray-900">
+            دروس موقت
+          </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {adminActions.map((action) => (
-            <a
-              key={action.title}
-              href={action.link}
-              className={`${action.color} rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg`}
-            >
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-white rounded-lg shadow-sm">{action.icon}</div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">{action.title}</h3>
-                  <p className="text-sm text-gray-600">{action.description}</p>
-                </div>
-              </div>
-            </a>
-          ))}
+          <button
+            onClick={() =>
+              navigate("/directors/temp-courses/new")
+            }
+            className="flex items-center gap-2 px-4 py-2 bg-[#AB8A58] text-white rounded-xl hover:opacity-90"
+          >
+            <Book size={18} />
+            افزودن درس
+          </button>
         </div>
+
+        {/* TERM FILTER */}
+        <div className="bg-white rounded-xl shadow p-4 flex gap-4 items-center">
+          <span className="text-sm text-gray-700">
+            انتخاب ترم:
+          </span>
+
+          <select
+            value={selectedTerm}
+            onChange={(e) =>
+              setSelectedTerm(e.target.value)
+            }
+            className="rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-[#AB8A58]"
+          >
+            <option value="">---</option>
+            {TERMS.map((t) => (
+              <option key={t} value={t}>
+                ترم {t}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* TABLE */}
+        <div className="bg-white rounded-2xl shadow overflow-x-auto">
+          <table className="w-full text-sm text-center">
+            <thead className="bg-gray-50 text-gray-700">
+              <tr>
+                <th className="p-3">دپارتمان</th>
+                <th className="p-3">نام درس</th>
+                <th className="p-3">گروه</th>
+                <th className="p-3">واحد</th>
+                <th className="p-3">استاد</th>
+                <th className="p-3">زمان کلاس</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {isLoading && (
+                <tr>
+                  <td colSpan={6} className="p-6">
+                    در حال بارگذاری...
+                  </td>
+                </tr>
+              )}
+
+              {!isLoading && filteredCourses.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-6 text-gray-500">
+                    درسی برای این ترم ثبت نشده است
+                  </td>
+                </tr>
+              )}
+
+              {filteredCourses.map((course) => (
+                <tr
+                  key={course.id}
+                  className="border-t hover:bg-gray-50"
+                >
+                  <td className="p-3">{course.department}</td>
+                  <td className="p-3 font-medium">
+                    {course.courseName}
+                  </td>
+                  <td className="p-3">{course.group}</td>
+                  <td className="p-3">{course.units}</td>
+                  <td className="p-3">{course.instructor}</td>
+                  <td className="p-3 text-xs">
+                    {course.firstDay} {course.firstTime}
+                    {course.secondDay && (
+                      <>
+                        <br />
+                        {course.secondDay} {course.secondTime}
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   )
