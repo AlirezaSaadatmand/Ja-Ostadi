@@ -33,12 +33,15 @@ func (s *Services) CreateTempCourse(DirectorID string, req types.TempCourseReque
 		Group:         req.Group,
 		Units:         req.Units,
 		Instructor:    req.Instructor,
+		TargetTerm:    req.TargetTerm,
 		FirstRoom:     req.FirstRoom,
 		FirstDay:      req.FirstDay,
 		FirstTime:     req.FirstTime,
+		FirstLock:     req.FirstLock,
 		SecondRoom:    req.SecondRoom,
 		SecondDay:     req.SecondDay,
 		SecondTime:    req.SecondTime,
+		SecondLock:    req.SecondLock,
 		FinalExamTime: req.FinalExamTime,
 		FinalExamDate: req.FinalExamDate,
 		DirectorID:   DirectorID,
@@ -183,7 +186,7 @@ func (s *Services) DeleteTempCourse(DirectorID string, id uint) error {
 func (s *Services) GetTempCourses(DirectorID string) ([]models.TempCourse, error) {
 	var tempCourses []models.TempCourse
 
-	db := database.DB.Model(&models.TempCourse{}).Where("clients_id = ?", DirectorID)
+	db := database.DB.Model(&models.TempCourse{}).Where("director_id = ?", DirectorID)
 	err := db.Find(&tempCourses).Error
 	if err != nil {
 		s.Logger.Error(logging.Mysql, logging.Select, "Failed to retrieve temp courses", map[logging.ExtraKey]interface{}{

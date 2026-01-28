@@ -180,7 +180,7 @@ func (h *Handler) UpdateClient(c *fiber.Ctx) error {
 	response := ClientResponse{
 		ID:       updatedClient.ID,
 		Username: updatedClient.Username,
-		Role:     updateData.Role,
+		Role:     updatedClient.Role,
 	}
 
 	return utils.Success(c, fiber.StatusOK, response, "Client updated successfully")
