@@ -7,7 +7,7 @@ import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore"
 import Header from "../../components/Header"
 import ContributorsSection from "../../components/Contributors/ContributorsSection"
 
-const TERMS = ["2", "4", "6", "8"]
+const TERMS = ["همه", "2", "4", "6", "8"]
 
 const DirectorsPage: React.FC = () => {
   const navigate = useNavigate()
@@ -18,7 +18,7 @@ const DirectorsPage: React.FC = () => {
   const { tempCourses, fetchTempCourses, isLoading } =
     useTempCourseStore()
 
-  const [selectedTerm, setSelectedTerm] = useState("")
+  const [selectedTerm, setSelectedTerm] = useState("همه")
 
   useEffect(() => {
     if (!hasHydrated) return
@@ -43,6 +43,7 @@ const DirectorsPage: React.FC = () => {
 
   const filteredCourses = useMemo(() => {
     if (!selectedTerm) return []
+    if (selectedTerm == "همه") return tempCourses
     return tempCourses.filter(
       (c) => c.targetTerm === selectedTerm
     )
@@ -119,7 +120,6 @@ const DirectorsPage: React.FC = () => {
             }
             className="rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-[#AB8A58]"
           >
-            <option value="">---</option>
             {TERMS.map((t) => (
               <option key={t} value={t}>
                 ترم {t}
