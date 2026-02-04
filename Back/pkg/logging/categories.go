@@ -12,6 +12,8 @@ const (
 	Validation      Category = "Validation"
 	RequestResponse Category = "RequestResponse"
 	Scraper         Category = "Scraper"
+	Auth            Category = "Auth"
+	TempCourse      Category = "TempCourse"
 )
 
 const (
@@ -19,6 +21,7 @@ const (
 	Startup         SubCategory = "Startup"
 	ExternalService SubCategory = "ExternalService"
 	Login           SubCategory = "ScraperLogin"
+	Create          SubCategory = "Create"
 
 	// MYSQL
 	Connection SubCategory = "Connection"
@@ -33,6 +36,15 @@ const (
 	RemoveFile SubCategory = "RemoveFile"
 	CreateFile SubCategory = "CreateFile"
 	API        SubCategory = "API"
+
+	// Login
+	Verify SubCategory = "Verify"
+
+	// token
+	Generate SubCategory = "Generate"
+
+	// Admin
+	AdminAccess SubCategory = "AdminAccess"
 )
 
 const (

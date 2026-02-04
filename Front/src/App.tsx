@@ -1,78 +1,14 @@
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
-import { useState, useEffect } from "react"
-
-import Home from "./pages/Home"
-import NotFoundPage from "./pages/NotFoundPage"
-import WeeklySchedulePage from "./pages/WeeklySchedulePage"
-import DepartmentsPage from "./pages/DepartmentsPage"
-import InstructorsPage from "./pages/InstructorsPage"
-import InstructorDetailPage from "./pages/InstructorDetailPage"
-import CoursesPage from "./pages/CoursesPage"
-import CourseDetailPage from "./pages/CourseDetailPage"
-import AuthPage from "./pages/AuthPage"
-import FoodPage from "./pages/FoodPage"
-import RoomsPage from "./pages/RoomsPage"
-import { LearningHub } from "./pages/Learning"
+import { RouterProvider } from "react-router-dom"
+import { useEffect } from "react"
+import { useAuthStore } from "./store/auth/useAuthStore"
+import { router } from "./router"
 
 const AppRoutes = () => {
-  const [initialized, setInitialized] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const { hydrateFromToken } = useAuthStore()
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt")
-    setIsAuthenticated(!!token)
-    setInitialized(true)
-  }, [])
-
-  if (!initialized) {
-    return <div className="p-4 text-center">Loading...</div>
-  }
-
-  const router = createBrowserRouter([
-    {
-      path: "/login",
-      element: isAuthenticated ? <Navigate to="/" replace /> : <AuthPage />,
-    },
-    { path: "/", element: <Home /> },
-
-    {
-      path: "/schedule",
-      element: <WeeklySchedulePage />
-    },
-    {
-      path: "/departments",
-      element: <DepartmentsPage />
-    },
-    {
-      path: "/instructors",
-      element: <InstructorsPage />
-    },
-    {
-      path: "/instructors/:instructorId",
-      element: <InstructorDetailPage />
-    },
-    {
-      path: "/courses",
-      element: <CoursesPage />
-    },
-    {
-      path: "/courses/:courseId",
-      element: <CourseDetailPage />
-    },
-    {
-      path: "/food",
-      element: isAuthenticated ? <FoodPage /> : <Navigate to="/login" replace />
-    },
-    {
-      path: "/classes",
-      element: <RoomsPage /> 
-    },
-    {
-      path: "/learning-hub",
-      element: <LearningHub />
-    },
-    { path: "*", element: <NotFoundPage /> },
-  ])
+    hydrateFromToken()
+  }, [hydrateFromToken])
 
   return <RouterProvider router={router} />
 }
