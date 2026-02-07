@@ -10,7 +10,6 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/scripts"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
-	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -49,17 +48,18 @@ func (h *Handler) UploadJson(c *fiber.Ctx) error {
 		return utils.Error(c, fiber.StatusBadRequest, "Invalid JSON file")
 	}
 
+	var semester string
+
 	dataMap := make(map[string]types.CourseJSON)
 	for _, i := range data {
 		key := fmt.Sprintf("%s-%s", i.CourseNumber, i.Group)
 		dataMap[key] = i
+		semester = i.Semester
 	}
 
 	scripts.SaveData(data)
 
-	cfg := config.GetConfig()
-
-	if err := scripts.CleanUpCourses(cfg.SEMESTER, dataMap); err != nil {
+	if err := scripts.CleanUpCourses(semester, dataMap); err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
