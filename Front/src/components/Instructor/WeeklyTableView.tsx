@@ -18,7 +18,7 @@ const WeeklyTableView: React.FC = () => {
 
   const tableData = useMemo(() => {
     const semester = instructorCoursesBySemester.find(
-      (s) => s.semester.name === "اول - 1404"
+      (s) => s.semester.name === "دوم - 1404"
     )
 
     const map: Record<string, CourseInSemester> = {}
@@ -36,7 +36,7 @@ const WeeklyTableView: React.FC = () => {
 
   const currentSemester =
     instructorCoursesBySemester.find(
-      (s) => s.semester.name === "اول - 1404"
+      (s) => s.semester.name === "دوم - 1404"
     )?.semester.name || "برنامه هفتگی"
 
   return (
