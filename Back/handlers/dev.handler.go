@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
 	"github.com/gofiber/fiber/v2"
@@ -11,11 +12,11 @@ import (
 func (h *Handler) DeleteSemesterData(c *fiber.Ctx) error {
 	db := database.DB
 
-	semesterName := "اول - 1404"
+	cfg := config.GetConfig()
 
 	var semester models.Semester
 	err := db.
-		Where("name = ?", semesterName).
+		Where("name = ?", cfg.SEMESTER).
 		First(&semester).Error
 	if err != nil {
 		return c.JSON(fiber.Map{"status": "semester not found"})
@@ -23,7 +24,7 @@ func (h *Handler) DeleteSemesterData(c *fiber.Ctx) error {
 
 	semesterID := semester.ID
 
-	if err := db.Unscoped().Where("Semester = ?", semesterName).Delete(&models.Base_course_data{}).Error; err != nil {
+	if err := db.Unscoped().Where("Semester = ?", cfg.SEMESTER).Delete(&models.Base_course_data{}).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": fmt.Sprintf("failed to delete instructor_departments: %v", err)})
 	}
 

@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/models"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
@@ -22,14 +23,14 @@ type ScheduleCourse struct {
 }
 
 func (s *Services) GetCoursesSchedule() ([]ScheduleCourse, error) {
-	semesterName := "اول - 1404"
+	cfg := config.GetConfig()
 
 	var semester models.Semester
 	err := database.DB.
-		Where("name = ?", semesterName).
+		Where("name = ?", cfg.SEMESTER).
 		First(&semester).Error
 	if err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get semester", map[logging.ExtraKey]interface{}{"semesterName": semesterName, "error": err.Error()})
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get semester", map[logging.ExtraKey]interface{}{"semesterName": cfg.SEMESTER, "error": err.Error()})
 		return nil, errors.New("error getting semester data")
 	}
 

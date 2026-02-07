@@ -192,9 +192,9 @@ func createOrUpdateClassTime(item types.CourseJSON, course models.Course) error 
 	lines := strings.Split(item.TimeRoom, "\n")
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-        if line == "" {
-            continue
-        }
+		if line == "" {
+			continue
+		}
 
 		parts := strings.SplitN(line, "-", 2)
 		if len(parts) != 2 {
@@ -275,16 +275,14 @@ func CleanUpCourses(semesterName string, dataMap map[string]types.CourseJSON) er
 			}
 
 			if err := db.Unscoped().
-				Where("semester_id = ? AND department_id = ? AND instructor_id = ? ", semesterID, course.DepartmentID , course.InstructorID).
+				Where("semester_id = ? AND department_id = ? AND instructor_id = ? ", semesterID, course.DepartmentID, course.InstructorID).
 				Delete(&models.InstructorDepartment{}).Error; err != nil {
 				return fmt.Errorf("failed to delete instructor_departments for semester %d: %v", semesterID, err)
 			}
 
-
 			if err := db.Unscoped().Where("course_id = ?", course.ID).Delete(&models.UserCourse{}).Error; err != nil {
 				return fmt.Errorf("failed to delete user_courses for course %d: %v", course.ID, err)
 			}
-
 
 			if err := db.Unscoped().Delete(&course).Error; err != nil {
 				return fmt.Errorf("failed to delete course %d: %v", course.ID, err)
@@ -293,7 +291,6 @@ func CleanUpCourses(semesterName string, dataMap map[string]types.CourseJSON) er
 	}
 	return nil
 }
-
 
 func SaveData(rawCourses []types.CourseJSON) error {
 
@@ -335,3 +332,84 @@ func SaveData(rawCourses []types.CourseJSON) error {
 	}
 	return nil
 }
+
+// func SaveData(rawCourses []types.CourseJSON) error {
+//     const maxWorkers = 15 // Tune based on your DB connection pool (e.g., MySQL max_connections)
+
+//     jobs := make(chan types.CourseJSON, len(rawCourses))
+//     errCh := make(chan error, maxWorkers)
+//     var wg sync.WaitGroup
+
+//     // Worker function processes one course end-to-end
+//     worker := func() {
+//         defer wg.Done()
+//         for item := range jobs {
+//             if err := processCourse(item); err != nil {
+//                 select {
+//                 case errCh <- err:
+//                 default:
+//                 }
+//                 return // Stop this worker on error
+//             }
+//         }
+//     }
+
+//     // Start workers
+//     wg.Add(maxWorkers)
+//     for i := 0; i < maxWorkers; i++ {  // <-- CHANGED: proper loop
+//         go worker()
+//     }
+
+//     // Feed jobs (stop early if error found)
+//     go func() {
+//         defer close(jobs)
+//         for _, item := range rawCourses {
+//             select {
+//             case jobs <- item:
+//             }
+//         }
+//     }()
+
+//     wg.Wait()
+//     close(errCh)
+
+//     // Collect first error
+//     for err := range errCh {
+//         return err
+//     }
+//     return nil
+// }
+
+// // processCourse encapsulates the sequential logic for one course
+// func processCourse(item types.CourseJSON) error {
+//     if err := addOrUpdateBaseCourse(item); err != nil {
+//         return err
+//     }
+
+//     semester, err := getOrCreateSemester(helpers.NormalizePersian(item.Semester))
+//     if err != nil {
+//         return err
+//     }
+
+//     dept, err := getOrCreateDepartment(item)
+//     if err != nil {
+//         return err
+//     }
+
+//     instructor, err := getOrCreateInstructor(item)
+//     if err != nil {
+//         return err
+//     }
+
+//     _, err = getOrCreateInstructorDepartment(instructor.ID, dept.ID, semester.ID)
+//     if err != nil {
+//         return err
+//     }
+
+//     course, err := createOrUpdateCourse(item, semester, dept, instructor)
+//     if err != nil {
+//         return err
+//     }
+
+//     return createOrUpdateClassTime(item, course)
+// }

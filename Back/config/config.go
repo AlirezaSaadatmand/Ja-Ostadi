@@ -25,6 +25,7 @@ type Config struct {
 	Front_URL          string
 	SCRAPERHOST        string
 	SCRAPERPORT        string
+	SEMESTER           string
 }
 
 var appConfig *Config
@@ -56,6 +57,7 @@ func LoadConfig() *Config {
 		Front_URL:          os.Getenv("FRONT_URL"),
 		SCRAPERHOST:   		os.Getenv("SCRAPERHOST"),
 		SCRAPERPORT:  		os.Getenv("SCRAPERPORT"),
+		SEMESTER:           os.Getenv("EDSEMESTER"),
 	}
 
 	return appConfig

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -29,23 +30,25 @@ func RequestLogger(logger logging.Logger) fiber.Handler {
 
 		err := c.Next()
 		latency := time.Since(start)
+		latencyStr := latency.String()
 
 		keys := map[logging.ExtraKey]interface{}{
-			logging.Path:         c.Path(),
-			logging.Method:       c.Method(),
-			logging.StatusCode:   c.Response().StatusCode(),
-			logging.ClientIp:     c.IP(),
-			logging.Latency:      latency,
-			logging.RequestBody:  reqBody,
-			logging.BodySize:     len(c.Response().Body()),
-			logging.ErrorMessage: "",
+			logging.Path:          c.Path(),
+			logging.Method:        c.Method(),
+			logging.StatusCode:    c.Response().StatusCode(),
+			logging.ClientIp:      c.IP(),
+			logging.Latency:       latencyStr,
+			logging.LatencyMicros: latency.Microseconds(),
+			logging.RequestBody:   reqBody,
+			logging.BodySize:      len(c.Response().Body()),
+			logging.ErrorMessage:  "",
 		}
 
 		if err != nil {
 			keys[logging.ErrorMessage] = err.Error()
 		}
 
-		logger.Info(logging.RequestResponse, logging.API, "HTTP Request", keys)
+		logger.Info(logging.RequestResponse, logging.API, fmt.Sprintf("HTTP Request (took %s)", latencyStr), keys)
 		return err
 	}
 }

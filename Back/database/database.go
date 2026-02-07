@@ -56,6 +56,19 @@ func ConnectDB(zapLogger logging.Logger) error {
 	}
 	zapLogger.Info(logging.Mysql, logging.Migration, "Auto-migration completed successfully", nil)
 
-	DB = db
-	return nil
+	DB = db // <-- RIGHT AFTER THIS LINE
+
+	// // ADD THE CONNECTION POOLING HERE:
+	// sqlDB, err := db.DB()
+	// if err != nil {
+	// 	zapLogger.Fatal(logging.Mysql, logging.Connection, "Failed to get sql.DB", map[logging.ExtraKey]interface{}{"error": err})
+	// 	return fmt.Errorf("failed to get sql.DB: %w", err)
+	// }
+	// sqlDB.SetMaxIdleConns(20)
+	// sqlDB.SetMaxOpenConns(100)
+	// sqlDB.SetConnMaxLifetime(24 * time.Hour) // Add import "time" at top if missing
+
+	// zapLogger.Info(logging.Mysql, logging.Connection, "Connection pool configured", nil)
+
+	return nil // <-- BEFORE THIS RETURN
 }

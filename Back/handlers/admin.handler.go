@@ -8,6 +8,7 @@ import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/scripts"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/types"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/utils"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/config"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -54,7 +55,9 @@ func (h *Handler) UploadJson(c *fiber.Ctx) error {
 
 	scripts.SaveData(data)
 
-	if err := scripts.CleanUpCourses("اول - 1404", dataMap); err != nil {
+	cfg := config.GetConfig()
+
+	if err := scripts.CleanUpCourses(cfg.SEMESTER, dataMap); err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
