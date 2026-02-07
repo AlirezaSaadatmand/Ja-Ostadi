@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react"
 import type { RoomScheduleCourse } from "../../types"
 import { DAYS, TIME_SLOTS } from "../../store/usefull/useRoomScheduleStore"

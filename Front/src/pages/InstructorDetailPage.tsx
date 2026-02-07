@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
@@ -66,7 +64,7 @@ const InstructorDetailPage: React.FC = () => {
         </Link>
 
           <div className="text-center space-y-2 sm:space-y-3">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">جزئیات استاد</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">اطلاعات استاد</h1>
             <p className="text-gray-600 text-base sm:text-xl">
               اطلاعات مربوط به استاد{" "}
               <span className="font-semibold text-gray-800">

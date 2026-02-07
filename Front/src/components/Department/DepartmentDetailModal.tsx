@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import type { DepartmentDetail } from "../../types"
 import { useNavigate } from "react-router-dom"

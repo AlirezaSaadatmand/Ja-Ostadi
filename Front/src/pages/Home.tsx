@@ -1,5 +1,5 @@
 import type React from "react"
-import { Building2, BookOpen, Info, UtensilsCrossed, BookA } from "lucide-react"
+import { Building2, BookOpen, Info, BookA, UtensilsCrossed } from "lucide-react"
 import ContributorsSection from "../components/Contributors/ContributorsSection"
 import Header from "../components/Header"
 
@@ -27,6 +27,12 @@ const sections = [
     link: "/schedule",
   },
   {
+    title: "دروس",
+    description: "مشاهده و مدیریت دروس ارائه شده.",
+    icon: <BookOpen className="w-12 h-12 text-[#AB8A58]" />,
+    link: "/courses",
+  },
+  {
     title: "برنامه کلاس‌ها",
     description: "مشاهده زمان‌بندی و محل برگزاری کلاس‌ها.",
     icon: (
@@ -45,12 +51,6 @@ const sections = [
       </svg>
     ),
     link: "/classes",
-  },
-  {
-    title: "دپارتمان‌ها",
-    description: "کاوش در دپارتمان‌های علمی مختلف.",
-    icon: <Building2 className="w-12 h-12 text-[#AB8A58]" />,
-    link: "/departments",
   },
   {
     title: "اساتید",
@@ -72,16 +72,10 @@ const sections = [
     link: "/instructors",
   },
   {
-    title: "دروس",
-    description: "مشاهده و مدیریت دروس ارائه شده.",
-    icon: <BookOpen className="w-12 h-12 text-[#AB8A58]" />,
-    link: "/courses",
-  },
-  {
-    title: "چی داریم!",
-    description: "اطلاعات و برنامه هفتگی کالینان دانشگاه.",
-    icon: <UtensilsCrossed className="w-12 h-12 text-[#AB8A58]" />,
-    link: "/food"
+    title: "دپارتمان‌ها",
+    description: "کاوش در دپارتمان‌های علمی مختلف.",
+    icon: <Building2 className="w-12 h-12 text-[#AB8A58]" />,
+    link: "/departments",
   },
   {
     title: "محتوای آموزشی",
@@ -93,6 +87,13 @@ const sections = [
     title: "اطلاعات به درد بخور",
     description: "نکات و اطلاعات مفید برای دانشجوها.",
     icon: <Info className="w-12 h-12 text-[#AB8A58]" />,
+    comingSoon: true,
+  },
+  {
+    title: "چی داریم!",
+    description: "اطلاعات و برنامه هفتگی کالینان دانشگاه.",
+    icon: <UtensilsCrossed className="w-12 h-12 text-[#AB8A58]" />,
+    link: "/food",
     comingSoon: true,
   },
 ]

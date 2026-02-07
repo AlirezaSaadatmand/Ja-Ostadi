@@ -1,5 +1,3 @@
-"use client"
-
 import ExcelJS from "exceljs"
 import { saveAs } from "file-saver"
 import type { RoomScheduleCourse } from "../../types"

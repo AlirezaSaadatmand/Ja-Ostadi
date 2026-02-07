@@ -1,5 +1,3 @@
-"use client"
-
 import { forwardRef, useRef } from "react"
 import type { CourseResponse } from "../../types"
 import type { TableCell } from "../../store/schedule/useScheduleTableStore"

@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useMemo } from "react"
 import type { CourseInSemester } from "../../types"
 import { useInstructorDetailStore } from "../../store/instructors/useInstructorDetailStore"

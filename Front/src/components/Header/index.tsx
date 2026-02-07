@@ -2,11 +2,11 @@ import { useLocation } from "react-router-dom";
 
 const headerItems = [
   { label: "برنامه هفتگی", href: "/schedule" },
-  { label: "برنامه کلاس ها", href: "/classes" },
-  { label: "دپارتمان", href: "/departments" },
-  { label: "اساتید", href: "/instructors?mode=department" },
   { label: "دروس", href: "/courses" },
-  { label: "چی داریم!", href: "/food" },
+  { label: "برنامه کلاس ها", href: "/classes" },
+  { label: "اساتید", href: "/instructors?mode=department" },
+  { label: "دپارتمان", href: "/departments" },
+  // { label: "چی داریم!", href: "/food" },
   { label: "داشبورد دانشگاه", href: "/" },
 ];
 
