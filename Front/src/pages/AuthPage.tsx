@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc"
 
 const GoogleLoginPage = () => {
   const navigate = useNavigate()
-  const { loginWithGoogle, isLoading, fetchAuthStatus } = useAuthStore()
+  const { loginWithGoogle, isLoading } = useAuthStore()
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -13,11 +13,11 @@ const GoogleLoginPage = () => {
     if (token) {
       localStorage.setItem("jwt", token)
       window.history.replaceState({}, document.title, window.location.pathname)
-      fetchAuthStatus().then(() => {
-        navigate("/")
-      })
+      // fetchAuthStatus().then(() => {
+      //   navigate("/")
+      // })
     }
-  }, [fetchAuthStatus, navigate])
+  }, [navigate])
 
   const goToLogin = () => {
     loginWithGoogle("/login")
