@@ -2,24 +2,25 @@ package routes
 
 import (
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/handlers"
-	middleware "github.com/AlirezaSaadatmand/Ja-Ostadi/middlewares"
+	"github.com/AlirezaSaadatmand/Ja-Ostadi/middlewares"
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/pkg/logging"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Router(app *fiber.App, logger logging.Logger) {
 	h := handlers.NewHandler(logger)
+	m := middlewares.NewMiddleware(logger)
 
-	
 	api := app.Group("/api/v1")
-	
+
 	// Google Auth Routes
 	api.Get("/auth/google/login", h.GoogleLoginHandler)
 	api.Get("/auth/google/callback", h.GoogleCallbackHandler)
 
-	api.Get("/auth/status", middleware.Auth(), h.AuthStatus)
+	api.Post("/auth/login", h.Login)
+	api.Get("/auth/status", m.Auth(), h.AuthStatus)
 	api.Get("/test", h.Test)
-	
+
 	// remove := api.Group("/remove")
 	// remove.Post("/", h.DeleteSemesterData)
 
@@ -51,18 +52,28 @@ func Router(app *fiber.App, logger logging.Logger) {
 	scheduleRouter.Get("/rooms/:roomID", h.GetRoomSchedule)
 
 	// Admin Routes
-	adminRoutes := api.Group("/admin", middleware.AdminMiddleware())
+	adminRoutes := api.Group("/admin", m.AdminMiddleware())
 	adminRoutes.Post("/update/data", h.UploadJson)
+	adminRoutes.Post("/clients", h.RegisterClient)
+	adminRoutes.Patch("/clients/:id", h.UpdateClient)
+	adminRoutes.Delete("/clients/:id", h.DeleteClient)
+
+	// Director Routes
+	directorRoutes := api.Group("/temp-courses", m.Auth(), m.DirectorAuth())
+	directorRoutes.Get("/", h.GetTempCourses)
+	directorRoutes.Post("/", h.CreateTempCourse)
+	directorRoutes.Patch("/:id", h.UpdateTempCourse)
+	directorRoutes.Delete("/:id", h.DeleteTempCourse)
 
 	// User Routes
 	userRoutes := api.Group("/user")
 	userRoutes.Post("/courses", h.SaveUserCourses)
 
-	// Food Routes 
+	// Food Routes
 	foodRoutes := api.Group("/food")
-	foodRoutes.Get("/weekly", middleware.Auth(), h.GetWeeklyFood)
-	foodRoutes.Post("/weekly",middleware.AdminMiddleware(), h.GetNewData)
-	foodRoutes.Post("/image", middleware.AdminMiddleware(), h.UploadMealImage)
-	foodRoutes.Patch("/:mealId/image", middleware.AdminMiddleware(), h.UpdateMealImage)
-	foodRoutes.Post("/rate", middleware.Auth(), h.SubmitRating)
+	foodRoutes.Get("/weekly", m.Auth(), h.GetWeeklyFood)
+	foodRoutes.Post("/weekly", m.AdminMiddleware(), h.GetNewData)
+	foodRoutes.Post("/image", m.AdminMiddleware(), h.UploadMealImage)
+	foodRoutes.Patch("/:mealId/image", m.AdminMiddleware(), h.UpdateMealImage)
+	foodRoutes.Post("/rate", m.Auth(), h.SubmitRating)
 }

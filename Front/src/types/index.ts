@@ -186,3 +186,84 @@ export interface RoomScheduleCourse {
   instructor: string;
   time: ClassTime[];
 }
+
+
+export interface LoginResponse {
+  status: string
+  message: string
+  data: {
+    token: string
+  }
+}
+
+export interface JwtPayload {
+  clientID: number
+  username: string
+  role: string
+  exp: number
+}
+
+export interface AuthUser {
+  clientID: number
+  username: string
+  role: string
+}
+
+export interface TempCourse {
+  id?: number
+
+  department: string
+  courseName: string
+  group: string
+  units: string
+  instructor: string
+  targetTerm: string
+
+  firstRoom: string
+  firstDay: string
+  firstTime: string
+  firstLock: boolean
+
+  secondRoom: string
+  secondDay: string
+  secondTime: string
+  secondLock: boolean
+
+  finalExamTime: string
+  finalExamDate: string
+
+  directorID?: string
+}
+
+export interface CreateTempCourseResponse {
+  status: "success" | "error"
+  message: string
+  data: {
+    ID: number
+    CreatedAt: string
+    UpdatedAt: string
+    DeletedAt: string | null
+
+    Department: string
+    CourseName: string
+    Group: string
+    Units: string
+    Instructor: string
+    TargetTerm: string
+
+    FirstRoom: string
+    FirstDay: string
+    FirstTime: string
+    FirstLock: boolean
+
+    SecondRoom: string
+    SecondDay: string
+    SecondTime: string
+    SecondLock: boolean
+
+    FinalExamTime: string
+    FinalExamDate: string
+
+    DirectorID: string
+  }
+}

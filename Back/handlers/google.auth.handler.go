@@ -138,17 +138,3 @@ func (h *Handler) GoogleCallbackHandler(c *fiber.Ctx) error {
 	return c.Redirect(redirectURL)
 
 }
-
-// AuthStatus returns authentication status of the user
-// @Summary Get authentication status
-// @Description Checks if the user is authenticated based on JWT (sent via Authorization header)
-// @Tags Auth
-// @Success 200 {object} map[string]bool "Returns isAuthenticated: true/false"
-// @Router /auth/status [get]
-func (h *Handler) AuthStatus(c *fiber.Ctx) error {
-	client := c.Locals("user")
-	if client != nil {
-		return c.JSON(fiber.Map{"isAuthenticated": true})
-	}
-	return c.JSON(fiber.Map{"isAuthenticated": false})
-}
