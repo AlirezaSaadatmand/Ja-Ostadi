@@ -11,6 +11,7 @@ interface PdfExportData {
   table: Record<string, TableCell>;
   days: string[];
   timeSlots: { label: string; key: string; start: string; end: string }[];
+  isRotated?: boolean; 
 }
 
 interface PdfExportStore {

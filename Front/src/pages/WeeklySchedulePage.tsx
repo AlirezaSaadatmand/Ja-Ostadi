@@ -111,7 +111,7 @@ const WeeklySchedulePage: React.FC = () => {
                 table={table}
                 scheduledCourses={scheduledCourses}
                 onRemoveCourse={handleRemoveCourse}
-                onExportPdf={() => exportPdf({ scheduledCourses, table, days, timeSlots })}
+                onExportPdf={(data) => exportPdf(data)}
                 isExporting={isExporting}
               />
             </div>
