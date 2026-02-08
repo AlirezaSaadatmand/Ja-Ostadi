@@ -6,6 +6,17 @@ import { FaBook, FaLayerGroup } from "react-icons/fa";
 import { IoPersonSharp } from "react-icons/io5";
 import { HiCalendarDateRange } from "react-icons/hi2";
 
+const persianToEnglishDigits = (str: string) =>
+  str.replace(/[۰-۹]/g, (d) => "0123456789"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]);
+
+const parseExamDate = (date?: string) => {
+  if (!date) return null;
+  const normalized = persianToEnglishDigits(date);
+  const [y, m, d] = normalized.split("/").map(Number);
+  return new Date(y, m - 1, d);
+};
+
+
 interface PdfDocumentProps {
   scheduledCourses: CourseResponse[];
   table: Record<string, TableCell>;
@@ -28,6 +39,17 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
       (slot) => slot.start === normalizedStart && slot.end === normalizedEnd
     )?.key;
   };
+
+  const sortedCourses = [...scheduledCourses].sort((a, b) => {
+    const dateA = parseExamDate(a.course.final_exam_date);
+    const dateB = parseExamDate(b.course.final_exam_date);
+
+    if (!dateA && !dateB) return 0;
+    if (!dateA) return 1;
+    if (!dateB) return -1;
+
+    return dateA.getTime() - dateB.getTime();
+  });
 
   const getCourseForSlot = (day: string, timeSlotKey: string) => {
     const key = `${day}-${timeSlotKey}`;
@@ -212,7 +234,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
 
         <div style={{ pageBreakBefore: "always" }}>
           <h2 className="text-4xl font-bold text-indigo-900 mb-8 text-center">
-            جدول مشخصات دروس
+            جدول مشخصات دروس به ترتیب تاریخ امتحان پایانی   
           </h2>
 
           <table
@@ -231,7 +253,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
             </thead>
 
             <tbody>
-              {scheduledCourses.map((item, index) => (
+              {sortedCourses.map((item, index) => (
                 <tr
                   key={item.course.id}
                   className={
@@ -264,15 +286,17 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
                   <td className="p-6 border text-2xl text-center">
                     <span className="inline-flex items-center gap-3">
                       <HiCalendarDateRange className="text-yellow-600" />
-                      {item.course.final_exam_date}
+                      {item.course.final_exam_date || "ندارد"}
                     </span>
                   </td>
+
                   <td className="p-6 border text-2xl text-center text-nowrap">
                     <span className="inline-flex items-center gap-3">
                       <IoMdClock className="text-yellow-600" />
-                      {item.course.final_exam_time}
+                      {item.course.final_exam_time || "ندارد"}
                     </span>
                   </td>
+
                 </tr>
               ))}
             </tbody>
