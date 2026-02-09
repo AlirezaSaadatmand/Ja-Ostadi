@@ -47,7 +47,7 @@ const RoomsPage = () => {
   return (
     <div className="min-h-screen bg-gray-100 lg:pt-28" dir="rtl">
       <Header />
-      <div className="block md:hidden bg-white shadow-sm border-b">
+      <div className="block md:hidden bg-white shadow-sm border-b mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 text-center ">
           <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
             برنامه کلاس‌ها

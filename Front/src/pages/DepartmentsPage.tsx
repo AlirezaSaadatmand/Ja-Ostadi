@@ -31,7 +31,7 @@ const DepartmentsPage: React.FC = () => {
 
       <Header />
 
-      <div className="bg-white shadow-sm border-b lg:mt-20">
+      <div className="bg-white shadow-sm border-b lg:mt-20 mt-16">
         <div className="max-w-7xl mx-auto px-6 py-10 relative">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900">دپارتمان‌ها</h1>
