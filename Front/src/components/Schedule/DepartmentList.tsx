@@ -25,7 +25,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-3 sm:p-6">
+    <div className="bg-white rounded-lg shadow-sm p-3 sm:p-6 ">
       <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-6 flex items-center justify-center">
         <svg
           className="w-4 h-4 sm:w-6 sm:h-6 ml-2 sm:ml-3 text-indigo-600"
