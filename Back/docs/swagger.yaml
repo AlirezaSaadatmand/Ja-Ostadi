@@ -331,72 +331,76 @@ definitions:
     type: object
   types.TempCourseRequest:
     properties:
-      course_name:
+      courseName:
         type: string
       department:
         type: string
-      final_exam_date:
+      finalExamDate:
         type: string
-      final_exam_time:
+      finalExamTime:
         type: string
-      first_day:
+      firstDay:
         type: string
-      first_room:
+      firstLock:
+        type: boolean
+      firstRoom:
         type: string
-      first_time:
+      firstTime:
         type: string
       group:
         type: string
       instructor:
         type: string
-      second_day:
+      secondDay:
         type: string
-      second_room:
+      secondLock:
+        type: boolean
+      secondRoom:
         type: string
-      second_time:
+      secondTime:
         type: string
-      target_term:
+      targetTerm:
         type: string
       units:
         type: string
     required:
-    - course_name
+    - courseName
     - department
     - group
-    - target_term
+    - targetTerm
     - units
     type: object
   types.TempCourseUpdateRequest:
     properties:
-      course_name:
+      courseName:
         type: string
       department:
         type: string
-      final_exam_date:
+      finalExamDate:
         type: string
-      final_exam_time:
+      finalExamTime:
         type: string
-      first_day:
+      firstDay:
         type: string
-      first_lock:
+      firstLock:
         type: boolean
-      first_room:
+      firstRoom:
         type: string
-      first_time:
+      firstTime:
         type: string
       group:
         type: string
       instructor:
         type: string
-      second_day:
+      secondDay:
         type: string
-      second_lock:
+      secondLock:
         type: boolean
-      second_room:
+      secondRoom:
         type: string
-      second_time:
+      secondTime:
         type: string
-      target_term:
+      targetTerm:
         type: string
       units:
         type: string
@@ -563,6 +567,33 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
       summary: Update client
+      tags:
+      - Admin
+  /admin/update/contributors:
+    post:
+      description: Fetch contributors from GitHub and update database (admin only)
+      parameters:
+      - description: Admin authentication token
+        in: header
+        name: X-Admin-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Update contributors
       tags:
       - Admin
   /admin/update/data:

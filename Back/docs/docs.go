@@ -240,6 +240,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/update/contributors": {
+            "post": {
+                "description": "Fetch contributors from GitHub and update database (admin only)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update contributors",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Admin authentication token",
+                        "name": "X-Admin-Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/update/data": {
             "post": {
                 "description": "Accepts a JSON data file upload (admin only), parses it, and returns the number of records",
@@ -2173,32 +2214,35 @@ const docTemplate = `{
         "types.TempCourseRequest": {
             "type": "object",
             "required": [
-                "course_name",
+                "courseName",
                 "department",
                 "group",
-                "target_term",
+                "targetTerm",
                 "units"
             ],
             "properties": {
-                "course_name": {
+                "courseName": {
                     "type": "string"
                 },
                 "department": {
                     "type": "string"
                 },
-                "final_exam_date": {
+                "finalExamDate": {
                     "type": "string"
                 },
-                "final_exam_time": {
+                "finalExamTime": {
                     "type": "string"
                 },
-                "first_day": {
+                "firstDay": {
                     "type": "string"
                 },
-                "first_room": {
+                "firstLock": {
+                    "type": "boolean"
+                },
+                "firstRoom": {
                     "type": "string"
                 },
-                "first_time": {
+                "firstTime": {
                     "type": "string"
                 },
                 "group": {
@@ -2207,16 +2251,19 @@ const docTemplate = `{
                 "instructor": {
                     "type": "string"
                 },
-                "second_day": {
+                "secondDay": {
                     "type": "string"
                 },
-                "second_room": {
+                "secondLock": {
+                    "type": "boolean"
+                },
+                "secondRoom": {
                     "type": "string"
                 },
-                "second_time": {
+                "secondTime": {
                     "type": "string"
                 },
-                "target_term": {
+                "targetTerm": {
                     "type": "string"
                 },
                 "units": {
@@ -2227,28 +2274,28 @@ const docTemplate = `{
         "types.TempCourseUpdateRequest": {
             "type": "object",
             "properties": {
-                "course_name": {
+                "courseName": {
                     "type": "string"
                 },
                 "department": {
                     "type": "string"
                 },
-                "final_exam_date": {
+                "finalExamDate": {
                     "type": "string"
                 },
-                "final_exam_time": {
+                "finalExamTime": {
                     "type": "string"
                 },
-                "first_day": {
+                "firstDay": {
                     "type": "string"
                 },
-                "first_lock": {
+                "firstLock": {
                     "type": "boolean"
                 },
-                "first_room": {
+                "firstRoom": {
                     "type": "string"
                 },
-                "first_time": {
+                "firstTime": {
                     "type": "string"
                 },
                 "group": {
@@ -2257,19 +2304,19 @@ const docTemplate = `{
                 "instructor": {
                     "type": "string"
                 },
-                "second_day": {
+                "secondDay": {
                     "type": "string"
                 },
-                "second_lock": {
+                "secondLock": {
                     "type": "boolean"
                 },
-                "second_room": {
+                "secondRoom": {
                     "type": "string"
                 },
-                "second_time": {
+                "secondTime": {
                     "type": "string"
                 },
-                "target_term": {
+                "targetTerm": {
                     "type": "string"
                 },
                 "units": {

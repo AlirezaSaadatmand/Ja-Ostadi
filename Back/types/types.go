@@ -134,3 +134,11 @@ type TempCourseUpdateRequest struct {
 	FinalExamTime string `json:"finalExamTime"`
 	FinalExamDate string `json:"finalExamDate"`
 }
+
+type GithubContributor struct {
+	Login         string `json:"login"`
+	Avatar_url    string `json:"avatar_url"`
+	Html_url      string `json:"html_url"`
+	Contributions int    `json:"contributions"`
+	Type          string `json:"type"`
+}

@@ -218,3 +218,23 @@ func (h *Handler) DeleteClient(c *fiber.Ctx) error {
 
 	return utils.Success(c, fiber.StatusOK, nil, "client deleted successfully")
 }
+
+// UpdateContributors godoc
+// @Summary Update contributors
+// @Description Fetch contributors from GitHub and update database (admin only)
+// @Tags Admin
+// @Produce json
+// @Param X-Admin-Token header string true "Admin authentication token"
+// @Success 200 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /admin/update/contributors [post]
+func (h *Handler) UpdateContributors(c *fiber.Ctx) error {
+
+	err := h.Services.UpdateContributors()
+	if err != nil {
+		return utils.Error(c, fiber.StatusInternalServerError, "Failed to update contributors")
+	}
+
+	return utils.Success(c, fiber.StatusOK, nil, "Contributors updated successfully")
+}
