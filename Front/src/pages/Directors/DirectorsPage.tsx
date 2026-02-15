@@ -5,7 +5,11 @@ import { Book, LogOut, Shield } from "lucide-react"
 import { useAuthStore } from "../../store/auth/useAuthStore"
 import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore"
 import Header from "../../components/Header"
-import ContributorsSection from "../../components/Contributors/ContributorsSection"
+import CoursesScheduleTable from "../../components/tempCourse/CoursesScheduleTable"
+import ConflictingCoursesSection from "../../components/tempCourse/ConflictingCoursesSection"
+
+
+import type { TempCourse } from "../../types"
 
 const TERMS = ["همه", "2", "4", "6", "8"]
 
@@ -19,6 +23,8 @@ const DirectorsPage: React.FC = () => {
     useTempCourseStore()
 
   const [selectedTerm, setSelectedTerm] = useState("همه")
+  const [selectedForSchedule, setSelectedForSchedule] =
+    useState<TempCourse[]>([])
 
   useEffect(() => {
     if (!hasHydrated) return
@@ -41,13 +47,29 @@ const DirectorsPage: React.FC = () => {
     navigate("/login", { replace: true })
   }
 
+  const handleRemoveFromSchedule = (id: number | undefined) => {
+    setSelectedForSchedule((prev) =>
+      prev.filter((c) => c.id !== id)
+    )
+  }
+
   const filteredCourses = useMemo(() => {
-    if (!selectedTerm) return []
-    if (selectedTerm == "همه") return tempCourses
+    if (selectedTerm === "همه") return tempCourses
     return tempCourses.filter(
       (c) => c.targetTerm === selectedTerm
     )
   }, [tempCourses, selectedTerm])
+
+  const handleAddToSchedule = (course: TempCourse) => {
+    setSelectedForSchedule((prev) => {
+      if (prev.find((c) => c.id === course.id)) return prev
+      return [...prev, course]
+    })
+  }
+
+  const handleResetSchedule = () => {
+    setSelectedForSchedule([])
+  }
 
   if (!hasHydrated) return null
 
@@ -57,24 +79,20 @@ const DirectorsPage: React.FC = () => {
       dir="rtl"
     >
       <Header />
-      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
-        <ContributorsSection />
-      </div>
-
       <div className="w-full max-w-7xl mt-20 space-y-8">
 
         {/* HEADER CARD */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
-          <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-[#AB8A58]/10 rounded-xl">
                 <Shield className="w-10 h-10 text-[#AB8A58]" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold">
                   پنل مدیر گروه
                 </h1>
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-600">
                   خوش آمدید، {user?.username}
                 </p>
               </div>
@@ -109,16 +127,13 @@ const DirectorsPage: React.FC = () => {
 
         {/* TERM FILTER */}
         <div className="bg-white rounded-xl shadow p-4 flex gap-4 items-center">
-          <span className="text-sm text-gray-700">
-            انتخاب ترم:
-          </span>
-
+          <span>انتخاب ترم:</span>
           <select
             value={selectedTerm}
             onChange={(e) =>
               setSelectedTerm(e.target.value)
             }
-            className="rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-[#AB8A58]"
+            className="rounded-lg border px-3 py-2"
           >
             {TERMS.map((t) => (
               <option key={t} value={t}>
@@ -128,64 +143,101 @@ const DirectorsPage: React.FC = () => {
           </select>
         </div>
 
-        {/* TABLE */}
+        {/* COURSES TABLE */}
         <div className="bg-white rounded-2xl shadow overflow-x-auto">
           <table className="w-full text-sm text-center">
-            <thead className="bg-gray-50 text-gray-700">
+            <thead className="bg-gray-50">
               <tr>
+                <th className="p-3">#</th>
                 <th className="p-3">دپارتمان</th>
                 <th className="p-3">نام درس</th>
                 <th className="p-3">گروه</th>
-                <th className="p-3">واحد</th>
                 <th className="p-3">استاد</th>
-                <th className="p-3">زمان کلاس</th>
+                <th className="p-3">زمان</th>
+                <th className="p-3">افزودن</th>
               </tr>
             </thead>
 
             <tbody>
               {isLoading && (
                 <tr>
-                  <td colSpan={6} className="p-6">
+                  <td colSpan={7} className="p-6">
                     در حال بارگذاری...
                   </td>
                 </tr>
               )}
 
-              {!isLoading && filteredCourses.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="p-6 text-gray-500">
-                    درسی برای این ترم ثبت نشده است
-                  </td>
-                </tr>
-              )}
+              {!isLoading &&
+                filteredCourses.map((course, idx) => {
+                  const alreadyAdded =
+                    selectedForSchedule.find(
+                      (c) => c.id === course.id
+                    )
 
-              {filteredCourses.map((course) => (
-                <tr
-                  key={course.id}
-                  className="border-t hover:bg-gray-50"
-                >
-                  <td className="p-3">{course.department}</td>
-                  <td className="p-3 font-medium">
-                    {course.courseName}
-                  </td>
-                  <td className="p-3">{course.group}</td>
-                  <td className="p-3">{course.units}</td>
-                  <td className="p-3">{course.instructor}</td>
-                  <td className="p-3 text-xs">
-                    {course.firstDay} {course.firstTime}
-                    {course.secondDay && (
-                      <>
-                        <br />
-                        {course.secondDay} {course.secondTime}
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                  return (
+                    <tr
+                      key={course.id}
+                      className="border-t hover:bg-gray-50"
+                    >
+                      <td className="p-3">
+                        {idx + 1}
+                      </td>
+                      <td className="p-3">
+                        {course.department}
+                      </td>
+                      <td className="p-3 font-medium">
+                        {course.courseName}
+                      </td>
+                      <td className="p-3">
+                        {course.group}
+                      </td>
+                      <td className="p-3">
+                        {course.instructor}
+                      </td>
+                      <td className="p-3 text-xs">
+                        {course.firstDay}{" "}
+                        {course.firstTime}
+                        {course.secondDay && (
+                          <>
+                            <br />
+                            {course.secondDay}{" "}
+                            {course.secondTime}
+                          </>
+                        )}
+                      </td>
+                      <td className="p-3">
+                        <button
+                          disabled={!!alreadyAdded}
+                          onClick={() =>
+                            handleAddToSchedule(course)
+                          }
+                          className={`px-3 py-1 rounded-lg text-xs ${
+                            alreadyAdded
+                              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                              : "bg-[#AB8A58] text-white hover:opacity-90"
+                          }`}
+                        >
+                          {alreadyAdded
+                            ? "اضافه شده"
+                            : "افزودن"}
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
             </tbody>
           </table>
         </div>
 
+        {/* SCHEDULE TABLE */}
+        <CoursesScheduleTable
+          courses={selectedForSchedule}
+          onReset={handleResetSchedule}
+          onRemoveCourse={handleRemoveFromSchedule}
+        />
+
+        <ConflictingCoursesSection  courses={filteredCourses}/>
+        
       </div>
     </div>
   )
