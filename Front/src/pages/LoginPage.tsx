@@ -4,7 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { Lock, User, Eye, EyeOff } from "lucide-react"
 import { useAuthStore } from "../store/auth/useAuthStore"
 import Header from "../components/Header"
-import ContributorsSection from "../components/Contributors/ContributorsSection"
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("")
@@ -42,9 +41,6 @@ const LoginPage: React.FC = () => {
       dir="rtl"
     >
       <Header />
-      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
-        <ContributorsSection />
-      </div>
 
       <div className="w-full max-w-md mt-20">
         <div className="text-center mb-8">

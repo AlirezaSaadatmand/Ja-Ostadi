@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 
 const headerItems = [
   { label: "برنامه هفتگی", href: "/schedule" },
-  { label: "دروس", href: "/courses" },
+  { label: "درس ها", href: "/courses" },
   { label: "برنامه کلاس ها", href: "/classes" },
   { label: "اساتید", href: "/instructors?mode=department" },
   { label: "دپارتمان", href: "/departments" },
