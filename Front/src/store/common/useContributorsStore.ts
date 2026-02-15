@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import axios from "axios"
+import api from "../../utils/axios"
 import config from "../../config/config"
 
 export interface Contributor {
@@ -26,9 +26,7 @@ export const useContributorsStore = create<ContributorsStore>((set) => ({
   fetchContributors: async () => {
     set({ isLoading: true, error: null })
     try {
-      const response = await axios.get(
-        `https://api.github.com/repos/${config.GitHubUsername}/${config.appName}/contributors`,
-      )
+      const response = await api.get(`${config.apiUrl}/contributors`)
       const data = Array.isArray(response.data) ? response.data : []
       set({ contributors: data })
     } catch (error) {

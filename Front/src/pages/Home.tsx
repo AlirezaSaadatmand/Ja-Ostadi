@@ -27,7 +27,7 @@ const sections = [
     link: "/schedule",
   },
   {
-    title: "دروس",
+    title: "درس ها",
     description: "مشاهده و مدیریت دروس ارائه شده.",
     icon: <BookOpen className="w-12 h-12 text-[#AB8A58]" />,
     link: "/courses",

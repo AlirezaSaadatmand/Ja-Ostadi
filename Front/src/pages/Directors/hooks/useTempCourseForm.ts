@@ -3,7 +3,7 @@ import { useDepartmentsPageStore } from "../../../store/departments/useDepartmen
 import { useCoursesPageStore } from "../../../store/courses/useCoursesPageStore"
 import type { DepartmentDetail } from "../../../types"
 
-export const GROUPS = ["01", "02", "03"]
+export const GROUPS = ["1", "2", "3", "4"]
 export const UNITS = ["1", "2", "3", "4"]
 export const TERMS = ["2", "4", "6", "8", "همه"]
 
@@ -27,11 +27,9 @@ export interface TempCourseForm {
 }
 
 const useTempCourseForm = () => {
-  // Stores
   const { departments, fetchDepartmentsDetail } = useDepartmentsPageStore()
   const { courses, fetchCourses } = useCoursesPageStore()
 
-  // State
   const [selectedDepartment, setSelectedDepartment] = useState<DepartmentDetail | null>(null)
   const [showSecondClass, setShowSecondClass] = useState(false)
   const [showCourseSuggestions, setShowCourseSuggestions] = useState(false)
@@ -57,22 +55,19 @@ const useTempCourseForm = () => {
     finalExamTime: "",
   })
 
-  // Effects
   useEffect(() => {
     fetchDepartmentsDetail()
   }, [fetchDepartmentsDetail])
 
   useEffect(() => {
     if (!selectedDepartment) return
-    const semesterId = 65
+    const semesterId = 2
     fetchCourses(semesterId, selectedDepartment.id)
   }, [selectedDepartment, fetchCourses])
 
-  // Form handlers
   const handleFormChange = useCallback((updates: Partial<TempCourseForm>) => {
     setForm(prev => ({ ...prev, ...updates }))
     
-    // Clear validation errors for changed fields
     const fieldNames = Object.keys(updates)
     setValidationErrors(prev => {
       const newErrors = { ...prev }
@@ -91,7 +86,6 @@ const useTempCourseForm = () => {
     setSelectedDepartment(dept)
   }, [departments, handleFormChange])
 
-  // Validation
   const validateForm = useCallback(() => {
     const errors: Record<string, string> = {}
     
@@ -105,7 +99,6 @@ const useTempCourseForm = () => {
     return Object.keys(errors).length === 0
   }, [form])
 
-  // Helpers
   const normalizePersian = useCallback((input: string) => {
     return input
       .trim()
@@ -128,7 +121,6 @@ const useTempCourseForm = () => {
     }
   }, [handleFormChange, normalizePersian])
 
-  // Suggestions
   const normalizedInstructorInput = normalizePersian(form.instructor)
   const normalizedInput = normalizePersian(form.courseName)
 
