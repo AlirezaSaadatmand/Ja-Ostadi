@@ -759,6 +759,23 @@ paths:
       summary: Get authentication status
       tags:
       - Auth
+  /contributors:
+    get:
+      description: Get contributors from database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Get contributors
+      tags:
+      - Contributors
   /courses/{courseId}/detail:
     get:
       description: Returns course details including instructor, department, class

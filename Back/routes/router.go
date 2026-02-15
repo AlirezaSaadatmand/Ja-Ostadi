@@ -13,6 +13,8 @@ func Router(app *fiber.App, logger logging.Logger) {
 
 	api := app.Group("/api/v1")
 
+	api.Get("/contributors", h.GetContributors)
+
 	// Google Auth Routes
 	api.Get("/auth/google/login", h.GoogleLoginHandler)
 	api.Get("/auth/google/callback", h.GoogleCallbackHandler)

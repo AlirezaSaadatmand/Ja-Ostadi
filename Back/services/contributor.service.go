@@ -3,7 +3,6 @@ package services
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/AlirezaSaadatmand/Ja-Ostadi/database"
@@ -16,25 +15,33 @@ func (s *Services) UpdateContributors() error {
 
 	url := "https://api.github.com/repos/AlirezaSaadatmand/Ja-Ostadi/contributors"
 
-	fmt.Println(url)
 	resp, err := http.Get(url)
-	fmt.Println(resp)
 	if err != nil {
-		return err
+		s.Logger.Error(logging.External, logging.Get, "Failed to call GitHub API", map[logging.ExtraKey]interface{}{
+			"url":   url,
+			"error": err.Error(),
+		})
+		return errors.New("failed to fetch contributors")
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		s.Logger.Error(logging.External, logging.Get, "GitHub API returned non-200 status", map[logging.ExtraKey]interface{}{
+			"url":        url,
+			"statusCode": resp.StatusCode,
+		})
 		return errors.New("failed to fetch contributors from github")
 	}
 
 	var githubContributors []types.GithubContributor
 	if err := json.NewDecoder(resp.Body).Decode(&githubContributors); err != nil {
-		return err
+		s.Logger.Error(logging.External, logging.Decode, "Failed to decode GitHub response", map[logging.ExtraKey]interface{}{
+			"error": err.Error(),
+		})
+		return errors.New("failed to decode github response")
 	}
 
 	for _, gc := range githubContributors {
-		fmt.Println(gc)
 
 		contributor := models.Contributor{
 			Login:         gc.Login,
@@ -50,12 +57,48 @@ func (s *Services) UpdateContributors() error {
 			FirstOrCreate(&contributor).Error
 
 		if err != nil {
-			s.Logger.Error(logging.Mysql, logging.Create, "Failed to save contributor", nil)
-			return err
+			s.Logger.Error(logging.Mysql, logging.Create, "Failed to save contributor", map[logging.ExtraKey]interface{}{
+				"login": gc.Login,
+				"error": err.Error(),
+			})
+			return errors.New("failed to save contributor")
 		}
 	}
 
-	s.Logger.Info(logging.Mysql, logging.Create, "Contributors updated successfully", nil)
+	s.Logger.Info(logging.Mysql, logging.Create, "Contributors updated successfully", map[logging.ExtraKey]interface{}{
+		"count": len(githubContributors),
+	})
 
 	return nil
+}
+
+
+func (s *Services) GetContributors() ([]models.Contributor, int64, error) {
+
+	var contributors []models.Contributor
+	var total int64
+
+	if err := database.DB.Model(&models.Contributor{}).Count(&total).Error; err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to count contributors", map[logging.ExtraKey]interface{}{
+			"error": err.Error(),
+		})
+		return nil, 0, errors.New("error counting contributors")
+	}
+
+	if err := database.DB.
+		Order("contributions DESC").
+		Find(&contributors).Error; err != nil {
+
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to fetch contributors", map[logging.ExtraKey]interface{}{
+			"error": err.Error(),
+		})
+
+		return nil, 0, errors.New("error fetching contributors")
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched contributors successfully", map[logging.ExtraKey]interface{}{
+		"count": total,
+	})
+
+	return contributors, total, nil
 }

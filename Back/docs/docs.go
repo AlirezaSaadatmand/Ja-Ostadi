@@ -530,6 +530,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/contributors": {
+            "get": {
+                "description": "Get contributors from database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contributors"
+                ],
+                "summary": "Get contributors",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/courses/semester/{semesterID}": {
             "get": {
                 "description": "Returns all courses for a specific semester",

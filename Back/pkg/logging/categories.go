@@ -14,6 +14,7 @@ const (
 	Scraper         Category = "Scraper"
 	Auth            Category = "Auth"
 	TempCourse      Category = "TempCourse"
+	External 		Category = "External"
 )
 
 const (
@@ -22,7 +23,7 @@ const (
 	ExternalService SubCategory = "ExternalService"
 	Login           SubCategory = "ScraperLogin"
 	Create          SubCategory = "Create"
-
+	
 	// MYSQL
 	Connection SubCategory = "Connection"
 	Migration  SubCategory = "Migration"
@@ -36,12 +37,16 @@ const (
 	RemoveFile SubCategory = "RemoveFile"
 	CreateFile SubCategory = "CreateFile"
 	API        SubCategory = "API"
-
+	
 	// Login
 	Verify SubCategory = "Verify"
-
+	
 	// token
 	Generate SubCategory = "Generate"
+	
+	// external
+	Get 			SubCategory = "Get"
+	Decode          SubCategory = "Decode"
 
 	// Admin
 	AdminAccess SubCategory = "AdminAccess"
