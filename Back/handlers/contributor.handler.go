@@ -16,15 +16,10 @@ import (
 func (h *Handler) GetContributors(c *fiber.Ctx) error {
 
 
-	contributors, total, err := h.Services.GetContributors()
+	contributors, err := h.Services.GetContributors()
 	if err != nil {
 		return utils.Error(c, fiber.StatusInternalServerError, "Failed to fetch contributors")
 	}
 
-	response := fiber.Map{
-		"data":  contributors,
-		"total": total,
-	}
-
-	return utils.Success(c, fiber.StatusOK, response, "Contributors fetched successfully")
+	return utils.Success(c, fiber.StatusOK, contributors, "Contributors fetched successfully")
 }

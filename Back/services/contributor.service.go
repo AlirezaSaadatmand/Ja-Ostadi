@@ -72,18 +72,18 @@ func (s *Services) UpdateContributors() error {
 	return nil
 }
 
+type Contributor struct {
+	ID            uint   `json:"id"`
+	Login         string `json:"login"`
+	Avatar_url    string `json:"avatar_url"`
+	Html_url      string `json:"html_url"`
+	Contributions int    `json:"contributions"`
+	Type          string `json:"type"`
+}
 
-func (s *Services) GetContributors() ([]models.Contributor, int64, error) {
+func (s *Services) GetContributors() ([]Contributor, error) {
 
-	var contributors []models.Contributor
-	var total int64
-
-	if err := database.DB.Model(&models.Contributor{}).Count(&total).Error; err != nil {
-		s.Logger.Error(logging.Mysql, logging.Select, "Failed to count contributors", map[logging.ExtraKey]interface{}{
-			"error": err.Error(),
-		})
-		return nil, 0, errors.New("error counting contributors")
-	}
+	var contributors []Contributor
 
 	if err := database.DB.
 		Order("contributions DESC").
@@ -93,12 +93,8 @@ func (s *Services) GetContributors() ([]models.Contributor, int64, error) {
 			"error": err.Error(),
 		})
 
-		return nil, 0, errors.New("error fetching contributors")
+		return nil, errors.New("error fetching contributors")
 	}
 
-	s.Logger.Info(logging.Mysql, logging.Select, "Fetched contributors successfully", map[logging.ExtraKey]interface{}{
-		"count": total,
-	})
-
-	return contributors, total, nil
+	return contributors, nil
 }

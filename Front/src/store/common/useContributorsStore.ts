@@ -27,7 +27,9 @@ export const useContributorsStore = create<ContributorsStore>((set) => ({
     set({ isLoading: true, error: null })
     try {
       const response = await api.get(`${config.apiUrl}/contributors`)
-      const data = Array.isArray(response.data) ? response.data : []
+      const data = response.data.data || []
+      console.log(data);
+      
       set({ contributors: data })
     } catch (error) {
       console.error("Error fetching contributors:", error)
