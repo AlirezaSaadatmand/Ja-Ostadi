@@ -19,15 +19,18 @@ export interface TableCell {
 }
 
 interface ScheduleTableStore {
+  scheduledCourseIds: number[]
   scheduledCourses: CourseResponse[]
   table: Record<string, TableCell>
+  isLoading: boolean
   addCourseToSchedule: (course: CourseResponse) => string[]
   removeCourseFromSchedule: (courseId: number) => void
   clearSchedule: () => void
+  loadCoursesFromIds: (allCourses: CourseResponse[]) => void 
 }
 
-const STORAGE_VERSION = 2
-const LOCAL_STORAGE_KEY = "weeklySchedule"
+const STORAGE_VERSION = 3
+const LOCAL_STORAGE_KEY = "weeklyScheduleV3"
 
 const generateEmptyTable = () => {
   const table: Record<string, TableCell> = {}
@@ -54,11 +57,10 @@ const loadState = () => {
     if (!serializedState) {
       const newState = {
         version: STORAGE_VERSION,
-        scheduledCourses: [],
-        table: generateEmptyTable(),
+        scheduledCourseIds: [],
       }
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
-      return newState
+      return { scheduledCourseIds: [] }
     }
 
     const state = JSON.parse(serializedState)
@@ -66,110 +68,169 @@ const loadState = () => {
     if (!state.version || state.version !== STORAGE_VERSION) {
       const newState = {
         version: STORAGE_VERSION,
-        scheduledCourses: [],
-        table: generateEmptyTable(),
+        scheduledCourseIds: [],
       }
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
-      return newState
+      return { scheduledCourseIds: [] }
     }
 
-    return state
+    return { scheduledCourseIds: state.scheduledCourseIds || [] }
   } catch (error) {
     console.error("Error loading state from localStorage:", error)
     const newState = {
       version: STORAGE_VERSION,
-      scheduledCourses: [],
-      table: generateEmptyTable(),
+      scheduledCourseIds: [],
     }
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
-    return newState
+    return { scheduledCourseIds: [] }
   }
 }
 
-const saveState = (state: {
-  scheduledCourses: CourseResponse[]
-  table: Record<string, TableCell>
-  version: number
-}) => {
+const saveState = (scheduledCourseIds: number[]) => {
   try {
-    const serializedState = JSON.stringify({ ...state, version: STORAGE_VERSION })
+    const serializedState = JSON.stringify({ 
+      version: STORAGE_VERSION, 
+      scheduledCourseIds 
+    })
     localStorage.setItem(LOCAL_STORAGE_KEY, serializedState)
   } catch (error) {
     console.error("Error saving state to localStorage:", error)
   }
 }
 
-export const useScheduleTableStore = create<ScheduleTableStore>((set, get) => ({
-  ...loadState(),
-
-  addCourseToSchedule: (course) => {
-    const { scheduledCourses, table } = get()
-    const conflicts: string[] = []
-
-    for (const t of course.time) {
-      const slotKey = findMatchingSlotKey(t.start_time, t.end_time)
-      const key = `${t.day}-${slotKey}`
-
-      if (!slotKey || !table[key]) {
-        console.warn(
-          `Could not find slot key for time: ${t.start_time}-${t.end_time} on ${t.day}`
-        )
-        return [`Invalid slot: ${t.day} ${t.start_time}-${t.end_time}`]
-      }
-
-      if (table[key].course) {
-        conflicts.push(table[key].course.course.name)
-      }
-    }
-
-    if (conflicts.length > 0) {
-      console.warn(`Conflict detected with: ${conflicts.join(", ")}`)
-      return conflicts
-    }
-
-    const newTable = { ...table }
+const buildTableFromCourses = (courses: CourseResponse[]) => {
+  const table = generateEmptyTable()
+  
+  for (const course of courses) {
     for (const t of course.time) {
       const slotKey = findMatchingSlotKey(t.start_time, t.end_time)
       if (slotKey) {
         const key = `${t.day}-${slotKey}`
-        newTable[key] = { ...newTable[key], course }
+        if (table[key]) {
+          table[key] = { ...table[key], course }
+        }
       }
     }
-
-    const newState = {
-      version: STORAGE_VERSION,
-      scheduledCourses: [...scheduledCourses, course],
-      table: newTable,
-    }
-
-    set(newState)
-    saveState(newState)
-    return []
-  },
+  }
   
-  removeCourseFromSchedule: (courseId) => {
-    const { scheduledCourses, table } = get()
-    const updatedCourses = scheduledCourses.filter((c) => c.course.id !== courseId)
+  return table
+}
 
-    const newTable = { ...table }
-    Object.keys(newTable).forEach((key) => {
-      if (newTable[key].course?.course.id === courseId) {
-        newTable[key] = { ...newTable[key], course: null }
+export const useScheduleTableStore = create<ScheduleTableStore>((set, get) => {
+  const { scheduledCourseIds: loadedIds } = loadState()
+  
+  return {
+    scheduledCourseIds: loadedIds,
+    scheduledCourses: [],
+    table: generateEmptyTable(),
+    isLoading: true,
+
+    loadCoursesFromIds: (allCourses: CourseResponse[]) => {
+      const { scheduledCourseIds } = get()
+      const validCourses: CourseResponse[] = []
+      const validIds: number[] = []
+      const invalidIds: number[] = []
+
+      for (const id of scheduledCourseIds) {
+        const course = allCourses.find(c => c.course.id === id)
+        if (course) {
+          validCourses.push(course)
+          validIds.push(id)
+        } else {
+          invalidIds.push(id)
+        }
       }
-    })
 
-    const newState = { version: STORAGE_VERSION, scheduledCourses: updatedCourses, table: newTable }
-    set(newState)
-    saveState(newState)
-  },
+      if (invalidIds.length > 0) {
+        console.warn(`Removing invalid course IDs from storage: ${invalidIds.join(", ")}`)
+        saveState(validIds)
+      }
 
-  clearSchedule: () => {
-    const newState = {
-      version: STORAGE_VERSION,
-      scheduledCourses: [],
-      table: generateEmptyTable(),
-    }
-    set(newState)
-    saveState(newState)
-  },
-}))
+      const table = buildTableFromCourses(validCourses)
+
+      set({
+        scheduledCourses: validCourses,
+        scheduledCourseIds: validIds,
+        table,
+        isLoading: false
+      })
+    },
+
+    addCourseToSchedule: (course) => {
+      const { scheduledCourses, scheduledCourseIds, table } = get()
+      const conflicts: string[] = []
+
+      for (const t of course.time) {
+        const slotKey = findMatchingSlotKey(t.start_time, t.end_time)
+        const key = `${t.day}-${slotKey}`
+
+        if (!slotKey || !table[key]) {
+          console.warn(
+            `Could not find slot key for time: ${t.start_time}-${t.end_time} on ${t.day}`
+          )
+          return [`Invalid slot: ${t.day} ${t.start_time}-${t.end_time}`]
+        }
+
+        if (table[key].course) {
+          conflicts.push(table[key].course.course.name)
+        }
+      }
+
+      if (conflicts.length > 0) {
+        console.warn(`Conflict detected with: ${conflicts.join(", ")}`)
+        return conflicts
+      }
+
+      const newTable = { ...table }
+      for (const t of course.time) {
+        const slotKey = findMatchingSlotKey(t.start_time, t.end_time)
+        if (slotKey) {
+          const key = `${t.day}-${slotKey}`
+          newTable[key] = { ...newTable[key], course }
+        }
+      }
+
+      const newScheduledCourses = [...scheduledCourses, course]
+      const newScheduledCourseIds = [...scheduledCourseIds, course.course.id]
+
+      set({
+        scheduledCourses: newScheduledCourses,
+        scheduledCourseIds: newScheduledCourseIds,
+        table: newTable,
+      })
+      
+      saveState(newScheduledCourseIds)
+      return []
+    },
+    
+    removeCourseFromSchedule: (courseId) => {
+      const { scheduledCourses, scheduledCourseIds, table } = get()
+      const updatedCourses = scheduledCourses.filter((c) => c.course.id !== courseId)
+      const updatedIds = scheduledCourseIds.filter((id) => id !== courseId)
+
+      const newTable = { ...table }
+      Object.keys(newTable).forEach((key) => {
+        if (newTable[key].course?.course.id === courseId) {
+          newTable[key] = { ...newTable[key], course: null }
+        }
+      })
+
+      set({
+        scheduledCourses: updatedCourses,
+        scheduledCourseIds: updatedIds,
+        table: newTable,
+      })
+      
+      saveState(updatedIds)
+    },
+
+    clearSchedule: () => {
+      set({
+        scheduledCourses: [],
+        scheduledCourseIds: [],
+        table: generateEmptyTable(),
+      })
+      saveState([])
+    },
+  }
+})

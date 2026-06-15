@@ -24,21 +24,37 @@ const WeeklySchedulePage: React.FC = () => {
     selectedDept,
     setSelectedDept,
     getCoursesByDepartment,
+    courses,
   } = useScheduleDataStore()
 
   const scheduledCourses = useScheduleTableStore((state) => state.scheduledCourses)
   const addCourseToSchedule = useScheduleTableStore((state) => state.addCourseToSchedule)
   const removeCourseFromSchedule = useScheduleTableStore((state) => state.removeCourseFromSchedule)
   const table = useScheduleTableStore((state) => state.table)
+  const loadCoursesFromIds = useScheduleTableStore((state) => state.loadCoursesFromIds)
+  const isLoadingTable = useScheduleTableStore((state) => state.isLoading)
 
   const { isExporting, exportPdf } = usePdfExportStore()
 
   const { isOpen: isModalOpen, selectedCourse, isScheduledCourseInModal, openModal, closeModal } = useCourseModalStore()
 
   useEffect(() => {
+    const oldStorageKey = "weeklySchedule"
+    if (localStorage.getItem(oldStorageKey)) {
+      localStorage.removeItem(oldStorageKey)
+    }
+  }, [])
+
+  useEffect(() => {
     fetchDepartments()
     fetchCourses()
   }, [fetchCourses, fetchDepartments])
+
+  useEffect(() => {
+    if (courses.length > 0 && isLoadingTable) {
+      loadCoursesFromIds(courses)
+    }
+  }, [courses, loadCoursesFromIds, isLoadingTable])
 
   const filteredCourses = selectedDept ? getCoursesByDepartment(selectedDept) : []
 
@@ -47,26 +63,39 @@ const WeeklySchedulePage: React.FC = () => {
     openModal(course, isScheduled)
   }
 
-    const handleAddToSchedule = (course: CourseResponse) => {
-      const conflicts = addCourseToSchedule(course)
-      
-      if (conflicts.length > 0) {
-        toast.error(
-          `درس "${course.course.name}" با برنامه فعلی شما تداخل دارد با: ${conflicts.join(", ")}`
-        )
-      } else {
-        toast.success(`درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`)
-      }
-      
-      closeModal()
+  const handleAddToSchedule = (course: CourseResponse) => {
+    const conflicts = addCourseToSchedule(course)
+    
+    if (conflicts.length > 0) {
+      toast.error(
+        `درس "${course.course.name}" با برنامه فعلی شما تداخل دارد با: ${conflicts.join(", ")}`
+      )
+    } else {
+      toast.success(`درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`)
     }
-
+    
+    closeModal()
+  }
 
   const handleRemoveCourse = (courseId: number) => {
     const courseName = scheduledCourses.find((c) => c.course.id === courseId)?.course.name || "درس"
     removeCourseFromSchedule(courseId)
     toast.success(`${courseName} با موفقیت از برنامه حذف شد.`)
     closeModal()
+  }
+
+  if (isLoadingTable) {
+    return (
+      <div className="min-h-screen bg-gray-50" dir="rtl">
+        <Header />
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">در حال بارگذاری برنامه...</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
