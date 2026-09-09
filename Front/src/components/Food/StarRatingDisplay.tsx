@@ -23,7 +23,7 @@ const StarRatingDisplay: React.FC<StarRatingDisplayProps> = ({ rating }) => {
           >
             <Star fill="gold" />
           </div>
-        </div>
+        </div>,
       );
     } else {
       stars.push(<Star key={i} fill="lightgray" />);

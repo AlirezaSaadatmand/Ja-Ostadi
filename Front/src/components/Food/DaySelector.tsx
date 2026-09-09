@@ -15,13 +15,20 @@ const DaySelector: React.FC = () => {
           className={`flex-shrink-0 bg-white rounded-2xl shadow-md w-36 sm:w-44 p-4 text-center border border-gray-100 hover:shadow-lg transition-all mt-1 duration-300
             ${selectedDay?.day === dayMeal.day ? "ring-2 ring-indigo-400" : ""}`}
         >
-          <h2 className="text-gray-800 font-semibold text-sm mb-1">{dayMeal.day}</h2>
+          <h2 className="text-gray-800 font-semibold text-sm mb-1">
+            {dayMeal.day}
+          </h2>
           <h2 className="text-gray-600 text-xs mb-2">{dayMeal.date}</h2>
           <div className="flex justify-center gap-2 text-gray-500">
-            {dayMeal?.breakfast?.length ? <Coffee className="w-5 h-5 text-yellow-600" /> : null}
-            {dayMeal?.lunch?.length ? <Soup className="w-5 h-5 text-green-600" /> : null}
-            {dayMeal?.dinner?.length ? <Moon className="w-5 h-5 text-indigo-600" /> : null}
-
+            {dayMeal?.breakfast?.length ? (
+              <Coffee className="w-5 h-5 text-yellow-600" />
+            ) : null}
+            {dayMeal?.lunch?.length ? (
+              <Soup className="w-5 h-5 text-green-600" />
+            ) : null}
+            {dayMeal?.dinner?.length ? (
+              <Moon className="w-5 h-5 text-indigo-600" />
+            ) : null}
           </div>
         </button>
       ))}

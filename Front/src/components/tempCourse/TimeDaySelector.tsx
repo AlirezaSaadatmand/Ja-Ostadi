@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore"
+import React, { useEffect, useState } from "react";
+import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore";
 
 const TIME_SLOTS = [
   { label: "08:00 - 10:00", key: "08:00-10:00", start: "08:00", end: "10:00" },
@@ -8,51 +8,55 @@ const TIME_SLOTS = [
   { label: "13:30 - 15:30", key: "13:30-15:30", start: "13:30", end: "15:30" },
   { label: "15:30 - 17:30", key: "15:30-17:30", start: "15:30", end: "17:30" },
   { label: "17:30 - 19:30", key: "17:30-19:30", start: "17:30", end: "19:30" },
-]
+];
 
-const DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"]
+const DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"];
 
 interface Props {
   value: {
-    day: string
-    time: string
-  } | null
-  onSelect: (day: string, time: string) => void
-  title: string
+    day: string;
+    time: string;
+  } | null;
+  onSelect: (day: string, time: string) => void;
+  title: string;
 }
 
 const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
-  const { tempCourses, fetchTempCourses } = useTempCourseStore()
-  const [expandedCell, setExpandedCell] = useState<{ day: string; time: string } | null>(null)
+  const { tempCourses, fetchTempCourses } = useTempCourseStore();
+  const [expandedCell, setExpandedCell] = useState<{
+    day: string;
+    time: string;
+  } | null>(null);
 
   useEffect(() => {
-    fetchTempCourses()
-  }, [fetchTempCourses])
+    fetchTempCourses();
+  }, [fetchTempCourses]);
 
   const getCoursesAtTime = (day: string, time: string) => {
-    return tempCourses.filter(course => 
-      (course.firstDay === day && course.firstTime === time) ||
-      (course.secondDay === day && course.secondTime === time)
-    )
-  }
+    return tempCourses.filter(
+      (course) =>
+        (course.firstDay === day && course.firstTime === time) ||
+        (course.secondDay === day && course.secondTime === time),
+    );
+  };
 
   const handleCellClick = (day: string, time: string) => {
-    const conflicts = getCoursesAtTime(day, time)
-    
+    const conflicts = getCoursesAtTime(day, time);
+
     if (expandedCell?.day === day && expandedCell?.time === time) {
-      setExpandedCell(null)
+      setExpandedCell(null);
     } else if (conflicts.length > 0) {
-      setExpandedCell({ day, time })
+      setExpandedCell({ day, time });
     } else {
-      setExpandedCell(null)
+      setExpandedCell(null);
     }
-    
-    onSelect(day, time)
-  }
+
+    onSelect(day, time);
+  };
 
   const isCellExpanded = (day: string, time: string) => {
-    return expandedCell?.day === day && expandedCell?.time === time
-  }
+    return expandedCell?.day === day && expandedCell?.time === time;
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-md p-4 mt-6">
@@ -79,10 +83,11 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
                 </td>
 
                 {TIME_SLOTS.map((slot) => {
-                  const courses = getCoursesAtTime(day, slot.label)
-                  const hasCourses = courses.length > 0
-                  const selected = value?.day === day && value?.time === slot.label
-                  const isExpanded = isCellExpanded(day, slot.label)
+                  const courses = getCoursesAtTime(day, slot.label);
+                  const hasCourses = courses.length > 0;
+                  const selected =
+                    value?.day === day && value?.time === slot.label;
+                  const isExpanded = isCellExpanded(day, slot.label);
 
                   return (
                     <td
@@ -91,11 +96,11 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
                       className={`h-14 cursor-pointer border transition relative group min-w-[120px] ${
                         selected ? "bg-indigo-200 border-indigo-400" : ""
                       } ${
-                        hasCourses ? "bg-yellow-50 hover:bg-yellow-100" : "hover:bg-gray-100"
-                      } ${
-                        isExpanded ? "bg-yellow-100" : ""
-                      }`}
-                      style={{ height: isExpanded ? 'auto' : '3.5rem' }}
+                        hasCourses
+                          ? "bg-yellow-50 hover:bg-yellow-100"
+                          : "hover:bg-gray-100"
+                      } ${isExpanded ? "bg-yellow-100" : ""}`}
+                      style={{ height: isExpanded ? "auto" : "3.5rem" }}
                     >
                       {!isExpanded && (
                         <>
@@ -106,7 +111,7 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
                               </span>
                             </div>
                           )}
-                          
+
                           {hasCourses && (
                             <div className="absolute z-10 left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                               {courses.length} درس موجود - برای مشاهده کلیک کنید
@@ -122,21 +127,21 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
                             <span className="text-xs text-gray-500">
                               {courses.length} درس
                             </span>
-                            <button 
+                            <button
                               onClick={(e) => {
-                                e.stopPropagation()
-                                setExpandedCell(null)
+                                e.stopPropagation();
+                                setExpandedCell(null);
                               }}
                               className="text-gray-400 hover:text-gray-600 text-xs"
                             >
                               ✕ بستن
                             </button>
                           </div>
-                          
+
                           <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                             {courses.map((course, index) => (
-                              <div 
-                                key={index} 
+                              <div
+                                key={index}
                                 className="text-xs bg-white p-2 rounded border border-gray-200 shadow-sm"
                               >
                                 <div className="font-semibold text-gray-800 truncate">
@@ -147,7 +152,9 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
                                 </div>
                                 <div className="flex justify-between text-gray-500 mt-1">
                                   <span className="text-xs">
-                                    {course.firstDay === day ? course.firstRoom : course.secondRoom}
+                                    {course.firstDay === day
+                                      ? course.firstRoom
+                                      : course.secondRoom}
                                   </span>
                                   <span className="text-xs">
                                     {course.group}
@@ -163,7 +170,7 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
                         <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-indigo-500 rounded-full"></div>
                       )}
                     </td>
-                  )
+                  );
                 })}
               </tr>
             ))}
@@ -174,10 +181,10 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
       <div className="mt-4 text-sm text-gray-600 flex items-center gap-2">
         <div className="w-3 h-3 bg-red-500 rounded-full"></div>
         <span>تعداد دروس موجود</span>
-        
+
         <div className="w-3 h-3 bg-yellow-300 rounded-full ml-4"></div>
         <span>سلول دارای درس</span>
-        
+
         <div className="w-3 h-3 bg-indigo-200 rounded-full ml-4"></div>
         <span>سلول انتخاب شده</span>
       </div>
@@ -186,7 +193,7 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
         روی سلول‌های زرد رنگ کلیک کنید تا لیست دروس را مشاهده کنید
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TimeDaySelector
+export default TimeDaySelector;

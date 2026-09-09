@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@types/react-icons": "^2.2.7",
@@ -16,6 +17,7 @@
     "file-saver": "^2.0.5",
     "html2pdf.js": "^0.10.3",
     "lucide-react": "^0.536.0",
+    "prettier": "^3.9.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",

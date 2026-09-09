@@ -6,14 +6,28 @@ import MealModal from "./MealModal";
 
 const DayMealsSection: React.FC = () => {
   const { selectedDay } = useWeeklyFoodStore();
-  const [selectedMeal, setSelectedMeal] = useState<Partial<MealData> | null>(null);
+  const [selectedMeal, setSelectedMeal] = useState<Partial<MealData> | null>(
+    null,
+  );
 
   if (!selectedDay) return null;
 
   const sections = [
-    { title: "صبحانه", icon: <Coffee className="w-4 h-4 text-yellow-600" />, meals: selectedDay.breakfast },
-    { title: "ناهار", icon: <Soup className="w-4 h-4 text-green-600" />, meals: selectedDay.lunch },
-    { title: "شام", icon: <Moon className="w-4 h-4 text-indigo-600" />, meals: selectedDay.dinner },
+    {
+      title: "صبحانه",
+      icon: <Coffee className="w-4 h-4 text-yellow-600" />,
+      meals: selectedDay.breakfast,
+    },
+    {
+      title: "ناهار",
+      icon: <Soup className="w-4 h-4 text-green-600" />,
+      meals: selectedDay.lunch,
+    },
+    {
+      title: "شام",
+      icon: <Moon className="w-4 h-4 text-indigo-600" />,
+      meals: selectedDay.dinner,
+    },
   ];
 
   return (
@@ -88,7 +102,7 @@ const MealSection: React.FC<MealSectionProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-700">{meal.name}</span>
             </div>
-              <ChevronLeft className="w-4 h-4 text-gray-400" />
+            <ChevronLeft className="w-4 h-4 text-gray-400" />
           </div>
         ))}
       </div>

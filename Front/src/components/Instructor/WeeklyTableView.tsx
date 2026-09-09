@@ -1,6 +1,6 @@
-import React, { useMemo } from "react"
-import type { CourseInSemester } from "../../types"
-import { useInstructorDetailStore } from "../../store/instructors/useInstructorDetailStore"
+import React, { useMemo } from "react";
+import type { CourseInSemester } from "../../types";
+import { useInstructorDetailStore } from "../../store/instructors/useInstructorDetailStore";
 
 const DEFAULT_TIME_SLOTS = [
   { label: "08:00 - 10:00", key: "08:00-10:00", start: "08:00", end: "10:00" },
@@ -9,35 +9,34 @@ const DEFAULT_TIME_SLOTS = [
   { label: "13:30 - 15:30", key: "13:30-15:30", start: "13:30", end: "15:30" },
   { label: "15:30 - 17:30", key: "15:30-17:30", start: "15:30", end: "17:30" },
   { label: "17:30 - 19:30", key: "17:30-19:30", start: "17:30", end: "19:30" },
-]
+];
 
-const DEFAULT_DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"]
+const DEFAULT_DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"];
 
 const WeeklyTableView: React.FC = () => {
-  const { instructorCoursesBySemester } = useInstructorDetailStore()
+  const { instructorCoursesBySemester } = useInstructorDetailStore();
 
   const tableData = useMemo(() => {
     const semester = instructorCoursesBySemester.find(
-      (s) => s.semester.name === "دوم - 1404"
-    )
+      (s) => s.semester.name === "اول - 1405",
+    );
 
-    const map: Record<string, CourseInSemester> = {}
-    if (!semester || !semester.courses) return map
+    const map: Record<string, CourseInSemester> = {};
+    if (!semester || !semester.courses) return map;
 
     semester.courses.forEach((course) => {
-      if (!course.time) return
+      if (!course.time) return;
       course.time.forEach((t) => {
-        const key = `${t.day}-${t.start_time}-${t.end_time}`
-        map[key] = course
-      })
-    })
-    return map
-  }, [instructorCoursesBySemester])
+        const key = `${t.day}-${t.start_time}-${t.end_time}`;
+        map[key] = course;
+      });
+    });
+    return map;
+  }, [instructorCoursesBySemester]);
 
   const currentSemester =
-    instructorCoursesBySemester.find(
-      (s) => s.semester.name === "دوم - 1404"
-    )?.semester.name || "برنامه هفتگی"
+    instructorCoursesBySemester.find((s) => s.semester.name === "اول - 1405")
+      ?.semester.name || "برنامه هفتگی";
 
   return (
     <div className="p-2 sm:p-4 lg:p-8 w-full" dir="rtl">
@@ -76,7 +75,7 @@ const WeeklyTableView: React.FC = () => {
                 </td>
 
                 {DEFAULT_TIME_SLOTS.map((slot) => {
-                  const course = tableData[`${day}-${slot.start}-${slot.end}`]
+                  const course = tableData[`${day}-${slot.start}-${slot.end}`];
                   return (
                     <td
                       key={`${day}-${slot.key}`}
@@ -88,17 +87,15 @@ const WeeklyTableView: React.FC = () => {
                             {course.name}
                           </div>
                           <div className="text-[8px] sm:text-xs text-indigo-700 truncate text-center">
-                            {
-                              course.time.find(
-                                (t) =>
-                                  t.day === day && t.start_time === slot.start
-                              )?.room || ""
-                            }
+                            {course.time.find(
+                              (t) =>
+                                t.day === day && t.start_time === slot.start,
+                            )?.room || ""}
                           </div>
                         </div>
                       ) : null}
                     </td>
-                  )
+                  );
                 })}
               </tr>
             ))}
@@ -106,7 +103,7 @@ const WeeklyTableView: React.FC = () => {
         </table>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default WeeklyTableView
+export default WeeklyTableView;

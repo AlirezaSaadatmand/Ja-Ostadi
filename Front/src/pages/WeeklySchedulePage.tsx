@@ -1,18 +1,22 @@
-import type React from "react"
-import { useEffect } from "react"
-import { useScheduleDataStore } from "../store/schedule/useScheduleDataStore"
-import { useScheduleTableStore, days, timeSlots } from "../store/schedule/useScheduleTableStore"
-import { useCourseModalStore } from "../store/schedule/useCourseModalStore"
-import { usePdfExportStore } from "../store/common/usePdfExportStore"
+import type React from "react";
+import { useEffect } from "react";
+import { useScheduleDataStore } from "../store/schedule/useScheduleDataStore";
+import {
+  useScheduleTableStore,
+  days,
+  timeSlots,
+} from "../store/schedule/useScheduleTableStore";
+import { useCourseModalStore } from "../store/schedule/useCourseModalStore";
+import { usePdfExportStore } from "../store/common/usePdfExportStore";
 
-import DepartmentList from "../components/Schedule/DepartmentList"
-import WeeklyTable from "../components/Schedule/WeeklyTable"
-import CourseModal from "../components/Schedule/CourseModal"
-import ScheduledCourseSummary from "../components/Schedule/ScheduledCourseSummary"
-import CourseList from "../components/Schedule/CourseList"
-import Header from "../components/Header"
-import type { CourseResponse } from "../types"
-import toast, { Toaster } from "react-hot-toast"
+import DepartmentList from "../components/Schedule/DepartmentList";
+import WeeklyTable from "../components/Schedule/WeeklyTable";
+import CourseModal from "../components/Schedule/CourseModal";
+import ScheduledCourseSummary from "../components/Schedule/ScheduledCourseSummary";
+import CourseList from "../components/Schedule/CourseList";
+import Header from "../components/Header";
+import type { CourseResponse } from "../types";
+import toast, { Toaster } from "react-hot-toast";
 
 const WeeklySchedulePage: React.FC = () => {
   const {
@@ -25,64 +29,86 @@ const WeeklySchedulePage: React.FC = () => {
     setSelectedDept,
     getCoursesByDepartment,
     courses,
-  } = useScheduleDataStore()
+  } = useScheduleDataStore();
 
-  const scheduledCourses = useScheduleTableStore((state) => state.scheduledCourses)
-  const addCourseToSchedule = useScheduleTableStore((state) => state.addCourseToSchedule)
-  const removeCourseFromSchedule = useScheduleTableStore((state) => state.removeCourseFromSchedule)
-  const table = useScheduleTableStore((state) => state.table)
-  const loadCoursesFromIds = useScheduleTableStore((state) => state.loadCoursesFromIds)
-  const isLoadingTable = useScheduleTableStore((state) => state.isLoading)
+  const scheduledCourses = useScheduleTableStore(
+    (state) => state.scheduledCourses,
+  );
+  const addCourseToSchedule = useScheduleTableStore(
+    (state) => state.addCourseToSchedule,
+  );
+  const removeCourseFromSchedule = useScheduleTableStore(
+    (state) => state.removeCourseFromSchedule,
+  );
+  const table = useScheduleTableStore((state) => state.table);
+  const loadCoursesFromIds = useScheduleTableStore(
+    (state) => state.loadCoursesFromIds,
+  );
+  const isLoadingTable = useScheduleTableStore((state) => state.isLoading);
 
-  const { isExporting, exportPdf } = usePdfExportStore()
+  const { isExporting, exportPdf } = usePdfExportStore();
 
-  const { isOpen: isModalOpen, selectedCourse, isScheduledCourseInModal, openModal, closeModal } = useCourseModalStore()
+  const {
+    isOpen: isModalOpen,
+    selectedCourse,
+    isScheduledCourseInModal,
+    openModal,
+    closeModal,
+  } = useCourseModalStore();
 
   useEffect(() => {
-    const oldStorageKey = "weeklySchedule"
+    const oldStorageKey = "weeklySchedule";
     if (localStorage.getItem(oldStorageKey)) {
-      localStorage.removeItem(oldStorageKey)
+      localStorage.removeItem(oldStorageKey);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchDepartments()
-    fetchCourses()
-  }, [fetchCourses, fetchDepartments])
+    fetchDepartments();
+    fetchCourses();
+  }, [fetchCourses, fetchDepartments]);
 
   useEffect(() => {
     if (courses.length > 0 && isLoadingTable) {
-      loadCoursesFromIds(courses)
+      loadCoursesFromIds(courses);
     }
-  }, [courses, loadCoursesFromIds, isLoadingTable])
+  }, [courses, loadCoursesFromIds, isLoadingTable]);
 
-  const filteredCourses = selectedDept ? getCoursesByDepartment(selectedDept) : []
+  const filteredCourses = selectedDept
+    ? getCoursesByDepartment(selectedDept)
+    : [];
 
   const handleCourseClick = (course: CourseResponse) => {
-    const isScheduled = scheduledCourses.some((c) => c.course.id === course.course.id)
-    openModal(course, isScheduled)
-  }
+    const isScheduled = scheduledCourses.some(
+      (c) => c.course.id === course.course.id,
+    );
+    openModal(course, isScheduled);
+  };
 
   const handleAddToSchedule = (course: CourseResponse) => {
-    const conflicts = addCourseToSchedule(course)
-    
+    const conflicts = addCourseToSchedule(course);
+
     if (conflicts.length > 0) {
       toast.error(
-        `درس "${course.course.name}" با برنامه فعلی شما تداخل دارد با: ${conflicts.join(", ")}`
-      )
+        `درس "${course.course.name}" با برنامه فعلی شما تداخل دارد با: ${conflicts.join(", ")}`,
+      );
     } else {
-      toast.success(`درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`)
+      toast.success(
+        `درس "${course.course.name}" با موفقیت به برنامه اضافه شد.`,
+      );
     }
-    
-    closeModal()
-  }
+
+    closeModal();
+  };
 
   const handleRemoveCourse = (courseId: number) => {
-    const courseName = scheduledCourses.find((c) => c.course.id === courseId)?.course.name || "درس"
-    removeCourseFromSchedule(courseId)
-    toast.success(`${courseName} با موفقیت از برنامه حذف شد.`)
-    closeModal()
-  }
+    const courseName =
+      scheduledCourses.find((c) => c.course.id === courseId)?.course.name ||
+      "درس";
+    removeCourseFromSchedule(courseId);
+    toast.success(`${courseName} با موفقیت از برنامه حذف شد.`);
+    closeModal();
+  };
 
   if (isLoadingTable) {
     return (
@@ -95,7 +121,7 @@ const WeeklySchedulePage: React.FC = () => {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -105,12 +131,16 @@ const WeeklySchedulePage: React.FC = () => {
       <div className="block md:hidden bg-white shadow-sm border-b mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex items-center justify-center">
           <div className="text-center flex-1">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">برنامه هفتگی دانشجو</h1>
-            <p className="text-gray-600 text-lg sm:text-xl">دپارتمان و درس مورد نظر خود را انتخاب کنید</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
+              برنامه هفتگی دانشجو
+            </h1>
+            <p className="text-gray-600 text-lg sm:text-xl">
+              دپارتمان و درس مورد نظر خود را انتخاب کنید
+            </p>
           </div>
         </div>
       </div>
-      
+
       <div className="max-w-6xl mx-auto px-1 sm:px-6 py-1 sm:py-4 lg:mt-20">
         <div className="mb-1 sm:mb-4">
           <DepartmentList
@@ -122,14 +152,21 @@ const WeeklySchedulePage: React.FC = () => {
         </div>
         {selectedDept && (
           <div className="mt-5 sm:mt-4 mb-5 sm:mb-4">
-            <CourseList courses={filteredCourses} onCourseClick={handleCourseClick} isLoading={isLoadingCourses} />
+            <CourseList
+              courses={filteredCourses}
+              onCourseClick={handleCourseClick}
+              isLoading={isLoadingCourses}
+            />
           </div>
         )}
 
         <div className="flex flex-col lg:flex-row gap-1 sm:gap-4 lg:gap-6 items-stretch min-h-[500px] sm:min-h-[500px]">
           <div className="lg:w-1/4 flex-shrink-0 order-2 lg:order-1">
             <div className="lg:sticky lg:top-14">
-              <ScheduledCourseSummary scheduledCourses={scheduledCourses} onCourseClick={handleCourseClick} />
+              <ScheduledCourseSummary
+                scheduledCourses={scheduledCourses}
+                onCourseClick={handleCourseClick}
+              />
             </div>
           </div>
           <div className="lg:w-3/4 flex-grow order-1 lg:order-2">
@@ -159,7 +196,7 @@ const WeeklySchedulePage: React.FC = () => {
 
       <Toaster />
     </div>
-  )
-}
+  );
+};
 
-export default WeeklySchedulePage
+export default WeeklySchedulePage;

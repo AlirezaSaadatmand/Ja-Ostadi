@@ -1,16 +1,17 @@
-import type React from "react"
-import { useEffect, useState } from "react"
-import { useContributorsStore } from "../../store/common/useContributorsStore"
-import config from "../../config/config"
-import { Github, Users, ExternalLink, X } from "lucide-react"
+import type React from "react";
+import { useEffect, useState } from "react";
+import { useContributorsStore } from "../../store/common/useContributorsStore";
+import config from "../../config/config";
+import { Github, Users, ExternalLink, X } from "lucide-react";
 
 const ContributorsSection: React.FC = () => {
-  const { contributors, isLoading, error, fetchContributors } = useContributorsStore()
-  const [isExpanded, setIsExpanded] = useState(false)
+  const { contributors, isLoading, error, fetchContributors } =
+    useContributorsStore();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
-    fetchContributors()
-  }, [fetchContributors])
+    fetchContributors();
+  }, [fetchContributors]);
 
   if (!isExpanded) {
     return (
@@ -21,7 +22,7 @@ const ContributorsSection: React.FC = () => {
       >
         <Users className="w-5 h-5" />
       </button>
-    )
+    );
   }
 
   return (
@@ -40,7 +41,10 @@ const ContributorsSection: React.FC = () => {
             <div className="h-5 bg-gray-200 rounded w-32 mx-auto mb-4"></div>
             <div className="flex justify-center gap-3">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                <div
+                  key={i}
+                  className="w-10 h-10 bg-gray-200 rounded-full"
+                ></div>
               ))}
             </div>
           </div>
@@ -62,7 +66,9 @@ const ContributorsSection: React.FC = () => {
           <>
             <div className="flex items-center justify-center mb-4">
               <Users className="w-5 h-5 text-indigo-600 ml-2" />
-              <h3 className="text-base font-bold text-gray-900">مشارکت‌کنندگان</h3>
+              <h3 className="text-base font-bold text-gray-900">
+                مشارکت‌کنندگان
+              </h3>
             </div>
 
             {contributors.length === 0 ? (
@@ -124,7 +130,7 @@ const ContributorsSection: React.FC = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ContributorsSection
+export default ContributorsSection;

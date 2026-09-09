@@ -1,17 +1,17 @@
-import { create } from "zustand"
-import html2pdf from "html2pdf.js"
-import toast from "react-hot-toast"
-import { createRoot } from "react-dom/client"
-import PdfDocument from "../../components/PdfDocument"
-import type { CourseResponse } from "../../types"
-import type { TableCell } from "../schedule/useScheduleTableStore"
+import { create } from "zustand";
+import html2pdf from "html2pdf.js";
+import toast from "react-hot-toast";
+import { createRoot } from "react-dom/client";
+import PdfDocument from "../../components/PdfDocument";
+import type { CourseResponse } from "../../types";
+import type { TableCell } from "../schedule/useScheduleTableStore";
 
 interface PdfExportData {
   scheduledCourses: CourseResponse[];
   table: Record<string, TableCell>;
   days: string[];
   timeSlots: { label: string; key: string; start: string; end: string }[];
-  isRotated?: boolean; 
+  isRotated?: boolean;
 }
 
 interface PdfExportStore {
@@ -30,12 +30,11 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
     let root: ReturnType<typeof createRoot> | null = null;
 
     try {
-
-      tempDiv = document.createElement("div")
-      tempDiv.style.width = "100%"
-      tempDiv.style.overflow = "visible"
-      tempDiv.style.direction = "rtl"
-      tempDiv.style.backgroundColor = "#fff"
+      tempDiv = document.createElement("div");
+      tempDiv.style.width = "100%";
+      tempDiv.style.overflow = "visible";
+      tempDiv.style.direction = "rtl";
+      tempDiv.style.backgroundColor = "#fff";
 
       // center content
       tempDiv.style.display = "flex";
@@ -50,7 +49,7 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
       root.render(<PdfDocument {...data} />);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      
+
       const opt = {
         filename: "برنامه_هفتگی.pdf",
         image: { type: "jpeg", quality: 0.98 },
@@ -64,7 +63,12 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
           allowTaint: true,
           logging: false,
         },
-        jsPDF: { unit: "pt", format: data.scheduledCourses.length > 8 ? [1920, 1700] : [1920, 1450], orientation: "landscape" },
+        jsPDF: {
+          unit: "pt",
+          format:
+            data.scheduledCourses.length > 8 ? [1920, 1700] : [1920, 1450],
+          orientation: "landscape",
+        },
       };
 
       await html2pdf().set(opt).from(tempDiv).save();

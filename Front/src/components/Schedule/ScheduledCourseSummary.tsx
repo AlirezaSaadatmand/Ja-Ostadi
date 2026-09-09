@@ -1,13 +1,19 @@
-import type React from "react"
-import type { CourseResponse } from "../../types"
+import type React from "react";
+import type { CourseResponse } from "../../types";
 
 interface ScheduledCourseSummaryProps {
-  scheduledCourses: CourseResponse[]
-  onCourseClick: (course: CourseResponse) => void
+  scheduledCourses: CourseResponse[];
+  onCourseClick: (course: CourseResponse) => void;
 }
 
-const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({ scheduledCourses, onCourseClick }) => {
-  const totalUnits = scheduledCourses.reduce((sum, course) => sum + parseFloat(course.course.units), 0)
+const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({
+  scheduledCourses,
+  onCourseClick,
+}) => {
+  const totalUnits = scheduledCourses.reduce(
+    (sum, course) => sum + parseFloat(course.course.units),
+    0,
+  );
 
   return (
     <div className="bg-white rounded-lg shadow-sm flex flex-col h-full max-h-[450px] sm:max-h-[550px] lg:max-h-[650px]">
@@ -26,13 +32,17 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({ schedul
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
             />
           </svg>
-          <span className="text-lg font-semibold sm:text-l">دروس برنامه ریزی شده ({scheduledCourses.length})</span>
+          <span className="text-lg font-semibold sm:text-l">
+            دروس برنامه ریزی شده ({scheduledCourses.length})
+          </span>
         </h3>
       </div>
 
       <div className="p-2 sm:p-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center text-xs font-medium text-gray-700 flex-shrink-0">
         <span>تعداد کل واحدها:</span>
-        <span className="text-purple-700 text-sm sm:text-base font-bold">{totalUnits}</span>
+        <span className="text-purple-700 text-sm sm:text-base font-bold">
+          {totalUnits}
+        </span>
       </div>
 
       <div className="flex-grow overflow-y-auto scrollbar-hide p-1 sm:p-2">
@@ -85,7 +95,7 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({ schedul
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ScheduledCourseSummary
+export default ScheduledCourseSummary;

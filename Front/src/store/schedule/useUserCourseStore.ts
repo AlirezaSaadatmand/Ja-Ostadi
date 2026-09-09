@@ -1,18 +1,18 @@
-import { create } from "zustand"
-import config from "../../config/config"
-import api from "../../utils/axios"
-import { AxiosError } from "axios"
-import { useScheduleTableStore } from "./useScheduleTableStore"
+import { create } from "zustand";
+import config from "../../config/config";
+import api from "../../utils/axios";
+import { AxiosError } from "axios";
+import { useScheduleTableStore } from "./useScheduleTableStore";
 
 interface ApiErrorResponse {
-  data?: number[]
-  message?: string
+  data?: number[];
+  message?: string;
 }
 
 interface UserCoursesStore {
-  isLoading: boolean
-  error: string | null
-  saveUserCourses: (courseIds: number[]) => Promise<void>
+  isLoading: boolean;
+  error: string | null;
+  saveUserCourses: (courseIds: number[]) => Promise<void>;
 }
 
 export const useUserCoursesStore = create<UserCoursesStore>((set) => ({
@@ -20,32 +20,33 @@ export const useUserCoursesStore = create<UserCoursesStore>((set) => ({
   error: null,
 
   saveUserCourses: async (courseIds: number[]) => {
-    set({ isLoading: true, error: null })
+    set({ isLoading: true, error: null });
 
     try {
-      await api.post(`${config.apiUrl}/user/courses`, { courseIds })
+      await api.post(`${config.apiUrl}/user/courses`, { courseIds });
     } catch (error) {
-      const axiosError = error as AxiosError<ApiErrorResponse>
+      const axiosError = error as AxiosError<ApiErrorResponse>;
 
       if (
         axiosError.response?.status === 400 &&
         Array.isArray(axiosError.response.data?.data)
       ) {
-        const invalidIds = axiosError.response.data?.data ?? []
-        const removeCourse = useScheduleTableStore.getState().removeCourseFromSchedule
-        invalidIds.forEach((id) => removeCourse(id))
+        const invalidIds = axiosError.response.data?.data ?? [];
+        const removeCourse =
+          useScheduleTableStore.getState().removeCourseFromSchedule;
+        invalidIds.forEach((id) => removeCourse(id));
 
-        throw new Error(`Invalid course IDs: ${invalidIds.join(", ")}`)
+        throw new Error(`Invalid course IDs: ${invalidIds.join(", ")}`);
       }
 
       set({
         error:
           axiosError.response?.data?.message ??
           (axiosError.message || "Unknown error"),
-      })
-      throw axiosError
+      });
+      throw axiosError;
     } finally {
-      set({ isLoading: false })
+      set({ isLoading: false });
     }
   },
-}))
+}));

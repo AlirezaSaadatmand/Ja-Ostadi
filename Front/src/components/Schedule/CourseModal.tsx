@@ -1,13 +1,13 @@
-import type React from "react"
-import type { CourseResponse } from "../../types"
+import type React from "react";
+import type { CourseResponse } from "../../types";
 
 interface CourseModalProps {
-  isOpen: boolean
-  onClose: () => void
-  course: CourseResponse | null
-  onAddToSchedule: (course: CourseResponse) => void
-  onRemoveFromSchedule?: (courseId: number) => void
-  isScheduledCourse?: boolean
+  isOpen: boolean;
+  onClose: () => void;
+  course: CourseResponse | null;
+  onAddToSchedule: (course: CourseResponse) => void;
+  onRemoveFromSchedule?: (courseId: number) => void;
+  isScheduledCourse?: boolean;
 }
 
 const CourseModal: React.FC<CourseModalProps> = ({
@@ -18,19 +18,19 @@ const CourseModal: React.FC<CourseModalProps> = ({
   onRemoveFromSchedule,
   isScheduledCourse,
 }) => {
-  if (!isOpen || !course) return null
+  if (!isOpen || !course) return null;
 
   const handleAddToSchedule = () => {
-    onAddToSchedule(course)
-    onClose()
-  }
+    onAddToSchedule(course);
+    onClose();
+  };
 
   const handleRemoveFromSchedule = () => {
     if (onRemoveFromSchedule) {
-      onRemoveFromSchedule(course.course.id)
-      onClose()
+      onRemoveFromSchedule(course.course.id);
+      onClose();
     }
-  }
+  };
 
   return (
     <div
@@ -46,9 +46,22 @@ const CourseModal: React.FC<CourseModalProps> = ({
         <div className="p-7 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900">جزئیات درس</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -59,17 +72,30 @@ const CourseModal: React.FC<CourseModalProps> = ({
           <div className="space-y-4">
             {/* Course Name */}
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{course.course.name}</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {course.course.name}
+              </h3>
               <div className="flex items-center space-x-4 space-x-reverse text-base text-gray-600">
-                <span className="bg-blue-100 text-blue-800 px-3 py-1.5 rounded">کد: {course.course.number}</span>
-                <span className="bg-green-100 text-green-800 px-3 py-1.5 rounded">گروه: {course.course.group}</span>
-                <span className="bg-purple-100 text-purple-800 px-3 py-1.5 rounded">{course.course.units} واحد</span>
+                <span className="bg-blue-100 text-blue-800 px-3 py-1.5 rounded">
+                  کد: {course.course.number}
+                </span>
+                <span className="bg-green-100 text-green-800 px-3 py-1.5 rounded">
+                  گروه: {course.course.group}
+                </span>
+                <span className="bg-purple-100 text-purple-800 px-3 py-1.5 rounded">
+                  {course.course.units} واحد
+                </span>
               </div>
             </div>
 
             {/* Department */}
             <div className="flex items-center">
-              <svg className="w-6 h-6 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-6 h-6 text-gray-400 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -84,7 +110,12 @@ const CourseModal: React.FC<CourseModalProps> = ({
 
             {/* Instructor */}
             <div className="flex items-center">
-              <svg className="w-6 h-6 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-6 h-6 text-gray-400 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -100,7 +131,12 @@ const CourseModal: React.FC<CourseModalProps> = ({
             {/* Schedule Times */}
             <div>
               <div className="flex items-center mb-3">
-                <svg className="w-6 h-6 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-6 h-6 text-gray-400 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -108,14 +144,18 @@ const CourseModal: React.FC<CourseModalProps> = ({
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span className="text-gray-700 font-medium">زمان‌های کلاس:</span>
+                <span className="text-gray-700 font-medium">
+                  زمان‌های کلاس:
+                </span>
               </div>
               <div className="space-y-2">
                 {course.time?.map((timeSlot, index) => (
                   <div key={index} className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 space-x-reverse">
-                        <span className="font-semibold text-gray-900">{timeSlot.day}</span>
+                        <span className="font-semibold text-gray-900">
+                          {timeSlot.day}
+                        </span>
                         <span className="text-gray-600">
                           {timeSlot.start_time} - {timeSlot.end_time}
                         </span>
@@ -159,7 +199,7 @@ const CourseModal: React.FC<CourseModalProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CourseModal
+export default CourseModal;

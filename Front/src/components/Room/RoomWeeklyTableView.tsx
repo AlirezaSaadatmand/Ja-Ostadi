@@ -1,16 +1,15 @@
-import React from "react"
-import type { RoomScheduleCourse } from "../../types"
-import { DAYS, TIME_SLOTS } from "../../store/usefull/useRoomScheduleStore"
-
+import React from "react";
+import type { RoomScheduleCourse } from "../../types";
+import { DAYS, TIME_SLOTS } from "../../store/usefull/useRoomScheduleStore";
 
 interface Props {
-  roomSchedule: RoomScheduleCourse[]
+  roomSchedule: RoomScheduleCourse[];
 }
 
 const toMinutes = (time: string) => {
-  const [h, m] = time.split(":").map(Number)
-  return h * 60 + m
-}
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+};
 
 const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
   return (
@@ -43,14 +42,14 @@ const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
                 {TIME_SLOTS.map((slot) => {
                   const course = roomSchedule.find((c) =>
                     c.time.some((t) => {
-                      if (t.day !== day) return false
-                      const courseStart = toMinutes(t.start_time)
-                      const courseEnd = toMinutes(t.end_time)
-                      const slotStart = toMinutes(slot.start)
-                      const slotEnd = toMinutes(slot.end)
-                      return courseStart < slotEnd && courseEnd > slotStart
-                    })
-                  )
+                      if (t.day !== day) return false;
+                      const courseStart = toMinutes(t.start_time);
+                      const courseEnd = toMinutes(t.end_time);
+                      const slotStart = toMinutes(slot.start);
+                      const slotEnd = toMinutes(slot.end);
+                      return courseStart < slotEnd && courseEnd > slotStart;
+                    }),
+                  );
 
                   return (
                     <td
@@ -68,7 +67,7 @@ const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
                         </div>
                       )}
                     </td>
-                  )
+                  );
                 })}
               </tr>
             ))}
@@ -76,7 +75,7 @@ const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
         </table>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RoomWeeklyTableView
+export default RoomWeeklyTableView;

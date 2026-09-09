@@ -1,14 +1,13 @@
-import { useEffect } from "react"
-import { useSearchParams } from "react-router-dom"
-import Header from "../components/Header"
-import { useRoomStore } from "../store/usefull/useRoomScheduleStore"
-import RoomWeeklyTableView from "../components/Room/RoomWeeklyTableView"
-import { downloadRoomScheduleExcel } from "../components/Room/DownloadRoomScheduleExcel"
-import { useRoomPdfExportStore } from "../store/usefull/useRoomPdfExportStore"
-
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import Header from "../components/Header";
+import { useRoomStore } from "../store/usefull/useRoomScheduleStore";
+import RoomWeeklyTableView from "../components/Room/RoomWeeklyTableView";
+import { downloadRoomScheduleExcel } from "../components/Room/DownloadRoomScheduleExcel";
+import { useRoomPdfExportStore } from "../store/usefull/useRoomPdfExportStore";
 
 const RoomsPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     rooms,
@@ -17,32 +16,32 @@ const RoomsPage = () => {
     error,
     fetchRooms,
     fetchRoomSchedule,
-  } = useRoomStore()
+  } = useRoomStore();
 
-  const selectedRoomId = searchParams.get("roomId")
+  const selectedRoomId = searchParams.get("roomId");
 
   useEffect(() => {
-    fetchRooms()
-  }, [fetchRooms])
+    fetchRooms();
+  }, [fetchRooms]);
 
   useEffect(() => {
     if (rooms.length > 0 && !selectedRoomId) {
-      const firstRoom = rooms[0].id.toString()
-      setSearchParams({ roomId: firstRoom })
-      fetchRoomSchedule(firstRoom)
+      const firstRoom = rooms[0].id.toString();
+      setSearchParams({ roomId: firstRoom });
+      fetchRoomSchedule(firstRoom);
     }
-  }, [rooms, selectedRoomId, setSearchParams, fetchRoomSchedule])
+  }, [rooms, selectedRoomId, setSearchParams, fetchRoomSchedule]);
 
   useEffect(() => {
     if (selectedRoomId) {
-      fetchRoomSchedule(selectedRoomId)
+      fetchRoomSchedule(selectedRoomId);
     }
-  }, [selectedRoomId, fetchRoomSchedule])
+  }, [selectedRoomId, fetchRoomSchedule]);
 
   const handleRoomChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newId = e.target.value
-    setSearchParams({ roomId: newId })
-  }
+    const newId = e.target.value;
+    setSearchParams({ roomId: newId });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 lg:pt-28" dir="rtl">
@@ -94,9 +93,7 @@ const RoomsPage = () => {
         )}
 
         {error && (
-          <div className="text-center py-12 text-red-600">
-            خطا: {error}
-          </div>
+          <div className="text-center py-12 text-red-600">خطا: {error}</div>
         )}
 
         {!isLoading && !error && roomSchedule.length === 0 && (
@@ -107,7 +104,6 @@ const RoomsPage = () => {
         {!isLoading && !error && roomSchedule.length > 0 && (
           <>
             <div className="mb-4 text-center flex gap-3 justify-center">
-
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 onClick={() => downloadRoomScheduleExcel(roomSchedule)}
@@ -117,11 +113,12 @@ const RoomsPage = () => {
 
               <button
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                onClick={() => useRoomPdfExportStore.getState().exportRoomPdf(roomSchedule)}
+                onClick={() =>
+                  useRoomPdfExportStore.getState().exportRoomPdf(roomSchedule)
+                }
               >
                 دانلود PDF
               </button>
-
             </div>
 
             <RoomWeeklyTableView roomSchedule={roomSchedule} />
@@ -129,7 +126,7 @@ const RoomsPage = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RoomsPage
+export default RoomsPage;

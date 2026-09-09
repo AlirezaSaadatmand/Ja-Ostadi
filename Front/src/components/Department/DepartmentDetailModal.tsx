@@ -1,28 +1,32 @@
-import type React from "react"
-import type { DepartmentDetail } from "../../types"
-import { useNavigate } from "react-router-dom"
-import { Building2 } from "lucide-react"
+import type React from "react";
+import type { DepartmentDetail } from "../../types";
+import { useNavigate } from "react-router-dom";
+import { Building2 } from "lucide-react";
 
 interface DepartmentDetailModalProps {
-  isOpen: boolean
-  onClose: () => void
-  department: DepartmentDetail | null
+  isOpen: boolean;
+  onClose: () => void;
+  department: DepartmentDetail | null;
 }
 
-const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, onClose, department }) => {
-  const navigate = useNavigate()
+const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({
+  isOpen,
+  onClose,
+  department,
+}) => {
+  const navigate = useNavigate();
 
-  if (!isOpen || !department) return null
+  if (!isOpen || !department) return null;
 
   const handleViewCourses = () => {
-    navigate(`/courses?deptId=${department.id}`)
-    onClose()
-  }
+    navigate(`/courses?deptId=${department.id}`);
+    onClose();
+  };
 
   const handleViewInstructors = () => {
-    navigate(`/instructors?deptId=${department.id}&mode=department`)
-    onClose()
-  }
+    navigate(`/instructors?deptId=${department.id}&mode=department`);
+    onClose();
+  };
 
   return (
     <div
@@ -36,10 +40,25 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
       >
         <div className="p-7 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">جزئیات دپارتمان</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <h2 className="text-2xl font-bold text-gray-900">
+              جزئیات دپارتمان
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -48,12 +67,19 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
         <div className="p-7 text-center">
           <div className="mb-6">
             <Building2 className="w-20 h-20 text-green-600 mx-auto mb-4" />
-            <h3 className="text-3xl font-bold text-gray-900">{department.name}</h3>
+            <h3 className="text-3xl font-bold text-gray-900">
+              {department.name}
+            </h3>
           </div>
 
           <div className="space-y-4 text-lg text-gray-700">
             <p className="flex items-center justify-center">
-              <svg className="w-6 h-6 text-indigo-500 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-6 h-6 text-indigo-500 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -61,10 +87,18 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
-              <span className="font-bold mr-1">{department.instructors_count}</span> استاد
+              <span className="font-bold mr-1">
+                {department.instructors_count}
+              </span>{" "}
+              استاد
             </p>
             <p className="flex items-center justify-center">
-              <svg className="w-6 h-6 text-emerald-500 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-6 h-6 text-emerald-500 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -72,7 +106,8 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
                   d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                 />
               </svg>
-              <span className="font-bold mr-1">{department.courses_count}</span> درس
+              <span className="font-bold mr-1">{department.courses_count}</span>{" "}
+              درس
             </p>
           </div>
         </div>
@@ -102,7 +137,7 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({ isOpen, o
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DepartmentDetailModal
+export default DepartmentDetailModal;

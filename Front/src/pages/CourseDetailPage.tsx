@@ -1,27 +1,43 @@
-import type React from "react"
-import { useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
-import { useCourseDetailStore } from "../store/courses/useCourseDetailStore"
-import { BookOpen, CalendarDays, Clock, Building2, UserRound, ArrowRight } from "lucide-react"
+import type React from "react";
+import { useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useCourseDetailStore } from "../store/courses/useCourseDetailStore";
+import {
+  BookOpen,
+  CalendarDays,
+  Clock,
+  Building2,
+  UserRound,
+  ArrowRight,
+} from "lucide-react";
 
 const CourseDetailPage: React.FC = () => {
-  const { courseId } = useParams<{ courseId: string }>()
-  const id = Number(courseId)
+  const { courseId } = useParams<{ courseId: string }>();
+  const id = Number(courseId);
 
-  const { courseDetail, isLoading, error, fetchCourseDetail, clearCourseDetail } = useCourseDetailStore()
+  const {
+    courseDetail,
+    isLoading,
+    error,
+    fetchCourseDetail,
+    clearCourseDetail,
+  } = useCourseDetailStore();
 
   useEffect(() => {
     if (id) {
-      fetchCourseDetail(id)
+      fetchCourseDetail(id);
     }
     return () => {
-      clearCourseDetail()
-    }
-  }, [id, fetchCourseDetail, clearCourseDetail])
+      clearCourseDetail();
+    };
+  }, [id, fetchCourseDetail, clearCourseDetail]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8"
+        dir="rtl"
+      >
         <div className="animate-pulse bg-white rounded-xl shadow-lg p-6 sm:p-10 w-full max-w-3xl">
           <div className="h-8 sm:h-10 bg-gray-200 rounded w-3/4 mx-auto mb-4 sm:mb-6"></div>
           <div className="h-4 sm:h-6 bg-gray-200 rounded w-1/2 mx-auto mb-6 sm:mb-8"></div>
@@ -34,14 +50,19 @@ const CourseDetailPage: React.FC = () => {
           <div className="mt-6 sm:mt-8 h-20 sm:h-24 bg-gray-200 rounded"></div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error || !courseDetail) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8"
+        dir="rtl"
+      >
         <div className="text-center py-8 sm:py-12 text-red-600">
-          <p className="text-base sm:text-lg mb-4">خطا در بارگذاری جزئیات درس یا درس یافت نشد: {error}</p>
+          <p className="text-base sm:text-lg mb-4">
+            خطا در بارگذاری جزئیات درس یا درس یافت نشد: {error}
+          </p>
           <Link
             to="/courses"
             className="hidden sm:inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-sm sm:text-base"
@@ -51,10 +72,10 @@ const CourseDetailPage: React.FC = () => {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
-  const { Course, Instructor, Department, ClassTime, Semeter } = courseDetail
+  const { Course, Instructor, Department, ClassTime, Semeter } = courseDetail;
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
@@ -71,8 +92,12 @@ const CourseDetailPage: React.FC = () => {
             </Link>
           </div>
           <div className="text-center">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">جزئیات درس</h1>
-            <p className="text-gray-600 mt-2 sm:mt-3 text-base sm:text-xl">اطلاعات مربوط به درس {Course.name}</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
+              جزئیات درس
+            </h1>
+            <p className="text-gray-600 mt-2 sm:mt-3 text-base sm:text-xl">
+              اطلاعات مربوط به درس {Course.name}
+            </p>
           </div>
         </div>
       </div>
@@ -147,14 +172,21 @@ const CourseDetailPage: React.FC = () => {
               زمان‌های کلاس
             </h4>
             {ClassTime.length === 0 ? (
-              <p className="text-gray-500 text-sm sm:text-base pr-6 sm:pr-8">هیچ زمان کلاسی ثبت نشده است.</p>
+              <p className="text-gray-500 text-sm sm:text-base pr-6 sm:pr-8">
+                هیچ زمان کلاسی ثبت نشده است.
+              </p>
             ) : (
               <div className="space-y-2 sm:space-y-3">
                 {ClassTime.map((time, index) => (
-                  <div key={index} className="bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm">
+                  <div
+                    key={index}
+                    className="bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm"
+                  >
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
                       <div className="flex items-center space-x-2 sm:space-x-4 space-x-reverse">
-                        <span className="font-semibold text-gray-900 text-sm sm:text-base">{time.day}</span>  
+                        <span className="font-semibold text-gray-900 text-sm sm:text-base">
+                          {time.day}
+                        </span>
                         <span className="text-gray-700 text-sm sm:text-base px-5">
                           {time.start_time} - {time.end_time}
                         </span>
@@ -172,7 +204,9 @@ const CourseDetailPage: React.FC = () => {
           <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
             <div className="flex items-center text-sm sm:text-lg text-gray-700 bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm">
               <CalendarDays className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 ml-2 flex-shrink-0" />
-              <span className="font-semibold ml-2">تاریخ امتحان پایان‌ترم:</span>
+              <span className="font-semibold ml-2">
+                تاریخ امتحان پایان‌ترم:
+              </span>
               <span className="text-balance">{Course.final_exam_date}</span>
             </div>
             <div className="flex items-center text-sm sm:text-lg text-gray-700 bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm">
@@ -184,7 +218,7 @@ const CourseDetailPage: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CourseDetailPage
+export default CourseDetailPage;

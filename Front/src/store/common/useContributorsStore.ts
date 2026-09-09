@@ -1,21 +1,21 @@
-import { create } from "zustand"
-import api from "../../utils/axios"
-import config from "../../config/config"
+import { create } from "zustand";
+import api from "../../utils/axios";
+import config from "../../config/config";
 
 export interface Contributor {
-  id: number
-  login: string
-  avatar_url: string
-  html_url: string
-  contributions: number
-  type: string
+  id: number;
+  login: string;
+  avatar_url: string;
+  html_url: string;
+  contributions: number;
+  type: string;
 }
 
 interface ContributorsStore {
-  contributors: Contributor[]
-  isLoading: boolean
-  error: string | null
-  fetchContributors: () => Promise<void>
+  contributors: Contributor[];
+  isLoading: boolean;
+  error: string | null;
+  fetchContributors: () => Promise<void>;
 }
 
 export const useContributorsStore = create<ContributorsStore>((set) => ({
@@ -24,18 +24,18 @@ export const useContributorsStore = create<ContributorsStore>((set) => ({
   error: null,
 
   fetchContributors: async () => {
-    set({ isLoading: true, error: null })
+    set({ isLoading: true, error: null });
     try {
-      const response = await api.get(`${config.apiUrl}/contributors`)
-      const data = response.data.data || []      
-      set({ contributors: data })
+      const response = await api.get(`${config.apiUrl}/contributors`);
+      const data = response.data.data || [];
+      set({ contributors: data });
     } catch (error) {
-      console.error("Error fetching contributors:", error)
+      console.error("Error fetching contributors:", error);
       set({
         error: error instanceof Error ? error.message : String(error),
-      })
+      });
     } finally {
-      set({ isLoading: false })
+      set({ isLoading: false });
     }
   },
-}))
+}));

@@ -1,14 +1,19 @@
-import type React from "react"
-import type { Department } from "../../types"
+import type React from "react";
+import type { Department } from "../../types";
 
 interface DepartmentListProps {
-  departments: Department[]
-  selectedDept: number | null
-  onSelect: (id: number) => void
-  isLoading: boolean
+  departments: Department[];
+  selectedDept: number | null;
+  onSelect: (id: number) => void;
+  isLoading: boolean;
 }
 
-const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDept, onSelect, isLoading }) => {
+const DepartmentList: React.FC<DepartmentListProps> = ({
+  departments,
+  selectedDept,
+  onSelect,
+  isLoading,
+}) => {
   if (isLoading) {
     return (
       <div className="bg-white rounded-lg shadow-sm p-3 sm:p-6">
@@ -16,12 +21,15 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
           <div className="h-4 sm:h-5 bg-gray-200 rounded w-24 sm:w-32 mb-3 sm:mb-6"></div>
           <div className="flex overflow-x-auto gap-2 sm:gap-4 pb-2">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-8 sm:h-12 w-20 sm:w-36 bg-gray-200 rounded-lg flex-shrink-0"></div>
+              <div
+                key={i}
+                className="h-8 sm:h-12 w-20 sm:w-36 bg-gray-200 rounded-lg flex-shrink-0"
+              ></div>
             ))}
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -58,7 +66,9 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
               d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
             />
           </svg>
-          <p className="text-gray-500 text-sm sm:text-base">هیچ دپارتمانی یافت نشد</p>
+          <p className="text-gray-500 text-sm sm:text-base">
+            هیچ دپارتمانی یافت نشد
+          </p>
         </div>
       ) : (
         <div className="flex overflow-x-auto gap-2 sm:gap-4 pb-2 scrollbar-hide">
@@ -72,13 +82,15 @@ const DepartmentList: React.FC<DepartmentListProps> = ({ departments, selectedDe
               } w-20 sm:w-40`}
               onClick={() => onSelect(dept.id)}
             >
-              <div className="font-medium text-xs sm:text-base leading-tight">{dept.name}</div>
+              <div className="font-medium text-xs sm:text-base leading-tight">
+                {dept.name}
+              </div>
             </button>
           ))}
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default DepartmentList
+export default DepartmentList;

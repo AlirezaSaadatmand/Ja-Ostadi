@@ -1,15 +1,15 @@
-import type React from "react"
-import { useEffect } from "react"
-import { useSearchParams } from "react-router-dom"
-import { useInstructorListStore } from "../store/instructors/useInstructorListStore"
-import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore"
-import { useSemesterStore } from "../store/common/useSemesterStore"
-import InstructorList from "../components/Instructor/InstructorList"
-import ToggleFilter from "../components/common/ToggleFilter"
-import Header from "../components/Header"
+import type React from "react";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useInstructorListStore } from "../store/instructors/useInstructorListStore";
+import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore";
+import { useSemesterStore } from "../store/common/useSemesterStore";
+import InstructorList from "../components/Instructor/InstructorList";
+import ToggleFilter from "../components/common/ToggleFilter";
+import Header from "../components/Header";
 
 const InstructorsPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     fetchInstructors,
@@ -19,91 +19,108 @@ const InstructorsPage: React.FC = () => {
     setSelectedSemesterId,
     filterByMode,
     setFilterByMode,
-  } = useInstructorListStore()
-  const { departments, fetchDepartmentsDetail } = useDepartmentsPageStore()
-  const { semesters, fetchSemesters } = useSemesterStore()
+  } = useInstructorListStore();
+  const { departments, fetchDepartmentsDetail } = useDepartmentsPageStore();
+  const { semesters, fetchSemesters } = useSemesterStore();
 
   useEffect(() => {
-    fetchInstructors()
-    fetchDepartmentsDetail()
-    fetchSemesters()
-  }, [fetchInstructors, fetchDepartmentsDetail, fetchSemesters])
+    fetchInstructors();
+    fetchDepartmentsDetail();
+    fetchSemesters();
+  }, [fetchInstructors, fetchDepartmentsDetail, fetchSemesters]);
 
   useEffect(() => {
-    const urlDeptId = searchParams.get("deptId")
-    const urlSemId = searchParams.get("semId")
-    const urlMode = searchParams.get("mode") as "department" | "semester" | null
+    const urlDeptId = searchParams.get("deptId");
+    const urlSemId = searchParams.get("semId");
+    const urlMode = searchParams.get("mode") as
+      "department" | "semester" | null;
 
     if (urlDeptId && !isNaN(Number(urlDeptId))) {
-      setSelectedDepartmentId(Number(urlDeptId))
+      setSelectedDepartmentId(Number(urlDeptId));
     }
     if (urlSemId && !isNaN(Number(urlSemId))) {
-      setSelectedSemesterId(Number(urlSemId))
+      setSelectedSemesterId(Number(urlSemId));
     }
     if (urlMode && (urlMode === "department" || urlMode === "semester")) {
-      setFilterByMode(urlMode)
+      setFilterByMode(urlMode);
     }
-  }, [searchParams, setSelectedDepartmentId, setSelectedSemesterId, setFilterByMode])
+  }, [
+    searchParams,
+    setSelectedDepartmentId,
+    setSelectedSemesterId,
+    setFilterByMode,
+  ]);
 
   useEffect(() => {
     if (departments.length > 0 && selectedDepartmentId === null) {
-      setSelectedDepartmentId(departments[0].id)
+      setSelectedDepartmentId(departments[0].id);
     }
-  }, [departments, selectedDepartmentId, setSelectedDepartmentId])
+  }, [departments, selectedDepartmentId, setSelectedDepartmentId]);
 
   useEffect(() => {
     if (semesters.length > 0 && selectedSemesterId === null) {
-      setSelectedSemesterId(semesters[0].id)
+      setSelectedSemesterId(semesters[0].id);
     }
-  }, [semesters, selectedSemesterId, setSelectedSemesterId])
+  }, [semesters, selectedSemesterId, setSelectedSemesterId]);
 
   useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams.toString())
+    const newSearchParams = new URLSearchParams(searchParams.toString());
     if (selectedDepartmentId !== null) {
-      newSearchParams.set("deptId", selectedDepartmentId.toString())
+      newSearchParams.set("deptId", selectedDepartmentId.toString());
     } else {
-      newSearchParams.delete("deptId")
+      newSearchParams.delete("deptId");
     }
     if (selectedSemesterId !== null) {
-      newSearchParams.set("semId", selectedSemesterId.toString())
+      newSearchParams.set("semId", selectedSemesterId.toString());
     } else {
-      newSearchParams.delete("semId")
+      newSearchParams.delete("semId");
     }
-    newSearchParams.set("mode", filterByMode)
-    setSearchParams(newSearchParams, { replace: true })
-  }, [selectedDepartmentId, selectedSemesterId, filterByMode, setSearchParams, searchParams])
+    newSearchParams.set("mode", filterByMode);
+    setSearchParams(newSearchParams, { replace: true });
+  }, [
+    selectedDepartmentId,
+    selectedSemesterId,
+    filterByMode,
+    setSearchParams,
+    searchParams,
+  ]);
 
   const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newDeptId = e.target.value ? Number(e.target.value) : null
-    setSelectedDepartmentId(newDeptId)
-  }
+    const newDeptId = e.target.value ? Number(e.target.value) : null;
+    setSelectedDepartmentId(newDeptId);
+  };
 
   const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSemId = e.target.value ? Number(e.target.value) : null
-    setSelectedSemesterId(newSemId)
-  }
+    const newSemId = e.target.value ? Number(e.target.value) : null;
+    setSelectedSemesterId(newSemId);
+  };
 
   const handleFilterModeChange = (mode: "department" | "semester") => {
-    setFilterByMode(mode)
-  }
+    setFilterByMode(mode);
+  };
 
   return (
-    
     <div className="min-h-screen bg-gray-100" dir="rtl">
       <Header />
 
       <div className="block md:hidden bg-white shadow-sm border-b mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex items-center justify-center">
           <div className="text-center flex-1">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">اساتید دانشگاه</h1>
-            <p className="text-gray-600 text-lg sm:text-xl">لیست اساتید و جزئیات تماس آنها</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
+              اساتید دانشگاه
+            </h1>
+            <p className="text-gray-600 text-lg sm:text-xl">
+              لیست اساتید و جزئیات تماس آنها
+            </p>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 lg:mt-20 sm:mt-0">
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-8 mb-8">
-          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">فیلتر اساتید</h2>
+          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">
+            فیلتر اساتید
+          </h2>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center">
             <div className="w-full sm:w-1/2 lg:w-1/3">
               <label
@@ -115,7 +132,9 @@ const InstructorsPage: React.FC = () => {
               <select
                 id="department-filter"
                 className="mt-1 block w-full pl-2 sm:pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
-                value={selectedDepartmentId !== null ? selectedDepartmentId : ""}
+                value={
+                  selectedDepartmentId !== null ? selectedDepartmentId : ""
+                }
                 onChange={handleDepartmentChange}
               >
                 {departments.map((dept) => (
@@ -148,14 +167,17 @@ const InstructorsPage: React.FC = () => {
             </div>
 
             <div className="w-full sm:w-auto flex items-center justify-center mt-2 sm:mt-4">
-              <ToggleFilter value={filterByMode} onValueChange={handleFilterModeChange} />
+              <ToggleFilter
+                value={filterByMode}
+                onValueChange={handleFilterModeChange}
+              />
             </div>
           </div>
         </div>
         <InstructorList departments={departments} semesters={semesters} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InstructorsPage
+export default InstructorsPage;

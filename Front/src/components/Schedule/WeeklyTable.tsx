@@ -1,46 +1,57 @@
-import { forwardRef, useRef, useState } from "react"
-import type { CourseResponse } from "../../types"
-import type { TableCell } from "../../store/schedule/useScheduleTableStore"
+import { forwardRef, useRef, useState } from "react";
+import type { CourseResponse } from "../../types";
+import type { TableCell } from "../../store/schedule/useScheduleTableStore";
 
 interface WeeklyTableProps {
-  days: string[]
-  timeSlots: { label: string; key: string; start: string; end: string }[]
-  table: Record<string, TableCell>
-  scheduledCourses: CourseResponse[]
-  onRemoveCourse: (courseId: number) => void
+  days: string[];
+  timeSlots: { label: string; key: string; start: string; end: string }[];
+  table: Record<string, TableCell>;
+  scheduledCourses: CourseResponse[];
+  onRemoveCourse: (courseId: number) => void;
   onExportPdf: (data: {
-    scheduledCourses: CourseResponse[]
-    table: Record<string, TableCell>
-    days: string[]
-    isRotated?: boolean 
-    timeSlots: { label: string; key: string; start: string; end: string }[]
-  }) => Promise<void>
-  isExporting: boolean
+    scheduledCourses: CourseResponse[];
+    table: Record<string, TableCell>;
+    days: string[];
+    isRotated?: boolean;
+    timeSlots: { label: string; key: string; start: string; end: string }[];
+  }) => Promise<void>;
+  isExporting: boolean;
 }
 
 const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
-  ({ days, timeSlots, table, onRemoveCourse, onExportPdf, isExporting, scheduledCourses }, ref) => {
-    const wrapperRef = useRef<HTMLDivElement>(null)
-    const [isRotated, setIsRotated] = useState(false)
+  (
+    {
+      days,
+      timeSlots,
+      table,
+      onRemoveCourse,
+      onExportPdf,
+      isExporting,
+      scheduledCourses,
+    },
+    ref,
+  ) => {
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const [isRotated, setIsRotated] = useState(false);
 
     const getCourseForSlot = (day: string, timeSlotKey: string) => {
-      const key = `${day}-${timeSlotKey}`
-      return table[key]?.course || null
-    }
+      const key = `${day}-${timeSlotKey}`;
+      return table[key]?.course || null;
+    };
 
     const toggleRotation = () => {
-      setIsRotated(!isRotated)
-    }
+      setIsRotated(!isRotated);
+    };
 
     const handleExportPdf = () => {
-      onExportPdf({ 
-        scheduledCourses, 
-        table, 
-        days, 
+      onExportPdf({
+        scheduledCourses,
+        table,
+        days,
         timeSlots,
-        isRotated
-      })
-    }
+        isRotated,
+      });
+    };
 
     const renderNormalTable = () => (
       <table className="border-collapse bg-white rounded-lg overflow-hidden shadow-sm w-full lg:min-w-[700px] table-fixed">
@@ -62,13 +73,16 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
 
         <tbody>
           {days.map((day) => (
-            <tr key={day} className="hover:bg-gray-50 transition-colors text-center">
+            <tr
+              key={day}
+              className="hover:bg-gray-50 transition-colors text-center"
+            >
               <td className="p-1 sm:p-2 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-xs sm:text-sm">
                 {day}
               </td>
 
               {timeSlots.map((slot) => {
-                const course = getCourseForSlot(day, slot.key)
+                const course = getCourseForSlot(day, slot.key);
                 return (
                   <td
                     key={day + slot.key}
@@ -107,13 +121,13 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                       <div className="absolute inset-0"></div>
                     )}
                   </td>
-                )
+                );
               })}
             </tr>
           ))}
         </tbody>
       </table>
-    )
+    );
 
     const renderRotatedTable = () => (
       <table className="border-collapse bg-white rounded-lg overflow-hidden shadow-sm w-full lg:min-w-[700px] table-fixed">
@@ -135,13 +149,16 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
 
         <tbody>
           {timeSlots.map((slot) => (
-            <tr key={slot.key} className="hover:bg-gray-50 transition-colors text-center">
+            <tr
+              key={slot.key}
+              className="hover:bg-gray-50 transition-colors text-center"
+            >
               <td className="p-1 sm:p-2 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-xs sm:text-sm">
                 {slot.label}
               </td>
 
               {days.map((day) => {
-                const course = getCourseForSlot(day, slot.key)
+                const course = getCourseForSlot(day, slot.key);
                 return (
                   <td
                     key={day + slot.key}
@@ -180,13 +197,13 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                       <div className="absolute inset-0"></div>
                     )}
                   </td>
-                )
+                );
               })}
             </tr>
           ))}
         </tbody>
       </table>
-    )
+    );
 
     return (
       <div className="p-0 sm:p-3 lg:p-8 relative">
@@ -205,7 +222,14 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
                   <path
                     className="opacity-75"
                     fill="currentColor"
@@ -216,7 +240,12 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
               </>
             ) : (
               <>
-                <svg className="w-3 h-3 lg:w-4 lg:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-3 h-3 lg:w-4 lg:h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -253,19 +282,27 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
         </div>
 
         <div className="mb-2 sm:mb-3 lg:mb-6 text-center">
-          <h3 className="text-base sm:text-lg lg:text-2xl font-semibold text-gray-900">برنامه هفتگی</h3>
-          <p className="text-gray-600 mt-0.5 lg:mt-1 text-xs sm:text-sm lg:text-base">برنامه کلاس‌های هفتگی شما</p>
+          <h3 className="text-base sm:text-lg lg:text-2xl font-semibold text-gray-900">
+            برنامه هفتگی
+          </h3>
+          <p className="text-gray-600 mt-0.5 lg:mt-1 text-xs sm:text-sm lg:text-base">
+            برنامه کلاس‌های هفتگی شما
+          </p>
         </div>
 
-        <div ref={wrapperRef} className="lg:overflow-x-auto flex justify-center" dir="rtl">
+        <div
+          ref={wrapperRef}
+          className="lg:overflow-x-auto flex justify-center"
+          dir="rtl"
+        >
           <div ref={ref} className="w-full">
             {isRotated ? renderRotatedTable() : renderNormalTable()}
           </div>
         </div>
       </div>
-    )
+    );
   },
-)
+);
 
-WeeklyTable.displayName = "WeeklyTable"
-export default WeeklyTable
+WeeklyTable.displayName = "WeeklyTable";
+export default WeeklyTable;

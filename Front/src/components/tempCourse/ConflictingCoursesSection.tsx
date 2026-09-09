@@ -1,37 +1,35 @@
-import React, { useMemo } from "react"
-import type { TempCourse } from "../../types"
+import React, { useMemo } from "react";
+import type { TempCourse } from "../../types";
 
 interface Props {
-  courses: TempCourse[]
+  courses: TempCourse[];
 }
 
 interface ConflictPair {
-  courseA: TempCourse
-  courseB: TempCourse
-  day: string
-  time: string
+  courseA: TempCourse;
+  courseB: TempCourse;
+  day: string;
+  time: string;
 }
 
-const ConflictingCoursesSection: React.FC<Props> = ({
-  courses,
-}) => {
+const ConflictingCoursesSection: React.FC<Props> = ({ courses }) => {
   const conflicts = useMemo(() => {
-    const result: ConflictPair[] = []
+    const result: ConflictPair[] = [];
 
     for (let i = 0; i < courses.length; i++) {
       for (let j = i + 1; j < courses.length; j++) {
-        const a = courses[i]
-        const b = courses[j]
+        const a = courses[i];
+        const b = courses[j];
 
         const sessionsA = [
           { day: a.firstDay, time: a.firstTime },
           { day: a.secondDay, time: a.secondTime },
-        ]
+        ];
 
         const sessionsB = [
           { day: b.firstDay, time: b.firstTime },
           { day: b.secondDay, time: b.secondTime },
-        ]
+        ];
 
         for (const sa of sessionsA) {
           for (const sb of sessionsB) {
@@ -48,22 +46,22 @@ const ConflictingCoursesSection: React.FC<Props> = ({
                 courseB: b,
                 day: sa.day,
                 time: sa.time,
-              })
+              });
             }
           }
         }
       }
     }
 
-    return result
-  }, [courses])
+    return result;
+  }, [courses]);
 
   if (conflicts.length === 0) {
     return (
       <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl">
         هیچ تداخلی بین دروس وجود ندارد ✅
       </div>
-    )
+    );
   }
 
   return (
@@ -91,17 +89,10 @@ const ConflictingCoursesSection: React.FC<Props> = ({
 
         <tbody>
           {conflicts.map((conflict, index) => (
-            <tr
-              key={index}
-              className="border-t hover:bg-red-50 transition"
-            >
-              <td className="p-3 font-medium">
-                {index + 1}
-              </td>
+            <tr key={index} className="border-t hover:bg-red-50 transition">
+              <td className="p-3 font-medium">{index + 1}</td>
 
-              <td className="p-3 text-red-600 font-semibold">
-                {conflict.day}
-              </td>
+              <td className="p-3 text-red-600 font-semibold">{conflict.day}</td>
 
               <td className="p-3 text-red-600 font-semibold">
                 {conflict.time}
@@ -111,30 +102,22 @@ const ConflictingCoursesSection: React.FC<Props> = ({
                 {conflict.courseA.courseName}
               </td>
 
-              <td className="p-3">
-                {conflict.courseA.group}
-              </td>
+              <td className="p-3">{conflict.courseA.group}</td>
 
-              <td className="p-3">
-                {conflict.courseA.targetTerm}
-              </td>
+              <td className="p-3">{conflict.courseA.targetTerm}</td>
 
               <td className="p-3 font-medium border-r border-gray-300">
                 {conflict.courseB.courseName}
               </td>
 
-              <td className="p-3">
-                {conflict.courseB.group}
-              </td>
-              <td className="p-3">
-                {conflict.courseB.targetTerm}
-              </td>
+              <td className="p-3">{conflict.courseB.group}</td>
+              <td className="p-3">{conflict.courseB.targetTerm}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default ConflictingCoursesSection
+export default ConflictingCoursesSection;

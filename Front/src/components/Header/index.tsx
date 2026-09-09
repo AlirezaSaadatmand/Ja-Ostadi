@@ -25,10 +25,7 @@ const Header = () => {
     if (!menuOpen) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(e.target as Node)
-      ) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
       }
     };
@@ -56,9 +53,7 @@ const Header = () => {
             className="w-10 h-10"
             alt="Ja Ostadi"
           />
-          <p className="text-gray-800 font-bold text-lg">
-            جا استادی
-          </p>
+          <p className="text-gray-800 font-bold text-lg">جا استادی</p>
         </a>
 
         {/* Desktop Nav */}

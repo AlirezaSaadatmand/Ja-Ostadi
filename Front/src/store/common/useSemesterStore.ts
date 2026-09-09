@@ -1,13 +1,13 @@
-import { create } from "zustand"
-import config from "../../config/config"
-import type { Semester } from "../../types"
-import api from "../../utils/axios"
+import { create } from "zustand";
+import config from "../../config/config";
+import type { Semester } from "../../types";
+import api from "../../utils/axios";
 
 interface SemesterStore {
-  semesters: Semester[]
-  isLoading: boolean
-  error: string | null
-  fetchSemesters: () => Promise<void>
+  semesters: Semester[];
+  isLoading: boolean;
+  error: string | null;
+  fetchSemesters: () => Promise<void>;
 }
 
 export const useSemesterStore = create<SemesterStore>((set) => ({
@@ -16,18 +16,18 @@ export const useSemesterStore = create<SemesterStore>((set) => ({
   error: null,
 
   fetchSemesters: async () => {
-    set({ isLoading: true, error: null })
+    set({ isLoading: true, error: null });
     try {
-      const response = await api.get(`${config.apiUrl}/semesters`)
-      const data = Array.isArray(response.data.data) ? response.data.data : []
-      set({ semesters: data })
+      const response = await api.get(`${config.apiUrl}/semesters`);
+      const data = Array.isArray(response.data.data) ? response.data.data : [];
+      set({ semesters: data });
     } catch (error) {
-      console.error("Error fetching semesters:", error)
+      console.error("Error fetching semesters:", error);
       set({
         error: error instanceof Error ? error.message : String(error),
-      })
+      });
     } finally {
-      set({ isLoading: false })
+      set({ isLoading: false });
     }
   },
-}))
+}));

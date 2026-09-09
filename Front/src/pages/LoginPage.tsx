@@ -1,39 +1,41 @@
-import type React from "react"
-import { useState } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import { Lock, User, Eye, EyeOff } from "lucide-react"
-import { useAuthStore } from "../store/auth/useAuthStore"
-import Header from "../components/Header"
+import type React from "react";
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Lock, User, Eye, EyeOff } from "lucide-react";
+import { useAuthStore } from "../store/auth/useAuthStore";
+import Header from "../components/Header";
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const navigate = useNavigate()
-  const { login, isLoading } = useAuthStore()
+  const navigate = useNavigate();
+  const { login, isLoading } = useAuthStore();
 
-  const location = useLocation()
+  const location = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
 
     if (!username.trim() || !password.trim()) {
-      setError("نام کاربری و رمز عبور را وارد کنید")
-      return
+      setError("نام کاربری و رمز عبور را وارد کنید");
+      return;
     }
 
     try {
-      const payload = await login(username, password)
-      const redirectTo = location.state?.from ?? (payload.role === "director" ? "/directors" : "/")
+      const payload = await login(username, password);
+      const redirectTo =
+        location.state?.from ??
+        (payload.role === "director" ? "/directors" : "/");
 
-      navigate(redirectTo, { replace: true })
+      navigate(redirectTo, { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "خطا در ورود")
+      setError(err instanceof Error ? err.message : "خطا در ورود");
     }
-  }
+  };
 
   return (
     <div
@@ -123,7 +125,7 @@ const LoginPage: React.FC = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

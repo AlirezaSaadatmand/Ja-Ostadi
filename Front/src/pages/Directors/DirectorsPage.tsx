@@ -1,77 +1,71 @@
-import React, { useEffect, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { Book, LogOut, Shield } from "lucide-react"
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Book, LogOut, Shield } from "lucide-react";
 
-import { useAuthStore } from "../../store/auth/useAuthStore"
-import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore"
-import Header from "../../components/Header"
-import CoursesScheduleTable from "../../components/tempCourse/CoursesScheduleTable"
-import ConflictingCoursesSection from "../../components/tempCourse/ConflictingCoursesSection"
+import { useAuthStore } from "../../store/auth/useAuthStore";
+import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore";
+import Header from "../../components/Header";
+import CoursesScheduleTable from "../../components/tempCourse/CoursesScheduleTable";
+import ConflictingCoursesSection from "../../components/tempCourse/ConflictingCoursesSection";
 
+import type { TempCourse } from "../../types";
 
-import type { TempCourse } from "../../types"
-
-const TERMS = ["همه", "2", "4", "6", "8"]
+const TERMS = ["همه", "2", "4", "6", "8"];
 
 const DirectorsPage: React.FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { user, isAuthenticated, hasHydrated, logout } =
-    useAuthStore()
+  const { user, isAuthenticated, hasHydrated, logout } = useAuthStore();
 
-  const { tempCourses, fetchTempCourses, isLoading } =
-    useTempCourseStore()
+  const { tempCourses, fetchTempCourses, isLoading } = useTempCourseStore();
 
-  const [selectedTerm, setSelectedTerm] = useState("همه")
-  const [selectedForSchedule, setSelectedForSchedule] =
-    useState<TempCourse[]>([])
+  const [selectedTerm, setSelectedTerm] = useState("همه");
+  const [selectedForSchedule, setSelectedForSchedule] = useState<TempCourse[]>(
+    [],
+  );
 
   useEffect(() => {
-    if (!hasHydrated) return
+    if (!hasHydrated) return;
 
     if (!isAuthenticated) {
-      navigate("/login", { replace: true })
-      return
+      navigate("/login", { replace: true });
+      return;
     }
 
     if (user?.role !== "director") {
-      navigate("/", { replace: true })
-      return
+      navigate("/", { replace: true });
+      return;
     }
 
-    fetchTempCourses()
-  }, [hasHydrated, isAuthenticated, user, navigate, fetchTempCourses])
+    fetchTempCourses();
+  }, [hasHydrated, isAuthenticated, user, navigate, fetchTempCourses]);
 
   const handleLogout = () => {
-    logout()
-    navigate("/login", { replace: true })
-  }
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   const handleRemoveFromSchedule = (id: number | undefined) => {
-    setSelectedForSchedule((prev) =>
-      prev.filter((c) => c.id !== id)
-    )
-  }
+    setSelectedForSchedule((prev) => prev.filter((c) => c.id !== id));
+  };
 
   const filteredCourses = useMemo(() => {
-    if (selectedTerm === "همه") return tempCourses
-    return tempCourses.filter(
-      (c) => c.targetTerm === selectedTerm
-    )
-  }, [tempCourses, selectedTerm])
+    if (selectedTerm === "همه") return tempCourses;
+    return tempCourses.filter((c) => c.targetTerm === selectedTerm);
+  }, [tempCourses, selectedTerm]);
 
   const handleAddToSchedule = (course: TempCourse) => {
     setSelectedForSchedule((prev) => {
-      if (prev.find((c) => c.id === course.id)) return prev
-      return [...prev, course]
-    })
-  }
+      if (prev.find((c) => c.id === course.id)) return prev;
+      return [...prev, course];
+    });
+  };
 
   const handleResetSchedule = () => {
-    setSelectedForSchedule([])
-  }
+    setSelectedForSchedule([]);
+  };
 
-  if (!hasHydrated) return null
+  if (!hasHydrated) return null;
 
   return (
     <div
@@ -80,7 +74,6 @@ const DirectorsPage: React.FC = () => {
     >
       <Header />
       <div className="w-full max-w-7xl mt-20 space-y-8">
-
         {/* HEADER CARD */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <div className="flex justify-between items-center">
@@ -89,12 +82,8 @@ const DirectorsPage: React.FC = () => {
                 <Shield className="w-10 h-10 text-[#AB8A58]" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">
-                  پنل مدیر گروه
-                </h1>
-                <p className="text-gray-600">
-                  خوش آمدید، {user?.username}
-                </p>
+                <h1 className="text-2xl font-bold">پنل مدیر گروه</h1>
+                <p className="text-gray-600">خوش آمدید، {user?.username}</p>
               </div>
             </div>
 
@@ -110,14 +99,10 @@ const DirectorsPage: React.FC = () => {
 
         {/* ACTIONS */}
         <div className="flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900">
-            دروس موقت
-          </h2>
+          <h2 className="text-xl font-bold text-gray-900">دروس موقت</h2>
 
           <button
-            onClick={() =>
-              navigate("/directors/temp-courses/new")
-            }
+            onClick={() => navigate("/directors/temp-courses/new")}
             className="flex items-center gap-2 px-4 py-2 bg-[#AB8A58] text-white rounded-xl hover:opacity-90"
           >
             <Book size={18} />
@@ -130,9 +115,7 @@ const DirectorsPage: React.FC = () => {
           <span>انتخاب ترم:</span>
           <select
             value={selectedTerm}
-            onChange={(e) =>
-              setSelectedTerm(e.target.value)
-            }
+            onChange={(e) => setSelectedTerm(e.target.value)}
             className="rounded-lg border px-3 py-2"
           >
             {TERMS.map((t) => (
@@ -169,65 +152,47 @@ const DirectorsPage: React.FC = () => {
 
               {!isLoading &&
                 filteredCourses.map((course, idx) => {
-                  const alreadyAdded =
-                    selectedForSchedule.find(
-                      (c) => c.id === course.id
-                    )
+                  const alreadyAdded = selectedForSchedule.find(
+                    (c) => c.id === course.id,
+                  );
 
                   return (
-                    <tr
-                      key={course.id}
-                      className="border-t hover:bg-gray-50"
-                    >
-                      <td className="p-3">
-                        {idx + 1}
-                      </td>
-                      <td className="p-3">
-                        {course.department}
-                      </td>
-                      <td className="p-3 font-medium">
-                        {course.courseName}
-                      </td>
-                      <td className="p-3">
-                        {course.group}
-                      </td>
-                      <td className="p-3">
-                        {course.instructor}
-                      </td>
+                    <tr key={course.id} className="border-t hover:bg-gray-50">
+                      <td className="p-3">{idx + 1}</td>
+                      <td className="p-3">{course.department}</td>
+                      <td className="p-3 font-medium">{course.courseName}</td>
+                      <td className="p-3">{course.group}</td>
+                      <td className="p-3">{course.instructor}</td>
                       <td className="p-3 text-xs">
-                        {course.firstDay}{" "}
-                        {course.firstTime}
+                        {course.firstDay} {course.firstTime}
                         {course.secondDay && (
                           <>
                             <br />
-                            {course.secondDay}{" "}
-                            {course.secondTime}
+                            {course.secondDay} {course.secondTime}
                           </>
                         )}
                       </td>
                       <td className="p-3">
                         <button
                           disabled={!!alreadyAdded}
-                          onClick={() =>
-                            handleAddToSchedule(course)
-                          }
+                          onClick={() => handleAddToSchedule(course)}
                           className={`px-3 py-1 rounded-lg text-xs ${
                             alreadyAdded
                               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                               : "bg-[#AB8A58] text-white hover:opacity-90"
                           }`}
                         >
-                          {alreadyAdded
-                            ? "اضافه شده"
-                            : "افزودن"}
+                          {alreadyAdded ? "اضافه شده" : "افزودن"}
                         </button>
                       </td>
                     </tr>
-                  )
+                  );
                 })}
             </tbody>
           </table>
         </div>
+
+        <ConflictingCoursesSection courses={filteredCourses} />
 
         {/* SCHEDULE TABLE */}
         <CoursesScheduleTable
@@ -235,12 +200,9 @@ const DirectorsPage: React.FC = () => {
           onReset={handleResetSchedule}
           onRemoveCourse={handleRemoveFromSchedule}
         />
-
-        <ConflictingCoursesSection  courses={filteredCourses}/>
-        
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DirectorsPage
+export default DirectorsPage;

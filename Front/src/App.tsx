@@ -1,16 +1,16 @@
-import { RouterProvider } from "react-router-dom"
-import { useEffect } from "react"
-import { useAuthStore } from "./store/auth/useAuthStore"
-import { router } from "./router"
+import { RouterProvider } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuthStore } from "./store/auth/useAuthStore";
+import { router } from "./router";
 
 const AppRoutes = () => {
-  const { hydrateFromToken } = useAuthStore()
+  const { hydrateFromToken } = useAuthStore();
 
   useEffect(() => {
-    hydrateFromToken()
-  }, [hydrateFromToken])
+    hydrateFromToken();
+  }, [hydrateFromToken]);
 
-  return <RouterProvider router={router} />
-}
+  return <RouterProvider router={router} />;
+};
 
-export default AppRoutes
+export default AppRoutes;

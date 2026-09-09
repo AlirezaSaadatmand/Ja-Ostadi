@@ -1,24 +1,31 @@
-import type React from "react"
-import type { CourseResponse } from "../../types"
+import type React from "react";
+import type { CourseResponse } from "../../types";
 
 interface CourseListProps {
-  courses: CourseResponse[]
-  onCourseClick: (course: CourseResponse) => void
-  isLoading: boolean
+  courses: CourseResponse[];
+  onCourseClick: (course: CourseResponse) => void;
+  isLoading: boolean;
 }
 
-const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoading }) => {
+const CourseList: React.FC<CourseListProps> = ({
+  courses,
+  onCourseClick,
+  isLoading,
+}) => {
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-4">
         <div className="h-5 bg-gray-200 rounded w-1/2 mb-4"></div>
         <div className="grid grid-flow-col grid-rows-2 gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-28 w-56 sm:h-28 sm:w-56  bg-gray-200 rounded flex-shrink-0"></div>
+            <div
+              key={i}
+              className="h-28 w-56 sm:h-28 sm:w-56  bg-gray-200 rounded flex-shrink-0"
+            ></div>
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -66,7 +73,9 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1 text-right ml-1 sm:ml-2">
-                  <span className="font-semibold text-gray-900 text-sm sm:text-base block">{course.course.name}</span>
+                  <span className="font-semibold text-gray-900 text-sm sm:text-base block">
+                    {course.course.name}
+                  </span>
                   <span className="text-xs sm:text-sm text-gray-500 block mt-0.5 sm:mt-1">
                     استاد: {course.instructor.name}
                   </span>
@@ -80,7 +89,7 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onCourseClick, isLoadi
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CourseList
+export default CourseList;

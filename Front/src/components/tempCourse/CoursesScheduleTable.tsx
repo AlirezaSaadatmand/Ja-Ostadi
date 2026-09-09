@@ -1,11 +1,11 @@
-import React, { useMemo } from "react"
-import { X } from "lucide-react"
-import type { TempCourse } from "../../types"
+import React, { useMemo } from "react";
+import { X } from "lucide-react";
+import type { TempCourse } from "../../types";
 
 interface Props {
-  courses: TempCourse[]
-  onReset: () => void
-  onRemoveCourse: (id: number | undefined) => void
+  courses: TempCourse[];
+  onReset: () => void;
+  onRemoveCourse: (id: number | undefined) => void;
 }
 
 const TIME_SLOTS = [
@@ -15,9 +15,9 @@ const TIME_SLOTS = [
   { label: "13:30 - 15:30", key: "13:30-15:30" },
   { label: "15:30 - 17:30", key: "15:30-17:30" },
   { label: "17:30 - 19:30", key: "17:30-19:30" },
-]
+];
 
-const DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"]
+const DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"];
 
 const CoursesScheduleTable: React.FC<Props> = ({
   courses,
@@ -25,41 +25,35 @@ const CoursesScheduleTable: React.FC<Props> = ({
   onRemoveCourse,
 }) => {
   const schedule = useMemo(() => {
-    const map: Record<string, TempCourse[]> = {}
+    const map: Record<string, TempCourse[]> = {};
 
     for (const day of DAYS) {
       for (const slot of TIME_SLOTS) {
-        map[`${day}-${slot.key}`] = []
+        map[`${day}-${slot.key}`] = [];
       }
     }
 
-    const addToMap = (
-      day: string,
-      time: string,
-      course: TempCourse
-    ) => {
-      if (!day || !time) return
-      const normalizedTime = time.replace(/\s/g, "")
-      const key = `${day}-${normalizedTime}`
+    const addToMap = (day: string, time: string, course: TempCourse) => {
+      if (!day || !time) return;
+      const normalizedTime = time.replace(/\s/g, "");
+      const key = `${day}-${normalizedTime}`;
       if (map[key]) {
-        map[key].push(course)
+        map[key].push(course);
       }
-    }
+    };
 
     courses.forEach((course) => {
-      addToMap(course.firstDay, course.firstTime, course)
-      addToMap(course.secondDay, course.secondTime, course)
-    })
+      addToMap(course.firstDay, course.firstTime, course);
+      addToMap(course.secondDay, course.secondTime, course);
+    });
 
-    return map
-  }, [courses])
+    return map;
+  }, [courses]);
 
   return (
     <div className="bg-white rounded-2xl shadow overflow-x-auto">
       <div className="flex justify-between items-center p-6 border-b bg-gray-50">
-        <h3 className="font-bold text-lg">
-          جدول برنامه هفتگی
-        </h3>
+        <h3 className="font-bold text-lg">جدول برنامه هفتگی</h3>
 
         <button
           onClick={onReset}
@@ -89,8 +83,7 @@ const CoursesScheduleTable: React.FC<Props> = ({
               </td>
 
               {DAYS.map((day) => {
-                const cellCourses =
-                  schedule[`${day}-${slot.key}`]
+                const cellCourses = schedule[`${day}-${slot.key}`];
 
                 return (
                   <td
@@ -104,9 +97,7 @@ const CoursesScheduleTable: React.FC<Props> = ({
                           className="relative bg-[#AB8A58]/10 text-sm pt-2 pb-2 rounded-xl border border-[#AB8A58]/20"
                         >
                           <button
-                            onClick={() =>
-                              onRemoveCourse(course.id)
-                            }
+                            onClick={() => onRemoveCourse(course.id)}
                             className="absolute top-1 left-1 bg-white rounded-full p-1 shadow hover:bg-red-50"
                           >
                             <X size={14} className="text-red-500" />
@@ -116,9 +107,7 @@ const CoursesScheduleTable: React.FC<Props> = ({
                             {course.courseName}
                           </div>
 
-                          <div>
-                            گروه {course.group}
-                          </div>
+                          <div>گروه {course.group}</div>
 
                           <div className="text-gray-600 text-xs mt-1">
                             {course.instructor}
@@ -127,14 +116,14 @@ const CoursesScheduleTable: React.FC<Props> = ({
                       ))}
                     </div>
                   </td>
-                )
+                );
               })}
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default CoursesScheduleTable
+export default CoursesScheduleTable;

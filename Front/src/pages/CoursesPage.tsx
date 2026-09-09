@@ -1,14 +1,14 @@
-import type React from "react"
-import { useEffect } from "react"
-import { useSearchParams, Link } from "react-router-dom"
-import { useCoursesPageStore } from "../store/courses/useCoursesPageStore"
-import { useSemesterStore } from "../store/common/useSemesterStore"
-import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore"
-import { BookOpen } from "lucide-react"
-import Header from "../components/Header"
+import type React from "react";
+import { useEffect } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import { useCoursesPageStore } from "../store/courses/useCoursesPageStore";
+import { useSemesterStore } from "../store/common/useSemesterStore";
+import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore";
+import { BookOpen } from "lucide-react";
+import Header from "../components/Header";
 
 const CoursesPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     courses,
@@ -19,70 +19,70 @@ const CoursesPage: React.FC = () => {
     setSelectedSemesterId,
     selectedDepartmentId,
     setSelectedDepartmentId,
-  } = useCoursesPageStore()
+  } = useCoursesPageStore();
 
-  const { semesters, fetchSemesters } = useSemesterStore()
-  const { departments, fetchDepartmentsDetail } = useDepartmentsPageStore()
-
-  useEffect(() => {
-    fetchSemesters()
-    fetchDepartmentsDetail()
-  }, [fetchSemesters, fetchDepartmentsDetail])
+  const { semesters, fetchSemesters } = useSemesterStore();
+  const { departments, fetchDepartmentsDetail } = useDepartmentsPageStore();
 
   useEffect(() => {
-    const urlSemId = searchParams.get("semId")
-    const urlDeptId = searchParams.get("deptId")
+    fetchSemesters();
+    fetchDepartmentsDetail();
+  }, [fetchSemesters, fetchDepartmentsDetail]);
+
+  useEffect(() => {
+    const urlSemId = searchParams.get("semId");
+    const urlDeptId = searchParams.get("deptId");
 
     if (urlSemId && !isNaN(Number(urlSemId))) {
-      setSelectedSemesterId(Number(urlSemId))
+      setSelectedSemesterId(Number(urlSemId));
     }
     if (urlDeptId && !isNaN(Number(urlDeptId))) {
-      setSelectedDepartmentId(Number(urlDeptId))
+      setSelectedDepartmentId(Number(urlDeptId));
     }
-  }, [searchParams, setSelectedSemesterId, setSelectedDepartmentId])
+  }, [searchParams, setSelectedSemesterId, setSelectedDepartmentId]);
 
   useEffect(() => {
     if (semesters.length > 0 && selectedSemesterId === null) {
-      setSelectedSemesterId(semesters[0].id)
+      setSelectedSemesterId(semesters[0].id);
     }
-  }, [semesters, selectedSemesterId, setSelectedSemesterId])
+  }, [semesters, selectedSemesterId, setSelectedSemesterId]);
 
   useEffect(() => {
     if (departments.length > 0 && selectedDepartmentId === null) {
-      setSelectedDepartmentId(departments[0].id)
+      setSelectedDepartmentId(departments[0].id);
     }
-  }, [departments, selectedDepartmentId, setSelectedDepartmentId])
+  }, [departments, selectedDepartmentId, setSelectedDepartmentId]);
 
   useEffect(() => {
     if (selectedSemesterId !== null && selectedDepartmentId !== null) {
-      fetchCourses(selectedSemesterId, selectedDepartmentId)
+      fetchCourses(selectedSemesterId, selectedDepartmentId);
     }
-  }, [selectedSemesterId, selectedDepartmentId, fetchCourses])
+  }, [selectedSemesterId, selectedDepartmentId, fetchCourses]);
 
   useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams.toString())
+    const newSearchParams = new URLSearchParams(searchParams.toString());
     if (selectedSemesterId !== null) {
-      newSearchParams.set("semId", selectedSemesterId.toString())
+      newSearchParams.set("semId", selectedSemesterId.toString());
     } else {
-      newSearchParams.delete("semId")
+      newSearchParams.delete("semId");
     }
     if (selectedDepartmentId !== null) {
-      newSearchParams.set("deptId", selectedDepartmentId.toString())
+      newSearchParams.set("deptId", selectedDepartmentId.toString());
     } else {
-      newSearchParams.delete("deptId")
+      newSearchParams.delete("deptId");
     }
-    setSearchParams(newSearchParams, { replace: true })
-  }, [selectedSemesterId, selectedDepartmentId, setSearchParams, searchParams])
+    setSearchParams(newSearchParams, { replace: true });
+  }, [selectedSemesterId, selectedDepartmentId, setSearchParams, searchParams]);
 
   const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSemId = e.target.value ? Number(e.target.value) : null
-    setSelectedSemesterId(newSemId)
-  }
+    const newSemId = e.target.value ? Number(e.target.value) : null;
+    setSelectedSemesterId(newSemId);
+  };
 
   const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newDeptId = e.target.value ? Number(e.target.value) : null
-    setSelectedDepartmentId(newDeptId)
-  }
+    const newDeptId = e.target.value ? Number(e.target.value) : null;
+    setSelectedDepartmentId(newDeptId);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100" dir="rtl">
@@ -91,16 +91,21 @@ const CoursesPage: React.FC = () => {
       <div className="block md:hidden bg-white shadow-sm border-b mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex items-center justify-center">
           <div className="text-center flex-1">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">دروس دانشگاه</h1>
-            <p className="text-gray-600 text-lg sm:text-xl">لیست دروس بر اساس ترم و دپارتمان</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
+              دروس دانشگاه
+            </h1>
+            <p className="text-gray-600 text-lg sm:text-xl">
+              لیست دروس بر اساس ترم و دپارتمان
+            </p>
           </div>
         </div>
       </div>
 
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 lg:mt-20 sm:mt-0">
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
-          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">فیلتر دروس</h2>
+          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">
+            فیلتر دروس
+          </h2>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center">
             <div className="w-full sm:w-1/2 lg:w-1/3">
               <label
@@ -138,7 +143,9 @@ const CoursesPage: React.FC = () => {
               <select
                 id="department-filter"
                 className="mt-1 block w-full pl-2 sm:pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
-                value={selectedDepartmentId !== null ? selectedDepartmentId : ""}
+                value={
+                  selectedDepartmentId !== null ? selectedDepartmentId : ""
+                }
                 onChange={handleDepartmentChange}
                 disabled={departments.length === 0}
               >
@@ -159,7 +166,10 @@ const CoursesPage: React.FC = () => {
         {isLoading && (
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl shadow-md p-6 animate-pulse">
+              <div
+                key={i}
+                className="bg-white rounded-xl shadow-md p-6 animate-pulse"
+              >
                 <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
                 <div className="h-4 bg-gray-200 rounded w-1/2"></div>
               </div>
@@ -176,7 +186,9 @@ const CoursesPage: React.FC = () => {
         {!isLoading && !error && courses.length === 0 && (
           <div className="text-center py-12">
             <BookOpen className="w-20 h-20 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">هیچ درسی با فیلترهای انتخاب شده یافت نشد.</p>
+            <p className="text-gray-500 text-lg">
+              هیچ درسی با فیلترهای انتخاب شده یافت نشد.
+            </p>
           </div>
         )}
 
@@ -211,7 +223,9 @@ const CoursesPage: React.FC = () => {
                       </svg>
                     ) : null}
                     <span className="font-bold mr-1">
-                      {course.InstructorName ? course.InstructorName : "استاد مشخص نشده"}
+                      {course.InstructorName
+                        ? course.InstructorName
+                        : "استاد مشخص نشده"}
                     </span>
                   </p>
                 </div>
@@ -221,7 +235,7 @@ const CoursesPage: React.FC = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CoursesPage
+export default CoursesPage;

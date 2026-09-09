@@ -1,18 +1,18 @@
-import React from "react"
-import { useNavigate } from "react-router-dom"
-import { ArrowRight } from "lucide-react"
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
-import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore"
-import useTempCourseForm from "./hooks/useTempCourseForm"
-import BasicInfoSection from "../../components/tempCourse/BasicInfoSection"
-import ClassSection from "../../components/tempCourse/ClassSection"
-import FinalExamSection from "../../components/tempCourse/FinalExamSection"
-import { GROUPS, UNITS, TERMS } from "./hooks/useTempCourseForm"
+import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore";
+import useTempCourseForm from "./hooks/useTempCourseForm";
+import BasicInfoSection from "../../components/tempCourse/BasicInfoSection";
+import ClassSection from "../../components/tempCourse/ClassSection";
+import FinalExamSection from "../../components/tempCourse/FinalExamSection";
+import { GROUPS, UNITS, TERMS } from "./hooks/useTempCourseForm";
 
 const CreateTempCoursePage: React.FC = () => {
-  const navigate = useNavigate()
-  const { createTempCourse, isLoading, error } = useTempCourseStore()
-  
+  const navigate = useNavigate();
+  const { createTempCourse, isLoading, error } = useTempCourseStore();
+
   const {
     form,
     handleFormChange,
@@ -29,23 +29,21 @@ const CreateTempCoursePage: React.FC = () => {
     showInstructorSuggestions,
     setShowInstructorSuggestions,
     normalizePersian,
-    validateForm
-  } = useTempCourseForm()
+    validateForm,
+  } = useTempCourseForm();
 
   const handleSubmit = async () => {
-    if (!validateForm()) return
-    await createTempCourse(form)
-    navigate(-1)
-  }
+    if (!validateForm()) return;
+    await createTempCourse(form);
+    navigate(-1);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* HEADER */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">
-            ایجاد درس موقت
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">ایجاد درس موقت</h1>
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 px-4 py-2 bg-[#AB8A58] text-white rounded-xl hover:opacity-90"
@@ -82,7 +80,7 @@ const CreateTempCoursePage: React.FC = () => {
           time={form.firstTime}
           room={form.firstRoom}
           lock={form.firstLock}
-          onDayTimeSelect={(day, time) => 
+          onDayTimeSelect={(day, time) =>
             handleFormChange({ firstDay: day, firstTime: time })
           }
           onRoomChange={(room) => handleFormChange({ firstRoom: room })}
@@ -107,7 +105,7 @@ const CreateTempCoursePage: React.FC = () => {
             time={form.secondTime}
             room={form.secondRoom}
             lock={form.secondLock}
-            onDayTimeSelect={(day, time) => 
+            onDayTimeSelect={(day, time) =>
               handleFormChange({ secondDay: day, secondTime: time })
             }
             onRoomChange={(room) => handleFormChange({ secondRoom: room })}
@@ -124,9 +122,7 @@ const CreateTempCoursePage: React.FC = () => {
         />
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-xl">
-            {error}
-          </div>
+          <div className="bg-red-50 text-red-600 p-3 rounded-xl">{error}</div>
         )}
 
         {/* SUBMIT */}
@@ -139,7 +135,7 @@ const CreateTempCoursePage: React.FC = () => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CreateTempCoursePage
+export default CreateTempCoursePage;

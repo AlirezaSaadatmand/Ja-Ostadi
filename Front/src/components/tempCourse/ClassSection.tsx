@@ -1,15 +1,15 @@
-import React from "react"
-import TimeDaySelector from "../../components/tempCourse/TimeDaySelector"
+import React from "react";
+import TimeDaySelector from "../../components/tempCourse/TimeDaySelector";
 
 interface ClassSectionProps {
-  title: string
-  day: string
-  time: string
-  room: string
-  lock: boolean
-  onDayTimeSelect: (day: string, time: string) => void
-  onRoomChange: (value: string) => void
-  onLockChange: (checked: boolean) => void
+  title: string;
+  day: string;
+  time: string;
+  room: string;
+  lock: boolean;
+  onDayTimeSelect: (day: string, time: string) => void;
+  onRoomChange: (value: string) => void;
+  onLockChange: (checked: boolean) => void;
 }
 
 const ClassSection: React.FC<ClassSectionProps> = ({
@@ -22,13 +22,12 @@ const ClassSection: React.FC<ClassSectionProps> = ({
   onRoomChange,
   onLockChange,
 }) => {
-  const inputClass = "w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#AB8A58]"
+  const inputClass =
+    "w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#AB8A58]";
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 space-y-4">
-      <h2 className="font-semibold text-lg text-gray-800">
-        {title}
-      </h2>
+      <h2 className="font-semibold text-lg text-gray-800">{title}</h2>
 
       <TimeDaySelector
         title="انتخاب زمان"
@@ -53,7 +52,7 @@ const ClassSection: React.FC<ClassSectionProps> = ({
         قفل کردن روز و ساعت {title}
       </label>
     </div>
-  )
-}
+  );
+};
 
-export default ClassSection
+export default ClassSection;

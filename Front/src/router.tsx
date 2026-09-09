@@ -1,19 +1,19 @@
-import { createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter } from "react-router-dom";
 
-import Home from "./pages/Home"
-import NotFoundPage from "./pages/NotFoundPage"
-import WeeklySchedulePage from "./pages/WeeklySchedulePage"
-import DepartmentsPage from "./pages/DepartmentsPage"
-import InstructorsPage from "./pages/InstructorsPage"
-import InstructorDetailPage from "./pages/InstructorDetailPage"
-import CoursesPage from "./pages/CoursesPage"
-import CourseDetailPage from "./pages/CourseDetailPage"
-import RoomsPage from "./pages/RoomsPage"
-import { LearningHub } from "./pages/Learning"
-import LoginPage from "./pages/LoginPage"
-import DirectorsPage from "./pages/Directors/DirectorsPage"
-import ProtectedRoute from "./components/ProtectedRoute"
-import CreateTempCoursePage from "./pages/Directors/CreateTempCoursePage"
+import Home from "./pages/Home";
+import NotFoundPage from "./pages/NotFoundPage";
+import WeeklySchedulePage from "./pages/WeeklySchedulePage";
+import DepartmentsPage from "./pages/DepartmentsPage";
+import InstructorsPage from "./pages/InstructorsPage";
+import InstructorDetailPage from "./pages/InstructorDetailPage";
+import CoursesPage from "./pages/CoursesPage";
+import CourseDetailPage from "./pages/CourseDetailPage";
+import RoomsPage from "./pages/RoomsPage";
+import { LearningHub } from "./pages/Learning";
+import LoginPage from "./pages/LoginPage";
+import DirectorsPage from "./pages/Directors/DirectorsPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import CreateTempCoursePage from "./pages/Directors/CreateTempCoursePage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -46,4 +46,4 @@ export const router = createBrowserRouter([
 
   { path: "/login", element: <LoginPage /> },
   { path: "*", element: <NotFoundPage /> },
-])
+]);

@@ -187,83 +187,82 @@ export interface RoomScheduleCourse {
   time: ClassTime[];
 }
 
-
 export interface LoginResponse {
-  status: string
-  message: string
+  status: string;
+  message: string;
   data: {
-    token: string
-  }
+    token: string;
+  };
 }
 
 export interface JwtPayload {
-  clientID: number
-  username: string
-  role: string
-  exp: number
+  clientID: number;
+  username: string;
+  role: string;
+  exp: number;
 }
 
 export interface AuthUser {
-  clientID: number
-  username: string
-  role: string
+  clientID: number;
+  username: string;
+  role: string;
 }
 
 export interface TempCourse {
-  id?: number
+  id?: number;
 
-  department: string
-  courseName: string
-  group: string
-  units: string
-  instructor: string
-  targetTerm: string
+  department: string;
+  courseName: string;
+  group: string;
+  units: string;
+  instructor: string;
+  targetTerm: string;
 
-  firstRoom: string
-  firstDay: string
-  firstTime: string
-  firstLock: boolean
+  firstRoom: string;
+  firstDay: string;
+  firstTime: string;
+  firstLock: boolean;
 
-  secondRoom: string
-  secondDay: string
-  secondTime: string
-  secondLock: boolean
+  secondRoom: string;
+  secondDay: string;
+  secondTime: string;
+  secondLock: boolean;
 
-  finalExamTime: string
-  finalExamDate: string
+  finalExamTime: string;
+  finalExamDate: string;
 
-  directorID?: string
+  directorID?: string;
 }
 
 export interface CreateTempCourseResponse {
-  status: "success" | "error"
-  message: string
+  status: "success" | "error";
+  message: string;
   data: {
-    ID: number
-    CreatedAt: string
-    UpdatedAt: string
-    DeletedAt: string | null
+    ID: number;
+    CreatedAt: string;
+    UpdatedAt: string;
+    DeletedAt: string | null;
 
-    Department: string
-    CourseName: string
-    Group: string
-    Units: string
-    Instructor: string
-    TargetTerm: string
+    Department: string;
+    CourseName: string;
+    Group: string;
+    Units: string;
+    Instructor: string;
+    TargetTerm: string;
 
-    FirstRoom: string
-    FirstDay: string
-    FirstTime: string
-    FirstLock: boolean
+    FirstRoom: string;
+    FirstDay: string;
+    FirstTime: string;
+    FirstLock: boolean;
 
-    SecondRoom: string
-    SecondDay: string
-    SecondTime: string
-    SecondLock: boolean
+    SecondRoom: string;
+    SecondDay: string;
+    SecondTime: string;
+    SecondLock: boolean;
 
-    FinalExamTime: string
-    FinalExamDate: string
+    FinalExamTime: string;
+    FinalExamDate: string;
 
-    DirectorID: string
-  }
+    DirectorID: string;
+  };
 }

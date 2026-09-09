@@ -16,7 +16,6 @@ const parseExamDate = (date?: string) => {
   return new Date(y, m - 1, d);
 };
 
-
 interface PdfDocumentProps {
   scheduledCourses: CourseResponse[];
   table: Record<string, TableCell>;
@@ -36,7 +35,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
     const normalizedStart = start.padStart(5, "0");
     const normalizedEnd = end.padStart(5, "0");
     return timeSlots.find(
-      (slot) => slot.start === normalizedStart && slot.end === normalizedEnd
+      (slot) => slot.start === normalizedStart && slot.end === normalizedEnd,
     )?.key;
   };
 
@@ -59,7 +58,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
     const time = cell.course.time.find(
       (t) =>
         t.day === day &&
-        findMatchingSlotKey(t.start_time, t.end_time) === timeSlotKey
+        findMatchingSlotKey(t.start_time, t.end_time) === timeSlotKey,
     );
 
     return { course: cell.course, room: time?.room || "" };
@@ -219,7 +218,10 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
         <p className="text-gray-700 text-2xl">
           برنامه کلاس‌های هفتگی و دروس انتخاب شده
           {isRotated && (
-            <span className="text-blue-600 font-semibold"> (نمایش چرخانده)</span>
+            <span className="text-blue-600 font-semibold">
+              {" "}
+              (نمایش چرخانده)
+            </span>
           )}
         </p>
       </div>
@@ -234,7 +236,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
 
         <div style={{ pageBreakBefore: "always" }}>
           <h2 className="text-4xl font-bold text-indigo-900 mb-8 text-center">
-            جدول مشخصات دروس به ترتیب تاریخ امتحان پایانی   
+            جدول مشخصات دروس به ترتیب تاریخ امتحان پایانی
           </h2>
 
           <table
@@ -296,7 +298,6 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({
                       {item.course.final_exam_time || "ندارد"}
                     </span>
                   </td>
-
                 </tr>
               ))}
             </tbody>

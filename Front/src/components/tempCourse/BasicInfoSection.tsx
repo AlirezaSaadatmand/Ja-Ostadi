@@ -1,24 +1,24 @@
-import React from "react"
-import type { DepartmentDetail } from "../../types"
-import type { TempCourseForm } from "../../pages/Directors/hooks/useTempCourseForm"
+import React from "react";
+import type { DepartmentDetail } from "../../types";
+import type { TempCourseForm } from "../../pages/Directors/hooks/useTempCourseForm";
 
 interface BasicInfoSectionProps {
-  form: TempCourseForm
-  validationErrors: Record<string, string>
-  departments: DepartmentDetail[]
-  courseNameSuggestions: string[]
-  instructorSuggestions: string[]
-  showCourseSuggestions: boolean
-  showInstructorSuggestions: boolean
-  onDepartmentChange: (value: string) => void
-  onFormChange: (updates: Partial<TempCourseForm>) => void
-  onSuggestionSelect: (type: 'course' | 'instructor', value: string) => void
-  onCourseSuggestionToggle: (show: boolean) => void
-  onInstructorSuggestionToggle: (show: boolean) => void
-  normalizePersian: (input: string) => string
-  GROUPS: string[]
-  UNITS: string[]
-  TERMS: string[]
+  form: TempCourseForm;
+  validationErrors: Record<string, string>;
+  departments: DepartmentDetail[];
+  courseNameSuggestions: string[];
+  instructorSuggestions: string[];
+  showCourseSuggestions: boolean;
+  showInstructorSuggestions: boolean;
+  onDepartmentChange: (value: string) => void;
+  onFormChange: (updates: Partial<TempCourseForm>) => void;
+  onSuggestionSelect: (type: "course" | "instructor", value: string) => void;
+  onCourseSuggestionToggle: (show: boolean) => void;
+  onInstructorSuggestionToggle: (show: boolean) => void;
+  normalizePersian: (input: string) => string;
+  GROUPS: string[];
+  UNITS: string[];
+  TERMS: string[];
 }
 
 const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
@@ -36,15 +36,14 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
   onInstructorSuggestionToggle,
   GROUPS,
   UNITS,
-  TERMS
+  TERMS,
 }) => {
-  const inputClass = "w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#AB8A58]"
+  const inputClass =
+    "w-full rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#AB8A58]";
 
   return (
     <div className="bg-white rounded-2xl shadow p-6 space-y-4">
-      <h2 className="font-semibold text-lg text-gray-800">
-        اطلاعات پایه
-      </h2>
+      <h2 className="font-semibold text-lg text-gray-800">اطلاعات پایه</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Department */}
@@ -76,7 +75,9 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={form.courseName}
             onChange={(e) => onFormChange({ courseName: e.target.value })}
             onFocus={() => onCourseSuggestionToggle(true)}
-            onBlur={() => setTimeout(() => onCourseSuggestionToggle(false), 150)}
+            onBlur={() =>
+              setTimeout(() => onCourseSuggestionToggle(false), 150)
+            }
           />
           {validationErrors.courseName && (
             <p className="mt-1 text-sm text-red-600">
@@ -90,7 +91,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                 <div
                   key={name}
                   className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm"
-                  onMouseDown={() => onSuggestionSelect('course', name)}
+                  onMouseDown={() => onSuggestionSelect("course", name)}
                 >
                   {name}
                 </div>
@@ -145,7 +146,9 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={form.instructor}
             onChange={(e) => onFormChange({ instructor: e.target.value })}
             onFocus={() => onInstructorSuggestionToggle(true)}
-            onBlur={() => setTimeout(() => onInstructorSuggestionToggle(false), 150)}
+            onBlur={() =>
+              setTimeout(() => onInstructorSuggestionToggle(false), 150)
+            }
           />
 
           {showInstructorSuggestions && instructorSuggestions.length > 0 && (
@@ -154,7 +157,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                 <div
                   key={name}
                   className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm"
-                  onMouseDown={() => onSuggestionSelect('instructor', name)}
+                  onMouseDown={() => onSuggestionSelect("instructor", name)}
                 >
                   {name}
                 </div>
@@ -183,7 +186,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BasicInfoSection
+export default BasicInfoSection;

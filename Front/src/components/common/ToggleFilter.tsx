@@ -1,13 +1,16 @@
-import type React from "react"
+import type React from "react";
 
 interface ToggleFilterProps {
-  value: "department" | "semester"
-  onValueChange: (value: "department" | "semester") => void
+  value: "department" | "semester";
+  onValueChange: (value: "department" | "semester") => void;
 }
 
-const ToggleFilter: React.FC<ToggleFilterProps> = ({ value, onValueChange }) => {
-  const isDepartmentActive = value === "department"
-  const isSemesterActive = value === "semester"
+const ToggleFilter: React.FC<ToggleFilterProps> = ({
+  value,
+  onValueChange,
+}) => {
+  const isDepartmentActive = value === "department";
+  const isSemesterActive = value === "semester";
 
   return (
     <div
@@ -16,7 +19,9 @@ const ToggleFilter: React.FC<ToggleFilterProps> = ({ value, onValueChange }) => 
     >
       <button
         className={`flex-1 py-1.5 sm:py-2 px-2 sm:px-4 rounded-md transition-colors duration-200 ${
-          isDepartmentActive ? "bg-white shadow text-indigo-700" : "hover:bg-gray-200"
+          isDepartmentActive
+            ? "bg-white shadow text-indigo-700"
+            : "hover:bg-gray-200"
         }`}
         onClick={() => onValueChange("department")}
       >
@@ -24,14 +29,16 @@ const ToggleFilter: React.FC<ToggleFilterProps> = ({ value, onValueChange }) => 
       </button>
       <button
         className={`flex-1 py-1.5 sm:py-2 px-2 sm:px-4 rounded-md transition-colors duration-200 ${
-          isSemesterActive ? "bg-white shadow text-indigo-700" : "hover:bg-gray-200"
+          isSemesterActive
+            ? "bg-white shadow text-indigo-700"
+            : "hover:bg-gray-200"
         }`}
         onClick={() => onValueChange("semester")}
       >
         اساتید این ترم
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default ToggleFilter
+export default ToggleFilter;

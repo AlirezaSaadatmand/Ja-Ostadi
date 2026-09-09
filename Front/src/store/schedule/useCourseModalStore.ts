@@ -1,12 +1,12 @@
-import { create } from "zustand"
-import type { CourseResponse } from "../../types"
+import { create } from "zustand";
+import type { CourseResponse } from "../../types";
 
 interface CourseModalStore {
-  isOpen: boolean
-  selectedCourse: CourseResponse | null
-  isScheduledCourseInModal: boolean
-  openModal: (course: CourseResponse, isScheduled: boolean) => void
-  closeModal: () => void
+  isOpen: boolean;
+  selectedCourse: CourseResponse | null;
+  isScheduledCourseInModal: boolean;
+  openModal: (course: CourseResponse, isScheduled: boolean) => void;
+  closeModal: () => void;
 }
 
 export const useCourseModalStore = create<CourseModalStore>((set) => ({
@@ -26,4 +26,4 @@ export const useCourseModalStore = create<CourseModalStore>((set) => ({
       selectedCourse: null,
       isScheduledCourseInModal: false,
     }),
-}))
+}));

@@ -1,9 +1,9 @@
-import React, { useState } from "react"
-import { X } from "lucide-react"
-import StarRatingDisplay from "./StarRatingDisplay"
-import { useMealRatingStore } from "../../store/food/useMealRatingStore"
-import type { MealData } from "../../types"
-import { useWeeklyFoodStore } from "../../store/food/useWeeklyFoodStore"
+import React, { useState } from "react";
+import { X } from "lucide-react";
+import StarRatingDisplay from "./StarRatingDisplay";
+import { useMealRatingStore } from "../../store/food/useMealRatingStore";
+import type { MealData } from "../../types";
+import { useWeeklyFoodStore } from "../../store/food/useWeeklyFoodStore";
 
 interface MealModalProps {
   isOpen: boolean;
@@ -12,29 +12,29 @@ interface MealModalProps {
 }
 
 const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, meal }) => {
-  const [rating, setRating] = useState<number>(0)
-  const [hoverRating, setHoverRating] = useState<number>(0)
-  const [comment, setComment] = useState<string>("")
-  const [error, setError] = useState<string>("")
+  const [rating, setRating] = useState<number>(0);
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [comment, setComment] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-  const { submitRating, isSubmitting } = useMealRatingStore()
-  const { fetchWeeklyFood } = useWeeklyFoodStore()
+  const { submitRating, isSubmitting } = useMealRatingStore();
+  const { fetchWeeklyFood } = useWeeklyFoodStore();
 
-  if (!isOpen || !meal) return null
+  if (!isOpen || !meal) return null;
 
   const handleSubmit = async () => {
     if (!rating) {
-      setError("لطفاً امتیاز را انتخاب کنید.")
-      return
+      setError("لطفاً امتیاز را انتخاب کنید.");
+      return;
     }
 
-    setError("")
-    await submitRating(parseInt(meal.id || ""), rating, comment)
-    setRating(0)
-    setComment("")
+    setError("");
+    await submitRating(parseInt(meal.id || ""), rating, comment);
+    setRating(0);
+    setComment("");
     // onClose()
-    fetchWeeklyFood()
-  }
+    fetchWeeklyFood();
+  };
 
   return (
     <div
@@ -48,7 +48,10 @@ const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, meal }) => {
       >
         <div className="flex items-center justify-between border-b px-4 py-3">
           <h2 className="text-lg font-bold p-5 text-gray-800">{meal.name}</h2>
-          <button onClick={onClose} className="text-gray-600 hover:text-gray-800">
+          <button
+            onClick={onClose}
+            className="text-gray-600 hover:text-gray-800"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -81,7 +84,9 @@ const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, meal }) => {
                 </span>
               </>
             ) : (
-              <span className="text-gray-500 text-sm">هنوز کسی امتیاز نداده</span>
+              <span className="text-gray-500 text-sm">
+                هنوز کسی امتیاز نداده
+              </span>
             )}
           </div>
         </div>
@@ -96,7 +101,7 @@ const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, meal }) => {
                 {Array(5)
                   .fill(0)
                   .map((_, i) => {
-                    const index = i + 1
+                    const index = i + 1;
                     return (
                       <span
                         key={i}
@@ -111,14 +116,12 @@ const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, meal }) => {
                       >
                         ★
                       </span>
-                    )
+                    );
                   })}
               </div>
 
               {error && (
-                <p className="text-center text-red-500 text-sm mt-1">
-                  {error}
-                </p>
+                <p className="text-center text-red-500 text-sm mt-1">{error}</p>
               )}
 
               <textarea
@@ -145,7 +148,7 @@ const MealModal: React.FC<MealModalProps> = ({ isOpen, onClose, meal }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MealModal
+export default MealModal;

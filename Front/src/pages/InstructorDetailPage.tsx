@@ -1,8 +1,8 @@
-import type React from "react"
-import { useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
-import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore"
-import WeeklyTableView from "../components/Instructor/WeeklyTableView"
+import type React from "react";
+import { useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore";
+import WeeklyTableView from "../components/Instructor/WeeklyTableView";
 import {
   BookOpen,
   CalendarDays,
@@ -12,11 +12,11 @@ import {
   Clock,
   Building2,
   ArrowRight,
-} from "lucide-react"
+} from "lucide-react";
 
 const InstructorDetailPage: React.FC = () => {
-  const { instructorId } = useParams<{ instructorId: string }>()
-  const id = Number(instructorId)
+  const { instructorId } = useParams<{ instructorId: string }>();
+  const id = Number(instructorId);
 
   const {
     instructorDetail,
@@ -26,21 +26,29 @@ const InstructorDetailPage: React.FC = () => {
     fetchInstructorDetail,
     fetchInstructorCoursesBySemester,
     clearInstructorData,
-  } = useInstructorDetailStore()
+  } = useInstructorDetailStore();
 
   useEffect(() => {
     if (id) {
-      fetchInstructorDetail(id)
-      fetchInstructorCoursesBySemester(id)
+      fetchInstructorDetail(id);
+      fetchInstructorCoursesBySemester(id);
     }
     return () => {
-      clearInstructorData()
-    }
-  }, [id, fetchInstructorDetail, fetchInstructorCoursesBySemester, clearInstructorData])
+      clearInstructorData();
+    };
+  }, [
+    id,
+    fetchInstructorDetail,
+    fetchInstructorCoursesBySemester,
+    clearInstructorData,
+  ]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8"
+        dir="rtl"
+      >
         <div className="animate-pulse bg-white rounded-xl shadow-lg p-6 sm:p-10 w-full max-w-3xl space-y-6">
           <div className="h-8 sm:h-10 bg-gray-200 rounded w-3/4 mx-auto"></div>
           <div className="h-5 sm:h-6 bg-gray-200 rounded w-1/2 mx-auto"></div>
@@ -48,23 +56,25 @@ const InstructorDetailPage: React.FC = () => {
           <div className="h-20 sm:h-24 bg-gray-200 rounded"></div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 relative">
-        <Link
-          to="/instructors"
-          className="hidden sm:inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium absolute top-4 right-4 sm:right-6 text-sm sm:text-base"
-        >
-          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-          بازگشت
-        </Link>
+          <Link
+            to="/instructors"
+            className="hidden sm:inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium absolute top-4 right-4 sm:right-6 text-sm sm:text-base"
+          >
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
+            بازگشت
+          </Link>
 
           <div className="text-center space-y-2 sm:space-y-3">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">اطلاعات استاد</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
+              اطلاعات استاد
+            </h1>
             <p className="text-gray-600 text-base sm:text-xl">
               اطلاعات مربوط به استاد{" "}
               <span className="font-semibold text-gray-800">
@@ -99,11 +109,13 @@ const InstructorDetailPage: React.FC = () => {
               </p>
               <p className="flex items-center justify-center flex-wrap gap-1">
                 <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 ml-2" />
-                <strong>محل دفتر:</strong> {instructorDetail.office_location || "—"}
+                <strong>محل دفتر:</strong>{" "}
+                {instructorDetail.office_location || "—"}
               </p>
               <p className="flex items-center justify-center flex-wrap gap-1">
                 <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 ml-2" />
-                <strong>ساعات کاری:</strong> {instructorDetail.office_hours || "—"}
+                <strong>ساعات کاری:</strong>{" "}
+                {instructorDetail.office_hours || "—"}
               </p>
               <p className="flex items-center justify-center flex-wrap gap-1">
                 <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500 ml-2" />
@@ -118,15 +130,13 @@ const InstructorDetailPage: React.FC = () => {
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg">
-
-        <WeeklyTableView />
+          <WeeklyTableView />
         </div>
         <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
           <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center flex items-center justify-center">
             <BookOpen className="w-6 sm:w-7 h-6 sm:h-7 text-emerald-600 ml-2" />
             دروس ارائه شده
           </h3>
-
 
           {instructorCoursesBySemester.length === 0 ? (
             <p className="text-center text-gray-500 py-4 sm:py-6 text-sm sm:text-base">
@@ -165,10 +175,9 @@ const InstructorDetailPage: React.FC = () => {
             </div>
           )}
         </div>
-
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InstructorDetailPage
+export default InstructorDetailPage;
