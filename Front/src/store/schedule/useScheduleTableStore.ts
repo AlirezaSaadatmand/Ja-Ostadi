@@ -43,12 +43,30 @@ const generateEmptyTable = () => {
   return table;
 };
 
+const timeToMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
 const findMatchingSlotKey = (start: string, end: string) => {
   const normalizedStart = start.padStart(5, "0");
   const normalizedEnd = end.padStart(5, "0");
-  return timeSlots.find(
+
+  const exactMatch = timeSlots.find(
     (slot) => slot.start === normalizedStart && slot.end === normalizedEnd,
-  )?.key;
+  );
+  if (exactMatch) return exactMatch.key;
+
+  const courseStart = timeToMinutes(normalizedStart);
+  const courseEnd = timeToMinutes(normalizedEnd);
+
+  const overlapMatch = timeSlots.find((slot) => {
+    const slotStart = timeToMinutes(slot.start);
+    const slotEnd = timeToMinutes(slot.end);
+    return courseStart < slotEnd && courseEnd > slotStart;
+  });
+
+  return overlapMatch?.key;
 };
 
 const loadState = () => {
