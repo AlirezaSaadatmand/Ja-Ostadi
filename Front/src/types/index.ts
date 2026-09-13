@@ -89,10 +89,19 @@ export interface InstructorCoursesBySemester {
   courses: CourseInSemester[];
 }
 
+export interface ClassTimeInfo {
+  day: string;
+  start_time: string;
+  end_time: string;
+  room: string;
+}
+
 export interface CourseInList {
-  ID: number;
-  CourseName: string;
-  InstructorName: string;
+  id: number;
+  name: string;
+  instructor_id: number;
+  instructor_name: string;
+  class_times: ClassTimeInfo[];
 }
 
 export interface CourseDetailCourse {

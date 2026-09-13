@@ -38,28 +38,6 @@ func (s *Services) GetCoursesBySemester(semesterID int) ([]CourseMinimal, error)
 	return courses, nil
 }
 
-// func (s *Services) GetClassTimesByCourseIDs(courseIDs []uint) ([]ClassTimeMinimal, error) {
-// 	if len(courseIDs) == 0 {
-// 		return []ClassTimeMinimal{}, nil
-// 	}
-
-// 	var classTimes []ClassTimeMinimal
-// 	err := database.DB.
-// 		Model(&models.ClassTime{}).
-// 		Select("course_id, day, start_time, end_time, room").
-// 		Where("course_id IN ?", courseIDs).
-// 		Find(&classTimes).Error
-
-// 	if err != nil {
-// 		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get class times", map[logging.ExtraKey]interface{}{
-// 			"error": err.Error(),
-// 		})
-// 		return nil, errors.New("error getting data")
-// 	}
-
-// 	return classTimes, nil
-// }
-
 type ClassTimeMinimal struct {
 	CourseID  uint   `json:"course_id"`
 	Day       string `json:"day"`
@@ -68,7 +46,6 @@ type ClassTimeMinimal struct {
 	Room      string `json:"room"`
 }
 
-// GetCoursesBySemesterAndDepartment returns courses for a semester and department
 func (s *Services) GetCoursesBySemesterAndDepartment(semesterID, departmentID int) ([]models.Course, error) {
 	var courses []models.Course
 	err := database.DB.

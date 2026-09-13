@@ -4,7 +4,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { useCoursesPageStore } from "../store/courses/useCoursesPageStore";
 import { useSemesterStore } from "../store/common/useSemesterStore";
 import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Clock } from "lucide-react";
 import Header from "../components/Header";
 
 const CoursesPage: React.FC = () => {
@@ -196,38 +196,55 @@ const CoursesPage: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {courses.map((course) => (
               <Link
-                key={course.ID}
-                to={`/courses/${course.ID}`}
+                key={course.id}
+                to={`/courses/${course.id}`}
                 className="group bg-white rounded-xl shadow-md p-3 sm:p-6 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-emerald-400 hover:bg-gradient-to-br from-white to-emerald-50"
               >
+
                 <div className="mb-2 sm:mb-4">
                   <BookOpen className="w-8 h-8 sm:w-14 sm:h-14 text-emerald-600 mx-auto" />
                 </div>
                 <h2 className="text-sm sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4 leading-tight">
-                  {course.CourseName}
+                  {course.name}
                 </h2>
                 <div className="text-gray-700 text-xs sm:text-lg space-y-2 sm:space-y-4">
                   <p className="flex items-center justify-center">
-                    {course.InstructorName ? (
+                    {course.instructor_name ? (
                       <svg
-                        className="w-3 h-3 sm:w-6 sm:h-6 text-[#059669]"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        viewBox="0 0 24 24"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                      className="w-3 h-3 sm:w-6 sm:h-6 text-[#059669]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       >
                         <circle cx="12" cy="7" r="4" />
                         <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
                       </svg>
                     ) : null}
                     <span className="font-bold mr-1">
-                      {course.InstructorName
-                        ? course.InstructorName
+                      {course.instructor_name
+                        ? course.instructor_name
                         : "استاد مشخص نشده"}
                     </span>
                   </p>
+                  {course.class_times && course.class_times.length > 0 && (
+                    <div className="w-full flex flex-wrap justify-center gap-1 mb-2 sm:mb-3">
+                      {course.class_times.map((ct, idx) => (
+                        <div
+                          key={idx}
+                          className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full px-2 py-0.5 text-[9px] sm:text-xs"
+                        >
+                          <Clock className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" />
+                          <span className="font-medium">{ct.day}</span>
+                          <span className="tabular-nums">
+                            {ct.start_time}-{ct.end_time}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </Link>
             ))}
