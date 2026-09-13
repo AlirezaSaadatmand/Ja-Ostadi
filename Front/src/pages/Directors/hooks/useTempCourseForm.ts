@@ -137,7 +137,7 @@ const useTempCourseForm = () => {
 
   const instructorSuggestions = Array.from(
     new Set(
-      courses.map((c) => normalizePersian(c.InstructorName)).filter(Boolean),
+      courses.map((c) => normalizePersian(c.instructor_name)).filter(Boolean),
     ),
   ).filter(
     (name) =>
@@ -145,7 +145,7 @@ const useTempCourseForm = () => {
   );
 
   const courseNameSuggestions = Array.from(
-    new Set(courses.map((c) => normalizePersian(c.CourseName))),
+    new Set(courses.map((c) => normalizePersian(c.name))),
   ).filter((name) => normalizedInput && name.includes(normalizedInput));
 
   return {

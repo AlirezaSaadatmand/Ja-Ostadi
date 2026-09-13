@@ -10,10 +10,10 @@ import CoursesPage from "./pages/CoursesPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import RoomsPage from "./pages/RoomsPage";
 import { LearningHub } from "./pages/Learning";
-import LoginPage from "./pages/LoginPage";
-import DirectorsPage from "./pages/Directors/DirectorsPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import CreateTempCoursePage from "./pages/Directors/CreateTempCoursePage";
+// import LoginPage from "./pages/LoginPage";
+// import DirectorsPage from "./pages/Directors/DirectorsPage";
+// import ProtectedRoute from "./components/ProtectedRoute";
+// import CreateTempCoursePage from "./pages/Directors/CreateTempCoursePage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -26,24 +26,24 @@ export const router = createBrowserRouter([
   { path: "/classes", element: <RoomsPage /> },
   { path: "/learning-hub", element: <LearningHub /> },
 
-  {
-    path: "/directors",
-    element: (
-      <ProtectedRoute role="director">
-        <DirectorsPage />
-      </ProtectedRoute>
-    ),
-  },
+  // {
+  //   path: "/directors",
+  //   element: (
+  //     <ProtectedRoute role="director">
+  //       <DirectorsPage />
+  //     </ProtectedRoute>
+  //   ),
+  // },
 
-  {
-    path: "/directors/temp-courses/new",
-    element: (
-      <ProtectedRoute role="director">
-        <CreateTempCoursePage />
-      </ProtectedRoute>
-    ),
-  },
+  // {
+  //   path: "/directors/temp-courses/new",
+  //   element: (
+  //     <ProtectedRoute role="director">
+  //       <CreateTempCoursePage />
+  //     </ProtectedRoute>
+  //   ),
+  // },
 
-  { path: "/login", element: <LoginPage /> },
+  // { path: "/login", element: <LoginPage /> },
   { path: "*", element: <NotFoundPage /> },
 ]);
