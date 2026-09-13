@@ -38,14 +38,39 @@ func (s *Services) GetCoursesBySemester(semesterID int) ([]CourseMinimal, error)
 	return courses, nil
 }
 
-type CourseInstructor struct {
-	ID           uint   `json:"id"`
-	Name         string `json:"name"`
-	InstructorID uint   `json:"instructor_id"`
+// func (s *Services) GetClassTimesByCourseIDs(courseIDs []uint) ([]ClassTimeMinimal, error) {
+// 	if len(courseIDs) == 0 {
+// 		return []ClassTimeMinimal{}, nil
+// 	}
+
+// 	var classTimes []ClassTimeMinimal
+// 	err := database.DB.
+// 		Model(&models.ClassTime{}).
+// 		Select("course_id, day, start_time, end_time, room").
+// 		Where("course_id IN ?", courseIDs).
+// 		Find(&classTimes).Error
+
+// 	if err != nil {
+// 		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get class times", map[logging.ExtraKey]interface{}{
+// 			"error": err.Error(),
+// 		})
+// 		return nil, errors.New("error getting data")
+// 	}
+
+// 	return classTimes, nil
+// }
+
+type ClassTimeMinimal struct {
+	CourseID  uint   `json:"course_id"`
+	Day       string `json:"day"`
+	StartTime string `json:"start_time"`
+	EndTime   string `json:"end_time"`
+	Room      string `json:"room"`
 }
 
-func (s *Services) GetCoursesBySemesterAndDepartment(semesterID, departmentID int) ([]CourseInstructor, error) {
-	var courses []CourseInstructor
+// GetCoursesBySemesterAndDepartment returns courses for a semester and department
+func (s *Services) GetCoursesBySemesterAndDepartment(semesterID, departmentID int) ([]models.Course, error) {
+	var courses []models.Course
 	err := database.DB.
 		Model(&models.Course{}).
 		Where("semester_id = ? AND department_id = ?", semesterID, departmentID).
@@ -69,6 +94,33 @@ func (s *Services) GetCoursesBySemesterAndDepartment(semesterID, departmentID in
 
 	return courses, nil
 }
+
+func (s *Services) GetClassTimesByCourseIDs(courseIDs []uint) ([]ClassTimeMinimal, error) {
+	if len(courseIDs) == 0 {
+		return []ClassTimeMinimal{}, nil
+	}
+
+	var classTimes []ClassTimeMinimal
+	err := database.DB.
+		Model(&models.ClassTime{}).
+		Select("course_id, day, start_time, end_time, room").
+		Where("course_id IN ?", courseIDs).
+		Find(&classTimes).Error
+
+	if err != nil {
+		s.Logger.Error(logging.Mysql, logging.Select, "Failed to get class times by course IDs", map[logging.ExtraKey]interface{}{
+			"error": err.Error(),
+		})
+		return nil, errors.New("error getting data")
+	}
+
+	s.Logger.Info(logging.Mysql, logging.Select, "Fetched class times successfully", map[logging.ExtraKey]interface{}{
+		"count": len(classTimes),
+	})
+
+	return classTimes, nil
+}
+
 
 type CourseDetail struct {
 	ID            uint   `json:"id"`

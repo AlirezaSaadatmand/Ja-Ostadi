@@ -37,10 +37,19 @@ func (h *Handler) GetCoursesBySemester(c *fiber.Ctx) error {
 	return utils.Success(c, fiber.StatusOK, courses, "Data fetched successfully")
 }
 
+type ClassTimeInfo struct {
+	Day       string `json:"day"`
+	StartTime string `json:"start_time"`
+	EndTime   string `json:"end_time"`
+	Room      string `json:"room"`
+}
+
 type CourseInstructor struct {
-	ID             uint
-	CourseName     string
-	InstructorName string
+	ID             uint            `json:"id"`
+	Name           string          `json:"name"`
+	InstructorID   uint            `json:"instructor_id"`
+	InstructorName string          `json:"instructor_name"`
+	ClassTimes     []ClassTimeInfo `json:"class_times"`
 }
 
 // GetCoursesBySemesterAndDepartment returns courses for a semester and department
@@ -50,7 +59,7 @@ type CourseInstructor struct {
 // @Produce json
 // @Param semesterID path int true "Semester ID"
 // @Param departmentID path int true "Department ID"
-// @Success 200 {object} utils.APIResponse{data=[]services.CourseMinimal}
+// @Success 200 {object} utils.APIResponse{data=[]handlers.CourseInstructor}
 // @Failure 400 {object} utils.APIResponse
 // @Failure 500 {object} utils.APIResponse
 // @Router /courses/semester/{semesterID}/department/{departmentID} [get]
@@ -82,13 +91,39 @@ func (h *Handler) GetCoursesBySemesterAndDepartment(c *fiber.Ctx) error {
 		instructorMap[int(i.ID)] = i.Name
 	}
 
-	var data []CourseInstructor
-
+	courseIDs := make([]uint, 0, len(courses))
 	for _, course := range courses {
+		courseIDs = append(courseIDs, course.ID)
+	}
+
+	classTimes, err := h.Services.GetClassTimesByCourseIDs(courseIDs)
+	if err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, err.Error())
+	}
+
+	timesByCourse := make(map[uint][]ClassTimeInfo)
+	for _, ct := range classTimes {
+		timesByCourse[ct.CourseID] = append(timesByCourse[ct.CourseID], ClassTimeInfo{
+			Day:       ct.Day,
+			StartTime: ct.StartTime,
+			EndTime:   ct.EndTime,
+			Room:      ct.Room,
+		})
+	}
+
+	var data []CourseInstructor
+	for _, course := range courses {
+		times := timesByCourse[course.ID]
+		if times == nil {
+			times = []ClassTimeInfo{}
+		}
+
 		data = append(data, CourseInstructor{
 			ID:             course.ID,
-			CourseName:     course.Name,
+			Name:           course.Name,
+			InstructorID:   course.InstructorID,
 			InstructorName: instructorMap[int(course.InstructorID)],
+			ClassTimes:     times,
 		})
 	}
 
