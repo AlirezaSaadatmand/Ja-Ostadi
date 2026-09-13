@@ -1,4 +1,15 @@
 definitions:
+  handlers.ClassTimeInfo:
+    properties:
+      day:
+        type: string
+      end_time:
+        type: string
+      room:
+        type: string
+      start_time:
+        type: string
+    type: object
   handlers.ClientResponse:
     properties:
       id:
@@ -22,6 +33,21 @@ definitions:
         $ref: '#/definitions/services.InstructorByID'
       semeter:
         $ref: '#/definitions/services.SemesterData'
+    type: object
+  handlers.CourseInstructor:
+    properties:
+      class_times:
+        items:
+          $ref: '#/definitions/handlers.ClassTimeInfo'
+        type: array
+      id:
+        type: integer
+      instructor_id:
+        type: integer
+      instructor_name:
+        type: string
+      name:
+        type: string
     type: object
   handlers.InstructorCourseTimeData:
     properties:
@@ -868,7 +894,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/services.CourseMinimal'
+                    $ref: '#/definitions/handlers.CourseInstructor'
                   type: array
               type: object
         "400":

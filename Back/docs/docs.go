@@ -652,7 +652,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/services.CourseMinimal"
+                                                "$ref": "#/definitions/handlers.CourseInstructor"
                                             }
                                         }
                                     }
@@ -1730,6 +1730,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handlers.ClassTimeInfo": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "room": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
         "handlers.ClientResponse": {
             "type": "object",
             "properties": {
@@ -1764,6 +1781,29 @@ const docTemplate = `{
                 },
                 "semeter": {
                     "$ref": "#/definitions/services.SemesterData"
+                }
+            }
+        },
+        "handlers.CourseInstructor": {
+            "type": "object",
+            "properties": {
+                "class_times": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handlers.ClassTimeInfo"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "instructor_id": {
+                    "type": "integer"
+                },
+                "instructor_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
