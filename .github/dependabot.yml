@@ -1,0 +1,64 @@
+version: 2
+
+updates:
+  # Client (React + Vite)
+  - package-ecosystem: "npm"
+    directory: "/Front"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "front"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Server (Go)
+  - package-ecosystem: "gomod"
+    directory: "/Back"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "back"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Scraper (Go)
+  - package-ecosystem: "gomod"
+    directory: "/Scraper"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "scraper"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Docker base images
+  - package-ecosystem: "docker"
+    directories:
+      - "/Back"
+      - "/Front/docker"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ci"
