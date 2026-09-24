@@ -50,9 +50,12 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
+      const format: [number, number] =
+        data.scheduledCourses.length > 8 ? [1920, 1700] : [1920, 1450];
+
       const opt = {
         filename: "برنامه_هفتگی.pdf",
-        image: { type: "jpeg", quality: 0.98 },
+        image: { type: "jpeg" as const, quality: 0.98 },
         html2canvas: {
           scale: 2,
           useCORS: true,
@@ -64,10 +67,9 @@ export const usePdfExportStore = create<PdfExportStore>((set) => ({
           logging: false,
         },
         jsPDF: {
-          unit: "pt",
-          format:
-            data.scheduledCourses.length > 8 ? [1920, 1700] : [1920, 1450],
-          orientation: "landscape",
+          unit: "pt" as const,
+          format,
+          orientation: "landscape" as const,
         },
       };
 
