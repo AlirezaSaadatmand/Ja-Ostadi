@@ -11,7 +11,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@types/react-icons": "^2.2.7",
+    "@types/react-icons": "^3.0.0",
     "axios": "^1.11.0",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
