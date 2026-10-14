@@ -54,12 +54,24 @@ func Router(app *fiber.App, logger logging.Logger) {
 	scheduleRouter.Get("/rooms/:roomID", h.GetRoomSchedule)
 
 	// Admin Routes
+	adminAuth := api.Group("/admin")
+	adminAuth.Post("/login", h.AdminLogin)
+	
 	adminRoutes := api.Group("/admin", m.AdminMiddleware())
 	adminRoutes.Post("/update/data", h.UploadJson)
 	adminRoutes.Post("/clients", h.RegisterClient)
 	adminRoutes.Patch("/clients/:id", h.UpdateClient)
 	adminRoutes.Delete("/clients/:id", h.DeleteClient)
 	adminRoutes.Post("/update/contributors", h.UpdateContributors)
+	
+	adminRoutes.Get("/comments", h.AdminGetComments)
+	adminRoutes.Patch("/comments/:id/status", h.AdminUpdateCommentStatus)
+	adminRoutes.Delete("/comments/:id", h.AdminDeleteComment)
+
+	// Comment Routes (public)
+	commentRouter := api.Group("/comments")
+	commentRouter.Post("/", h.CreateComment)
+	commentRouter.Get("/instructor/:instructorID", h.GetComments)
 
 	// Director Routes
 	directorRoutes := api.Group("/temp-courses", m.Auth(), m.DirectorAuth())
