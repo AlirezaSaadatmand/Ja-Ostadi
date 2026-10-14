@@ -238,3 +238,36 @@ func (h *Handler) UpdateContributors(c *fiber.Ctx) error {
 
 	return utils.Success(c, fiber.StatusOK, nil, "Contributors updated successfully")
 }
+
+type AdminLoginRequest struct {
+	Password string `json:"password"`
+}
+
+// AdminLogin validates the admin password and returns the admin token
+// @Summary Admin login
+// @Description Validates the admin password and returns the admin token to be used in the X-Admin-Token header
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param request body AdminLoginRequest true "Admin password"
+// @Success 200 {object} utils.APIResponse{data=string}
+// @Failure 400 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Router /admin/login [post]
+func (h *Handler) AdminLogin(c *fiber.Ctx) error {
+	var req AdminLoginRequest
+	if err := c.BodyParser(&req); err != nil {
+		return utils.Error(c, fiber.StatusBadRequest, "Invalid request body")
+	}
+
+	if req.Password == "" {
+		return utils.Error(c, fiber.StatusBadRequest, "Password is required")
+	}
+
+	token, err := h.Services.AdminLogin(req.Password)
+	if err != nil {
+		return utils.Error(c, fiber.StatusUnauthorized, "Invalid credentials")
+	}
+
+	return utils.Success(c, fiber.StatusOK, fiber.Map{"token": token}, "Login successful")
+}
