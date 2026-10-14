@@ -1,4 +1,9 @@
 definitions:
+  handlers.AdminLoginRequest:
+    properties:
+      password:
+        type: string
+    type: object
   handlers.ClassTimeInfo:
     properties:
       day:
@@ -48,6 +53,13 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  handlers.CreateCommentRequest:
+    properties:
+      content:
+        type: string
+      instructor_id:
+        type: integer
     type: object
   handlers.InstructorCourseTimeData:
     properties:
@@ -122,6 +134,15 @@ definitions:
         items:
           type: integer
         type: array
+    type: object
+  services.CommentData:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
     type: object
   services.CourseDetail:
     properties:
@@ -595,6 +616,105 @@ paths:
       summary: Update client
       tags:
       - Admin
+  /admin/comments:
+    get:
+      parameters:
+      - description: pending|approved|rejected
+        in: query
+        name: status
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: List comments (admin)
+      tags:
+      - Admin
+  /admin/comments/{id}:
+    delete:
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Delete comment (admin)
+      tags:
+      - Admin
+  /admin/comments/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Update comment status (admin)
+      tags:
+      - Admin
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Validates the admin password and returns the admin token to be
+        used in the X-Admin-Token header
+      parameters:
+      - description: Admin password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.AdminLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Admin login
+      tags:
+      - Admin
   /admin/update/contributors:
     post:
       description: Fetch contributors from GitHub and update database (admin only)
@@ -785,6 +905,56 @@ paths:
       summary: Get authentication status
       tags:
       - Auth
+  /comments:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Submit a comment
+      tags:
+      - comments
+  /comments/instructor/{instructorID}:
+    get:
+      parameters:
+      - description: Instructor ID
+        in: path
+        name: instructorID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/services.CommentData'
+                  type: array
+              type: object
+      summary: Get approved comments
+      tags:
+      - comments
   /contributors:
     get:
       description: Get contributors from database
