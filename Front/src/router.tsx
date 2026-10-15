@@ -14,6 +14,10 @@ import { LearningHub } from "./pages/Learning";
 // import DirectorsPage from "./pages/Directors/DirectorsPage";
 // import ProtectedRoute from "./components/ProtectedRoute";
 // import CreateTempCoursePage from "./pages/Directors/CreateTempCoursePage";
+import AdminLoginPage from "./pages/Admin/AdminLoginPage";
+import AdminCommentsPage from "./pages/Admin/AdminCommentsPage";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
+
 
 export const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -25,7 +29,15 @@ export const router = createBrowserRouter([
   { path: "/courses/:courseId", element: <CourseDetailPage /> },
   { path: "/classes", element: <RoomsPage /> },
   { path: "/learning-hub", element: <LearningHub /> },
-
+  { path:"/odmin", element: <AdminLoginPage /> },
+  {
+    path:"/odmin/comments",
+    element: (
+      <AdminProtectedRoute>
+        <AdminCommentsPage />
+      </AdminProtectedRoute>
+    ),
+  },
   // {
   //   path: "/directors",
   //   element: (
