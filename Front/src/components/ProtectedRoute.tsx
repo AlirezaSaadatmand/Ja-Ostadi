@@ -10,9 +10,8 @@ const ProtectedRoute = ({ children, role }: Props) => {
   const { isAuthenticated, user, hasHydrated } = useAuthStore();
   const location = useLocation();
 
-  // ⛔ wait until auth is hydrated
   if (!hasHydrated) {
-    return null; // or loading spinner
+    return null;
   }
 
   if (!isAuthenticated) {
