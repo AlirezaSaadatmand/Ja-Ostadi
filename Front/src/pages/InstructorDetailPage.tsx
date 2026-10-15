@@ -2,6 +2,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore";
+import CommentSection from "../components/Instructor/CommentSection";
 import WeeklyTableView from "../components/Instructor/WeeklyTableView";
 import {
   BookOpen,
@@ -175,6 +176,10 @@ const InstructorDetailPage: React.FC = () => {
             </div>
           )}
         </div>
+          <CommentSection
+            instructorId={id}
+            instructorName={instructorDetail?.name}
+          />
       </div>
     </div>
   );
