@@ -275,3 +275,20 @@ export interface CreateTempCourseResponse {
     DirectorID: string;
   };
 }
+
+export type CommentStatus = "pending" | "approved" | "rejected";
+
+export interface Comment {
+  id: number;
+  content: string;
+  created_at: string;
+}
+
+export interface AdminComment {
+  id: number;
+  instructor_id: number;
+  content: string;
+  status: CommentStatus;
+  ip_address: string;
+  created_at: string;
+}
