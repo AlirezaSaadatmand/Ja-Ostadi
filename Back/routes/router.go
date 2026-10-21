@@ -15,16 +15,10 @@ func Router(app *fiber.App, logger logging.Logger) {
 
 	api.Get("/contributors", h.GetContributors)
 
-	// Google Auth Routes
-	api.Get("/auth/google/login", h.GoogleLoginHandler)
-	api.Get("/auth/google/callback", h.GoogleCallbackHandler)
-
+	// Public auth
+	api.Post("/auth/register", h.Register)
 	api.Post("/auth/login", h.Login)
 	api.Get("/auth/status", m.Auth(), h.AuthStatus)
-	api.Get("/test", h.Test)
-
-	// remove := api.Group("/remove")
-	// remove.Post("/", h.DeleteSemesterData)
 
 	// Semester Routes
 	semesterRouter := api.Group("/semesters")
@@ -53,23 +47,20 @@ func Router(app *fiber.App, logger logging.Logger) {
 	scheduleRouter.Get("/rooms", h.GetAllRooms)
 	scheduleRouter.Get("/rooms/:roomID", h.GetRoomSchedule)
 
+	api.Get("/admin/comments", m.Auth(), h.AdminGetComments)
+	api.Patch("/admin/comments/:id/status", m.Auth(), h.AdminUpdateCommentStatus)
+	api.Delete("/admin/comments/:id", m.Auth() ,h.AdminDeleteComment)
+
 	// Admin Routes
-	adminAuth := api.Group("/admin")
-	adminAuth.Post("/login", h.AdminLogin)
-	
 	adminRoutes := api.Group("/admin", m.AdminMiddleware())
 	adminRoutes.Post("/update/data", h.UploadJson)
 	adminRoutes.Post("/clients", h.RegisterClient)
 	adminRoutes.Patch("/clients/:id", h.UpdateClient)
 	adminRoutes.Delete("/clients/:id", h.DeleteClient)
 	adminRoutes.Post("/update/contributors", h.UpdateContributors)
-	
-	adminRoutes.Get("/comments", h.AdminGetComments)
-	adminRoutes.Patch("/comments/:id/status", h.AdminUpdateCommentStatus)
-	adminRoutes.Delete("/comments/:id", h.AdminDeleteComment)
 
-	// Comment Routes (public)
-	commentRouter := api.Group("/comments")
+	// Comment Routes
+	commentRouter := api.Group("/comments", m.Auth())
 	commentRouter.Post("/", h.CreateComment)
 	commentRouter.Get("/instructor/:instructorID", h.GetComments)
 
