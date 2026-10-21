@@ -91,6 +91,11 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
+type RegisterRequest struct {
+    Username string `json:"username"`
+    Password string `json:"password"`
+}
+
 type TempCourseRequest struct {
 	Department string `json:"department" validate:"required"`
 	CourseName string `json:"courseName" validate:"required"`
