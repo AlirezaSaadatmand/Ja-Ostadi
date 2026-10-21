@@ -367,6 +367,13 @@ definitions:
     - password
     - username
     type: object
+  types.RegisterRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   types.SubmitRatingRequest:
     properties:
       comment:
@@ -889,6 +896,45 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIResponse'
       summary: Login Client
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new client account (public). Returns a JWT on success.
+      parameters:
+      - description: Registration data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/types.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Account created
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handlers.LoginResponse'
+              type: object
+        "400":
+          description: 'Bad Request: invalid input'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "409":
+          description: 'Conflict: username already exists'
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      summary: Register Client
       tags:
       - Auth
   /auth/status:
