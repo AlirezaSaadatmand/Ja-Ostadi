@@ -280,13 +280,26 @@ export type CommentStatus = "pending" | "approved" | "rejected";
 
 export interface Comment {
   id: number;
+  username: string;
   content: string;
+  created_at: string;
+}
+
+export interface MyComment {
+  id: number;
+  instructor_id: number;
+  instructor_name: string;
+  content: string;
+  status: CommentStatus;
   created_at: string;
 }
 
 export interface AdminComment {
   id: number;
+  client_id: number;
+  username?: string;
   instructor_id: number;
+  instructor_name: string;
   content: string;
   status: CommentStatus;
   ip_address: string;
