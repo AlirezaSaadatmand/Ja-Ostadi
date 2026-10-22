@@ -10,14 +10,12 @@ import CoursesPage from "./pages/CoursesPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import RoomsPage from "./pages/RoomsPage";
 import { LearningHub } from "./pages/Learning";
-// import LoginPage from "./pages/LoginPage";
-// import DirectorsPage from "./pages/Directors/DirectorsPage";
-// import ProtectedRoute from "./components/ProtectedRoute";
-// import CreateTempCoursePage from "./pages/Directors/CreateTempCoursePage";
-import AdminLoginPage from "./pages/Admin/AdminLoginPage";
-import AdminCommentsPage from "./pages/Admin/AdminCommentsPage";
+import AuthPage from "./pages/AuthPage";
+import AdminPage from "./pages/admin/AdminPage";
+import AdminCommentsPage from "./pages/admin/AdminCommentsPage";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
-
+import ClientPage from "./pages/ClientPage";
+import RequireAuth from "./components/RequireAuth";
 
 export const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -29,33 +27,30 @@ export const router = createBrowserRouter([
   { path: "/courses/:courseId", element: <CourseDetailPage /> },
   { path: "/classes", element: <RoomsPage /> },
   { path: "/learning-hub", element: <LearningHub /> },
-  { path:"/odmin", element: <AdminLoginPage /> },
+  { path: "/auth", element: <AuthPage /> },
   {
-    path:"/odmin/comments",
+    path: "/admin",
+    element: (
+      <AdminProtectedRoute>
+        <AdminPage />
+      </AdminProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/comments",
     element: (
       <AdminProtectedRoute>
         <AdminCommentsPage />
       </AdminProtectedRoute>
     ),
   },
-  // {
-  //   path: "/directors",
-  //   element: (
-  //     <ProtectedRoute role="director">
-  //       <DirectorsPage />
-  //     </ProtectedRoute>
-  //   ),
-  // },
-
-  // {
-  //   path: "/directors/temp-courses/new",
-  //   element: (
-  //     <ProtectedRoute role="director">
-  //       <CreateTempCoursePage />
-  //     </ProtectedRoute>
-  //   ),
-  // },
-
-  // { path: "/login", element: <LoginPage /> },
+  {
+    path: "/profile",
+    element: (
+      <RequireAuth>
+        <ClientPage />
+      </RequireAuth>
+    ),
+  },
   { path: "*", element: <NotFoundPage /> },
 ]);
