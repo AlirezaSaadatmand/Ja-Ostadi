@@ -10,12 +10,14 @@ import (
 )
 
 type AdminCommentData struct {
-	ID           uint      `json:"id"`
-	InstructorID uint      `json:"instructor_id"`
-	Content      string    `json:"content"`
-	Status       string    `json:"status"`
-	IPAddress    string    `json:"ip_address"`
-	CreatedAt    time.Time `json:"created_at"`
+	ID             uint      `json:"id"`
+	InstructorID   uint      `json:"instructor_id"`
+	InstructorName string    `json:"instructor_name"`
+	Username       string    `json:"username"`
+	Content        string    `json:"content"`
+	Status         string    `json:"status"`
+	IPAddress      string    `json:"ip_address"`
+	CreatedAt      time.Time `json:"created_at"`
 }
 
 func (s *Services) AdminGetComments(status string, page, limit int) ([]AdminCommentData, int64, error) {
@@ -40,7 +42,7 @@ func (s *Services) AdminGetComments(status string, page, limit int) ([]AdminComm
 
 	var comments []AdminCommentData
 	err := query.
-		Select("id, instructor_id, content, status, ip_address, created_at").
+		Select("id, instructor_id, instructor_name, content, username, status, ip_address, created_at").
 		Order("created_at DESC").
 		Offset((page - 1) * limit).
 		Limit(limit).

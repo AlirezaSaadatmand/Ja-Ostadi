@@ -60,8 +60,9 @@ func Router(app *fiber.App, logger logging.Logger) {
 	adminRoutes.Post("/update/contributors", h.UpdateContributors)
 
 	// Comment Routes
-	commentRouter := api.Group("/comments", m.Auth())
-	commentRouter.Post("/", h.CreateComment)
+	commentRouter := api.Group("/comments")
+	commentRouter.Post("/", m.Auth(), h.CreateComment)
+	commentRouter.Get("/me", m.Auth(), h.GetMyComments)
 	commentRouter.Get("/instructor/:instructorID", h.GetComments)
 
 	// Director Routes
