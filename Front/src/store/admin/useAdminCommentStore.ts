@@ -2,6 +2,7 @@ import { create } from "zustand";
 import config from "../../config/config";
 import type { AdminComment, CommentStatus } from "../../types";
 import api from "../../utils/axios";
+import { useAuthStore } from "../auth/useAuthStore";
 
 interface CommentCounts {
   pending: number;
@@ -33,8 +34,8 @@ interface AdminCommentStore {
 }
 
 const getAuthHeader = () => {
-  const token = sessionStorage.getItem("adminToken") ?? "";
-  return { headers: { "X-Admin-Token": token } };
+  const token = useAuthStore.getState().token ?? "";
+  return { headers: { Authorization: `Bearer ${token}` } };
 };
 
 export const useAdminCommentStore = create<AdminCommentStore>((set, get) => ({
@@ -162,7 +163,10 @@ export const useAdminCommentStore = create<AdminCommentStore>((set, get) => ({
   deleteComment: async (id: number) => {
     set({ error: null });
     try {
-      await api.delete(`${config.apiUrl}/admin/comments/${id}`, getAuthHeader());
+      await api.delete(
+        `${config.apiUrl}/admin/comments/${id}`,
+        getAuthHeader(),
+      );
 
       set({
         comments: get().comments.filter((c) => c.id !== id),
