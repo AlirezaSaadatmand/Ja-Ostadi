@@ -4,11 +4,15 @@ import { useAuthStore } from "./store/auth/useAuthStore";
 import { router } from "./router";
 
 const AppRoutes = () => {
-  const { hydrateFromToken } = useAuthStore();
+  const hydrate = useAuthStore((s) => s.hydrate);
+  const checkAuthStatus = useAuthStore((s) => s.checkAuthStatus);
 
   useEffect(() => {
-    hydrateFromToken();
-  }, [hydrateFromToken]);
+    hydrate();
+    if (useAuthStore.getState().token) {
+      checkAuthStatus();
+    }
+  }, [hydrate, checkAuthStatus]);
 
   return <RouterProvider router={router} />;
 };
