@@ -13,6 +13,37 @@ const DEFAULT_TIME_SLOTS = [
 
 const DEFAULT_DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"];
 
+const timeToMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+const findMatchingSlotKey = (start: string, end: string) => {
+  const normalizedStart = start.padStart(5, "0");
+  const normalizedEnd = end.padStart(5, "0");
+
+  const exactMatch = DEFAULT_TIME_SLOTS.find(
+    (slot) => slot.start === normalizedStart && slot.end === normalizedEnd,
+  );
+  if (exactMatch) return exactMatch.key;
+
+  const courseStart = timeToMinutes(normalizedStart);
+  const courseEnd = timeToMinutes(normalizedEnd);
+
+  const overlapMatch = DEFAULT_TIME_SLOTS.find((slot) => {
+    const slotStart = timeToMinutes(slot.start);
+    const slotEnd = timeToMinutes(slot.end);
+    return courseStart < slotEnd && courseEnd > slotStart;
+  });
+
+  return overlapMatch?.key;
+};
+
+type Cell = {
+  course: CourseInSemester;
+  timeEntry: NonNullable<CourseInSemester["time"]>[number];
+};
+
 const WeeklyTableView: React.FC = () => {
   const { instructorCoursesBySemester } = useInstructorDetailStore();
 
@@ -21,16 +52,18 @@ const WeeklyTableView: React.FC = () => {
       (s) => s.semester.name === "اول - 1405",
     );
 
-    const map: Record<string, CourseInSemester> = {};
+    const map: Record<string, Cell> = {};
     if (!semester || !semester.courses) return map;
 
     semester.courses.forEach((course) => {
       if (!course.time) return;
       course.time.forEach((t) => {
-        const key = `${t.day}-${t.start_time}-${t.end_time}`;
-        map[key] = course;
+        const slotKey = findMatchingSlotKey(t.start_time, t.end_time);
+        if (!slotKey) return;
+        map[`${t.day}-${slotKey}`] = { course, timeEntry: t };
       });
     });
+
     return map;
   }, [instructorCoursesBySemester]);
 
@@ -75,22 +108,19 @@ const WeeklyTableView: React.FC = () => {
                 </td>
 
                 {DEFAULT_TIME_SLOTS.map((slot) => {
-                  const course = tableData[`${day}-${slot.start}-${slot.end}`];
+                  const cell = tableData[`${day}-${slot.key}`];
                   return (
                     <td
                       key={`${day}-${slot.key}`}
                       className="h-16 sm:h-20 border-b border-gray-200 border-l relative"
                     >
-                      {course ? (
+                      {cell ? (
                         <div className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center">
                           <div className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate sm:pb1 lg:pb-2 text-center">
-                            {course.name}
+                            {cell.course.name}
                           </div>
                           <div className="text-[8px] sm:text-xs text-indigo-700 truncate text-center">
-                            {course.time.find(
-                              (t) =>
-                                t.day === day && t.start_time === slot.start,
-                            )?.room || ""}
+                            {cell.timeEntry.room || ""}
                           </div>
                         </div>
                       ) : null}
