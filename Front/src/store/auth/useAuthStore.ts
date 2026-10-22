@@ -2,126 +2,188 @@ import { create } from "zustand";
 import axios from "axios";
 import api from "../../utils/axios";
 import config from "../../config/config";
-import toast from "react-hot-toast";
-import { decodeJWT } from "../../utils/JWTDecode";
-import {
-  type AuthUser,
-  type LoginResponse,
-  type JwtPayload,
-} from "../../types";
+import { type LoginResponse } from "../../types";
+
+const TOKEN_KEY = "jwt";
+
+type RegisterResult = "authenticated" | "created_needs_login";
+
+interface AuthStatusData {
+  isAuthenticated: boolean;
+  username: string;
+  role: string;
+}
 
 interface AuthStore {
   token: string | null;
-  user: AuthUser | null;
   isAuthenticated: boolean;
+  username: string | null;
+  role: string | null;
   hasHydrated: boolean;
 
   isLoading: boolean;
   error: string | null;
 
-  login: (username: string, password: string) => Promise<JwtPayload>;
-  loginWithGoogle: (redirectTo: string) => Promise<void>;
-  hydrateFromToken: () => void;
+  login: (username: string, password: string) => Promise<void>;
+  register: (username: string, password: string) => Promise<RegisterResult>;
+  checkAuthStatus: () => Promise<boolean>;
+  hydrate: () => void;
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
+function extractErrorMessage(err: unknown): string {
+  if (axios.isAxiosError(err)) {
+    const status = err.response?.status;
+    
+    if (status === 409) return "این نام کاربری قبلاً ثبت شده است. لطفاً نام دیگری انتخاب کنید.";
+    if (status === 401) return "نام کاربری یا رمز عبور اشتباه است.";
+    if (status === 429) return "تعداد تلاش‌ها بیش از حد مجاز است. لطفاً بعداً تلاش کنید.";
+
+    const message = (
+      err.response?.data as { message?: string } | undefined
+    )?.message;
+    if (message) return message;
+
+    return err.message;
+  }
+  if (err instanceof Error) return err.message;
+  return "خطایی رخ داد";
+}
+
+export const useAuthStore = create<AuthStore>((set, get) => ({
   token: null,
-  user: null,
   isAuthenticated: false,
+  username: null,
+  role: null,
   hasHydrated: false,
   isLoading: false,
   error: null,
 
-  hydrateFromToken: () => {
-    const token = localStorage.getItem("jwt");
-
-    if (!token) {
-      set({ isAuthenticated: false, user: null, hasHydrated: true });
-      return;
-    }
-
-    try {
-      const payload = decodeJWT(token);
-
-      if (payload.exp * 1000 < Date.now()) {
-        localStorage.removeItem("jwt");
-        set({ isAuthenticated: false, user: null, hasHydrated: true });
-        return;
-      }
-
-      set({
-        token,
-        user: {
-          clientID: payload.clientID,
-          username: payload.username,
-          role: payload.role,
-        },
-        isAuthenticated: true,
-        hasHydrated: true,
-      });
-    } catch {
-      localStorage.removeItem("jwt");
-      set({ isAuthenticated: false, user: null, hasHydrated: true });
-    }
+  hydrate: () => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    set({
+      token,
+      isAuthenticated: !!token,
+      hasHydrated: true,
+    });
   },
 
   login: async (username, password) => {
-    set({ isLoading: true });
-
+    set({ isLoading: true, error: null });
     try {
-      const res = await api.post<LoginResponse>(`${config.apiUrl}/auth/login`, {
-        username,
-        password,
-      });
+      const res = await api.post<LoginResponse>(
+        `${config.apiUrl}/auth/login`,
+        { username, password }
+      );
 
       const token = res.data.data.token;
-      localStorage.setItem("jwt", token);
-
-      const payload = decodeJWT(token);
+      localStorage.setItem(TOKEN_KEY, token);
 
       set({
         token,
-        user: {
-          clientID: payload.clientID,
-          username: payload.username,
-          role: payload.role,
-        },
         isAuthenticated: true,
         hasHydrated: true,
       });
 
-      return payload;
+      await get().checkAuthStatus();
+    } catch (err) {
+      set({ error: extractErrorMessage(err) });
+      throw err;
     } finally {
       set({ isLoading: false });
     }
   },
 
-  loginWithGoogle: async (redirectTo: string = "/") => {
+  register: async (username, password) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await axios.get(`${config.apiUrl}/auth/google/login`, {
-        params: { redirect: redirectTo },
-      });
-      if (res.data.status === "success" && res.data.data?.auth_url) {
-        window.location.href = res.data.data.auth_url;
+      const res = await api.post<LoginResponse>(
+        `${config.apiUrl}/auth/register`,
+        { username, password }
+      );
+
+      const token = (res.data?.data as { token?: string } | undefined)
+        ?.token;
+
+      if (!token) {
+        return "created_needs_login";
       }
+
+      localStorage.setItem(TOKEN_KEY, token);
+      set({
+        token,
+        isAuthenticated: true,
+        hasHydrated: true,
+      });
+
+      await get().checkAuthStatus();
+
+      return "authenticated";
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Something went wrong";
-      set({ error: errorMessage });
-      toast.error(errorMessage);
+      set({ error: extractErrorMessage(err) });
+      throw err;
     } finally {
       set({ isLoading: false });
+    }
+  },
+
+  checkAuthStatus: async () => {
+    const token = get().token ?? localStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      set({
+        token: null,
+        isAuthenticated: false,
+        username: null,
+        role: null,
+      });
+      return false;
+    }
+
+    try {
+      const res = await api.get<{ data: AuthStatusData }>(
+        `${config.apiUrl}/auth/status`
+      );
+
+      const data = res.data?.data;
+      const authed = !!data?.isAuthenticated;
+
+      if (!authed) {
+        localStorage.removeItem(TOKEN_KEY);
+        set({
+          token: null,
+          isAuthenticated: false,
+          username: null,
+          role: null,
+        });
+        return false;
+      }
+
+      set({
+        isAuthenticated: true,
+        username: data?.username ?? null,
+        role: data?.role ?? null,
+      });
+      return true;
+    } catch {
+      localStorage.removeItem(TOKEN_KEY);
+      set({
+        token: null,
+        isAuthenticated: false,
+        username: null,
+        role: null,
+      });
+      return false;
     }
   },
 
   logout: () => {
-    localStorage.removeItem("jwt");
+    localStorage.removeItem(TOKEN_KEY);
+    window.location.href = "/";
     set({
       token: null,
-      user: null,
       isAuthenticated: false,
+      username: null,
+      role: null,
       hasHydrated: true,
     });
   },
