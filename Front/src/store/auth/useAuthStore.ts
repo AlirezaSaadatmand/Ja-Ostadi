@@ -164,7 +164,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         role: data?.role ?? null,
       });
       return true;
-    } catch {
+    } catch (err) {
+      // A network failure or server error must not log the user out;
+      // only an explicit 401 means the token is invalid.
+      if (!(axios.isAxiosError(err) && err.response?.status === 401)) {
+        return get().isAuthenticated;
+      }
       localStorage.removeItem(TOKEN_KEY);
       set({
         token: null,

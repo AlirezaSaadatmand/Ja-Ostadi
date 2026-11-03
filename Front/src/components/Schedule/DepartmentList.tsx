@@ -16,7 +16,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm p-3 sm:p-6">
+      <div className="bg-white/90 rounded-2xl border border-white/70 shadow-sm animate-fade-up p-3 sm:p-6">
         <div className="animate-pulse">
           <div className="h-4 sm:h-5 bg-gray-200 rounded w-24 sm:w-32 mb-3 sm:mb-6"></div>
           <div className="flex overflow-x-auto gap-2 sm:gap-4 pb-2">
@@ -33,10 +33,10 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-3 sm:p-6 ">
+    <div className="bg-white/90 rounded-2xl border border-white/70 shadow-sm animate-fade-up p-3 sm:p-6 ">
       <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-6 flex items-center justify-center">
         <svg
-          className="w-4 h-4 sm:w-6 sm:h-6 ml-2 sm:ml-3 text-indigo-600"
+          className="w-4 h-4 sm:w-6 sm:h-6 ml-2 sm:ml-3 text-brand-dark"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -77,8 +77,8 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
               key={dept.id}
               className={`p-2 sm:p-5 rounded-lg text-center transition-all duration-200 border-2 flex-shrink-0 ${
                 selectedDept === dept.id
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-lg transform scale-105"
-                  : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-md"
+                  ? "bg-brand text-white border-brand shadow-lg scale-105"
+                  : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-brand/10 hover:border-brand/50 hover:shadow-md"
               } w-20 sm:w-40`}
               onClick={() => onSelect(dept.id)}
             >

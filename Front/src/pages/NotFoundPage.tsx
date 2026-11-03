@@ -1,4 +1,8 @@
 import type React from "react";
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
+import { Home } from "lucide-react";
+import PageShell from "../components/common/PageShell";
 
 const notFoundMessages = [
   "اخخخ رفتی تو دیوار که :)",
@@ -9,26 +13,36 @@ const notFoundMessages = [
 ];
 
 const NotFoundPage: React.FC = () => {
-  const giveOneToMe = Math.floor(Math.random() * notFoundMessages.length);
+  const message = useMemo(
+    () => notFoundMessages[Math.floor(Math.random() * notFoundMessages.length)],
+    [],
+  );
+
   return (
-    <div
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center p-8 font-sans text-center"
-      dir="rtl"
-    >
-      <h1 className="text-[10rem] font-extrabold text-indigo-600 mb-8">۴۰۴</h1>
-      <h2 className="text-4xl font-bold mb-4 text-gray-900">
-        صفحه مورد نظر یافت نشد
-      </h2>
-      <p className="text-gray-700 text-base mb-8 max-w-md">
-        {notFoundMessages[giveOneToMe]}
-      </p>
-      <a
-        href="/"
-        className="inline-block px-8 py-4 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition"
-      >
-        بازگشت به صفحه اصلی
-      </a>
-    </div>
+    <PageShell maxWidth="max-w-2xl">
+      <div className="flex flex-col items-center py-10 text-center">
+        <h1 className="animate-float bg-gradient-to-l from-brand to-brand-dark bg-clip-text text-8xl font-extrabold text-transparent sm:text-[10rem]">
+          ۴۰۴
+        </h1>
+        <h2 className="mt-4 animate-fade-up text-2xl font-bold text-gray-900 sm:text-4xl">
+          صفحه مورد نظر یافت نشد
+        </h2>
+        <p
+          className="mt-4 max-w-md animate-fade-up text-gray-600"
+          style={{ animationDelay: "100ms" }}
+        >
+          {message}
+        </p>
+        <Link
+          to="/"
+          style={{ animationDelay: "200ms" }}
+          className="mt-8 inline-flex animate-fade-up items-center gap-2 rounded-xl bg-brand px-8 py-3 font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-lg"
+        >
+          <Home className="h-5 w-5" />
+          بازگشت به صفحه اصلی
+        </Link>
+      </div>
+    </PageShell>
   );
 };
 

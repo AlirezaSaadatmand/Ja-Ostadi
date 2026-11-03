@@ -350,7 +350,7 @@ const AdminCommentsPage: React.FC = () => {
   const grandTotal = counts.pending + counts.approved + counts.rejected;
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-brand-light via-white to-[#f3ece0]" dir="rtl">
       {toast && (
         <Toast
           message={toast.message}

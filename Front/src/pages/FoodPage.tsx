@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Header from "../components/Header";
+import PageShell from "../components/common/PageShell";
 import DaySelector from "../components/Food/DaySelector";
 import DayMealsSection from "../components/Food/DayMealsSection";
 import { useWeeklyFoodStore } from "../store/food/useWeeklyFoodStore";
@@ -9,7 +10,7 @@ const FoodPage: React.FC = () => {
 
   useEffect(() => {
     fetchWeeklyFood();
-  }, []);
+  }, [fetchWeeklyFood]);
 
   if (!foodData) {
     return (
@@ -26,24 +27,15 @@ const FoodPage: React.FC = () => {
   }
 
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center px-3 pb-32 sm:px-6 font-sans relative"
+    <PageShell
+      title="برنامه غذایی سلف دانشگاه"
+      subtitle="برای مشاهده منوی هر روز روی کارت مربوطه کلیک کنید"
     >
-      <Header />
-
-      <div className="text-center sm:mt-20 lg:mt-30 mb-4">
-        <h1 className="text-2xl sm:text-3xl mt-10 font-extrabold text-gray-900 mb-2">
-          🍽️ برنامه غذایی سلف دانشگاه
-        </h1>
-        <p className="text-gray-600 text-sm sm:text-base">
-          برای مشاهده منوی هر روز روی کارت مربوطه کلیک کنید
-        </p>
+      <div className="flex flex-col items-center">
+        <DaySelector />
+        <DayMealsSection />
       </div>
-
-      <DaySelector />
-      <DayMealsSection />
-    </div>
+    </PageShell>
   );
 };
 

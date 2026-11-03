@@ -54,10 +54,10 @@ const CourseList: React.FC<CourseListProps> = ({
   const isSearching = searchTerm.trim().length > 0;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-3 sm:p-5">
+    <div className="bg-white/90 rounded-2xl border border-white/70 shadow-sm animate-fade-up p-3 sm:p-5">
       <h3 className="text-l sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center justify-center">
         <svg
-          className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 text-emerald-600"
+          className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 text-brand-dark"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -83,7 +83,7 @@ const CourseList: React.FC<CourseListProps> = ({
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="جستجوی نام درس..."
           aria-label="جستجوی نام درس"
-          className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pr-9 pl-9 text-sm text-gray-900 placeholder-gray-400 transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-100"
+          className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pr-9 pl-9 text-sm text-gray-900 placeholder-gray-400 transition focus:border-brand focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20"
         />
         <svg
           className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
@@ -148,7 +148,7 @@ const CourseList: React.FC<CourseListProps> = ({
           {filteredCourses.map((course) => (
             <div
               key={course.course.id}
-              className="p-3 sm:p-5 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer"
+              className="p-3 sm:p-5 rounded-xl bg-gray-50 hover:bg-brand/10 border border-gray-200 hover:border-brand/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
               onClick={() => onCourseClick(course)}
             >
               <div className="flex items-center justify-between">
@@ -160,7 +160,7 @@ const CourseList: React.FC<CourseListProps> = ({
                     استاد: {course.instructor.name}
                   </span>
                 </div>
-                <span className="text-xs sm:text-sm bg-blue-100 text-blue-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
+                <span className="text-xs sm:text-sm bg-brand/15 text-brand-dark px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
                   {course.course.units} واحد
                 </span>
               </div>

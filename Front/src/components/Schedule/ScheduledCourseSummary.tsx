@@ -16,11 +16,11 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm flex flex-col h-full max-h-[450px] sm:max-h-[550px] lg:max-h-[650px]">
+    <div className="bg-white/90 rounded-2xl border border-white/70 shadow-sm animate-fade-up flex flex-col h-full max-h-[450px] sm:max-h-[550px] lg:max-h-[650px]">
       <div className="p-2 sm:p-3 border-b border-gray-200 flex-shrink-0">
         <h3 className="text-sm sm:text-base font-semibold text-gray-900 flex items-center justify-center">
           <svg
-            className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2 text-purple-600"
+            className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2 text-brand-dark"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -40,7 +40,7 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({
 
       <div className="p-2 sm:p-3 border-b border-gray-200 bg-gray-50 flex justify-between items-center text-xs font-medium text-gray-700 flex-shrink-0">
         <span>تعداد کل واحدها:</span>
-        <span className="text-purple-700 text-sm sm:text-base font-bold">
+        <span className="text-brand-dark text-sm sm:text-base font-bold">
           {totalUnits}
         </span>
       </div>
@@ -68,7 +68,7 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({
             {scheduledCourses.map((course) => (
               <div
                 key={course.course.id}
-                className="p-3 sm:p-5 rounded-lg bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-300 transition-all duration-200 cursor-pointer"
+                className="p-3 sm:p-5 rounded-xl bg-gray-50 hover:bg-brand/10 border border-gray-200 hover:border-brand/50 transition-all duration-200 cursor-pointer"
                 onClick={() => onCourseClick(course)}
               >
                 <div className="flex items-center justify-between">
@@ -81,7 +81,7 @@ const ScheduledCourseSummary: React.FC<ScheduledCourseSummaryProps> = ({
                     </span>
                   </div>
                   <div className="flex flex-col text-left">
-                    <span className="text-xs sm:text-sm bg-purple-100 text-purple-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
+                    <span className="text-xs sm:text-sm bg-brand/15 text-brand-dark px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
                       {course.course.units} واحد
                     </span>
                     <span className="text-xs sm:text-sm bg-green-100 text-green-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">

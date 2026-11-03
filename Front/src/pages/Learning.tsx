@@ -1,45 +1,32 @@
-// import DepartmentList from "../components/Schedule/DepartmentList";
-// import { useScheduleDataStore } from "../store/schedule/useScheduleDataStore";
-
-// const topics = [
-//     {
-//     id: 1,
-//     name: 'برنامه نویسی',
-//     instructors_count: 1,
-//     courses_count: 1
-//     },
-//     {
-//     id: 2,
-//     name: 'ریاضی',
-//     instructors_count: 1,
-//     courses_count: 1
-//     },
-// ];
+import { GitBranch, ArrowLeft } from "lucide-react";
+import PageShell from "../components/common/PageShell";
 
 export const LearningHub = () => {
-  //   const {
-  //     departments,
-  //     isLoadingDepartments,
-  //     selectedDept,
-  //     setSelectedDept,
-  //   } = useScheduleDataStore()
   return (
-    <section className="flex justify-center items-center align-middle">
-      {/* <div className="mb-1 sm:mb-4">
-          <DepartmentList
-            departments={Array.isArray(departments) ? departments : []}
-            selectedDept={selectedDept}
-            onSelect={setSelectedDept}
-            isLoading={isLoadingDepartments}
-          />
-        </div> */}
-      <a href="https://parsabordbar.github.io/get-git/">
-        <div className="bg-[#F75B2B] px-10 py-16 my-10 rounded-xl border-black border-[2px] border-b-8">
-          <h2 className="bold text-lg font-semibold">
-            فعلا فقط می‌تونی گیت و گیت‌هاب یادبگیری{" "}
-          </h2>
-        </div>
+    <PageShell
+      title="محتوای آموزشی"
+      subtitle="منابع یادگیری که طی سال‌ها تهیه شده"
+      maxWidth="max-w-3xl"
+    >
+      <a
+        href="https://parsabordbar.github.io/get-git/"
+        target="_blank"
+        rel="noreferrer"
+        className="group flex animate-fade-up items-center gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/50 hover:shadow-xl"
+      >
+        <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-brand/15 text-brand-dark transition-colors group-hover:bg-brand group-hover:text-white">
+          <GitBranch className="h-7 w-7" />
+        </span>
+        <span className="flex-1">
+          <span className="block text-lg font-semibold text-gray-900">
+            آموزش گیت و گیت‌هاب
+          </span>
+          <span className="block text-sm text-gray-500">
+            فعلا فقط می‌تونی گیت و گیت‌هاب یاد بگیری
+          </span>
+        </span>
+        <ArrowLeft className="h-5 w-5 text-gray-400 transition-transform group-hover:-translate-x-1" />
       </a>
-    </section>
+    </PageShell>
   );
 };

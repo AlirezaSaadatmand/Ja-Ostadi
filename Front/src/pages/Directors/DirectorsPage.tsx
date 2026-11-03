@@ -15,7 +15,7 @@ const TERMS = ["همه", "2", "4", "6", "8"];
 const DirectorsPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const { user, isAuthenticated, hasHydrated, logout } = useAuthStore();
+  const { username, role, isAuthenticated, hasHydrated, logout } = useAuthStore();
 
   const { tempCourses, fetchTempCourses, isLoading } = useTempCourseStore();
 
@@ -28,21 +28,21 @@ const DirectorsPage: React.FC = () => {
     if (!hasHydrated) return;
 
     if (!isAuthenticated) {
-      navigate("/login", { replace: true });
+      navigate("/auth", { replace: true });
       return;
     }
 
-    if (user?.role !== "director") {
+    if (role !== "director") {
       navigate("/", { replace: true });
       return;
     }
 
     fetchTempCourses();
-  }, [hasHydrated, isAuthenticated, user, navigate, fetchTempCourses]);
+  }, [hasHydrated, isAuthenticated, role, navigate, fetchTempCourses]);
 
   const handleLogout = () => {
     logout();
-    navigate("/login", { replace: true });
+    navigate("/auth", { replace: true });
   };
 
   const handleRemoveFromSchedule = (id: number | undefined) => {
@@ -83,7 +83,7 @@ const DirectorsPage: React.FC = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold">پنل مدیر گروه</h1>
-                <p className="text-gray-600">خوش آمدید، {user?.username}</p>
+                <p className="text-gray-600">خوش آمدید، {username}</p>
               </div>
             </div>
 

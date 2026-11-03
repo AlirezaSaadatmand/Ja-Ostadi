@@ -54,7 +54,7 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
     };
 
     const renderNormalTable = () => (
-      <table className="border-collapse bg-white rounded-lg overflow-hidden shadow-sm w-full lg:min-w-[700px] table-fixed">
+      <table className="border-collapse bg-white rounded-xl overflow-hidden shadow-sm w-full lg:min-w-[700px] table-fixed">
         <thead>
           <tr className="bg-gray-50">
             <th className="p-1 sm:p-2 lg:p-5 text-right font-semibold text-gray-700 border-b border-gray-200 text-xs sm:text-sm">
@@ -89,11 +89,11 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                     className="border-b border-gray-200 h-16 sm:h-20 lg:h-24 transition-colors relative border-l group"
                   >
                     {course ? (
-                      <div className="absolute inset-0.5 lg:inset-1 bg-indigo-100 border border-indigo-300 rounded lg:rounded-xl p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center">
-                        <div className="text-[8px] lg:text-sm font-semibold text-indigo-900 truncate leading-tight">
+                      <div className="absolute inset-0.5 lg:inset-1 bg-brand/15 border border-brand/40 rounded lg:rounded-xl animate-scale-in p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center">
+                        <div className="text-[8px] lg:text-sm font-semibold text-brand-dark truncate leading-tight">
                           {course.course.name}
                         </div>
-                        <div className="text-[7px] lg:text-sm text-indigo-700 truncate leading-tight sm:block">
+                        <div className="text-[7px] lg:text-sm text-brand-dark/80 truncate leading-tight sm:block">
                           {course.instructor.name}
                         </div>
                         <button
@@ -130,7 +130,7 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
     );
 
     const renderRotatedTable = () => (
-      <table className="border-collapse bg-white rounded-lg overflow-hidden shadow-sm w-full lg:min-w-[700px] table-fixed">
+      <table className="border-collapse bg-white rounded-xl overflow-hidden shadow-sm w-full lg:min-w-[700px] table-fixed">
         <thead>
           <tr className="bg-gray-50">
             <th className="p-1 sm:p-2 lg:p-5 text-right font-semibold text-gray-700 border-b border-gray-200 text-xs sm:text-sm">
@@ -165,11 +165,11 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                     className="border-b border-gray-200 h-16 sm:h-20 lg:h-24 transition-colors relative border-l group"
                   >
                     {course ? (
-                      <div className="absolute inset-0.5 lg:inset-1 bg-indigo-100 border border-indigo-300 rounded lg:rounded-xl p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center">
-                        <div className="text-[8px] lg:text-sm font-semibold text-indigo-900 truncate leading-tight">
+                      <div className="absolute inset-0.5 lg:inset-1 bg-brand/15 border border-brand/40 rounded lg:rounded-xl animate-scale-in p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center">
+                        <div className="text-[8px] lg:text-sm font-semibold text-brand-dark truncate leading-tight">
                           {course.course.name}
                         </div>
-                        <div className="text-[7px] lg:text-sm text-indigo-700 truncate leading-tight sm:block">
+                        <div className="text-[7px] lg:text-sm text-brand-dark/80 truncate leading-tight sm:block">
                           {course.instructor.name}
                         </div>
                         <button
@@ -212,7 +212,7 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
             onClick={handleExportPdf}
             disabled={isExporting}
             data-pdf-exclude
-            className="mb-2 sm:mb-4 lg:mb-0 bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-3 rounded-lg text-xs sm:text-sm lg:text-base flex items-center gap-1 sm:gap-2 w-full justify-center lg:w-auto"
+            className="mb-2 sm:mb-4 lg:mb-0 bg-brand hover:bg-brand-dark text-white px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-3 rounded-lg text-xs sm:text-sm lg:text-base flex items-center gap-1 sm:gap-2 w-full justify-center lg:w-auto"
           >
             {isExporting ? (
               <>
@@ -262,7 +262,7 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
           <button
             onClick={toggleRotation}
             data-pdf-exclude
-            className="bg-gray-600 hover:bg-gray-700 text-white px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-3 rounded-lg text-xs sm:text-sm lg:text-base flex items-center gap-1 sm:gap-2 w-full justify-center lg:w-auto"
+            className="bg-gray-700 hover:bg-gray-800 text-white px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-3 rounded-lg text-xs sm:text-sm lg:text-base flex items-center gap-1 sm:gap-2 w-full justify-center lg:w-auto"
           >
             <svg
               className={`w-3 h-3 lg:w-4 lg:h-4 transition-transform duration-300 ${isRotated ? "rotate-90" : ""}`}

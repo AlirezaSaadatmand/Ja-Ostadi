@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import Header from "../components/Header";
+import PageShell from "../components/common/PageShell";
 import { useRoomStore } from "../store/usefull/useRoomScheduleStore";
 import RoomWeeklyTableView from "../components/Room/RoomWeeklyTableView";
 import { downloadRoomScheduleExcel } from "../components/Room/DownloadRoomScheduleExcel";
@@ -44,31 +44,19 @@ const RoomsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 lg:pt-28" dir="rtl">
-      <Header />
-      <div className="block md:hidden bg-white shadow-sm border-b mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 text-center ">
-          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
-            برنامه کلاس‌ها
-          </h1>
-          <p className="text-gray-600 text-lg sm:text-xl">
-            نمایش برنامه کلاسی بر اساس کلاس
-          </p>
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
-        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6">
-          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-6">
-            انتخاب کلاس
-          </h2>
-
+    <PageShell
+      title="برنامه کلاس‌ها"
+      subtitle="نمایش برنامه کلاسی بر اساس کلاس"
+    >
+      <div>
+        <div className="mb-6 rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur animate-fade-up sm:p-6">
           <div className="w-full sm:w-1/2 mx-auto">
             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-              کلاس:
+              انتخاب کلاس
             </label>
 
             <select
-              className="block w-full text-sm border border-gray-300 rounded-md p-2"
+              className="block w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm shadow-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
               value={selectedRoomId ?? ""}
               onChange={handleRoomChange}
               disabled={rooms.length === 0}
@@ -105,14 +93,14 @@ const RoomsPage = () => {
           <>
             <div className="mb-4 text-center flex gap-3 justify-center">
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-brand-dark"
                 onClick={() => downloadRoomScheduleExcel(roomSchedule)}
               >
                 دانلود Excel
               </button>
 
               <button
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                className="rounded-xl bg-gray-800 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-gray-900"
                 onClick={() =>
                   useRoomPdfExportStore.getState().exportRoomPdf(roomSchedule)
                 }
@@ -125,7 +113,7 @@ const RoomsPage = () => {
           </>
         )}
       </div>
-    </div>
+    </PageShell>
   );
 };
 

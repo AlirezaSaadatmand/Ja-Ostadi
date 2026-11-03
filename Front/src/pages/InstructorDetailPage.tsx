@@ -2,6 +2,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useInstructorDetailStore } from "../store/instructors/useInstructorDetailStore";
+import PageShell from "../components/common/PageShell";
 import CommentSection from "../components/Instructor/CommentSection";
 import WeeklyTableView from "../components/Instructor/WeeklyTableView";
 import {
@@ -46,47 +47,32 @@ const InstructorDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div
-        className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8"
-        dir="rtl"
-      >
-        <div className="animate-pulse bg-white rounded-xl shadow-lg p-6 sm:p-10 w-full max-w-3xl space-y-6">
-          <div className="h-8 sm:h-10 bg-gray-200 rounded w-3/4 mx-auto"></div>
-          <div className="h-5 sm:h-6 bg-gray-200 rounded w-1/2 mx-auto"></div>
-          <div className="h-20 sm:h-24 bg-gray-200 rounded"></div>
-          <div className="h-20 sm:h-24 bg-gray-200 rounded"></div>
+      <PageShell maxWidth="max-w-3xl">
+        <div className="animate-pulse space-y-6 rounded-2xl bg-white p-6 shadow-sm sm:p-10">
+          <div className="mx-auto h-9 w-3/4 rounded bg-gray-200"></div>
+          <div className="mx-auto h-5 w-1/2 rounded bg-gray-200"></div>
+          <div className="h-24 rounded bg-gray-200"></div>
+          <div className="h-24 rounded bg-gray-200"></div>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 relative">
-          <Link
-            to="/instructors"
-            className="hidden sm:inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium absolute top-4 right-4 sm:right-6 text-sm sm:text-base"
-          >
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
-            بازگشت
-          </Link>
+    <PageShell
+      title="اطلاعات استاد"
+      subtitle={instructorDetail?.name || "—"}
+      maxWidth="max-w-5xl"
+    >
+      <Link
+        to="/instructors"
+        className="mb-5 inline-flex items-center gap-2 rounded-xl bg-white/80 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-white"
+      >
+        <ArrowRight className="h-4 w-4" />
+        بازگشت به اساتید
+      </Link>
 
-          <div className="text-center space-y-2 sm:space-y-3">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
-              اطلاعات استاد
-            </h1>
-            <p className="text-gray-600 text-base sm:text-xl">
-              اطلاعات مربوط به استاد{" "}
-              <span className="font-semibold text-gray-800">
-                {instructorDetail?.name || "—"}
-              </span>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-10">
+      <div className="space-y-6 sm:space-y-8">
         {error && (
           <div
             className="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-center text-sm sm:text-base"
@@ -97,7 +83,7 @@ const InstructorDetailPage: React.FC = () => {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
+        <div className="animate-fade-up rounded-2xl border border-white/70 bg-white/90 p-5 shadow-sm sm:p-8">
           <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center flex items-center justify-center">
             <UserRound className="w-6 sm:w-7 h-6 sm:h-7 text-blue-600 ml-2" />
             اطلاعات تماس
@@ -130,10 +116,10 @@ const InstructorDetailPage: React.FC = () => {
           )}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg">
+        <div className="overflow-hidden rounded-2xl border border-white/70 bg-white/90 shadow-sm">
           <WeeklyTableView />
         </div>
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
+        <div className="rounded-2xl border border-white/70 bg-white/90 p-5 shadow-sm sm:p-8">
           <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center flex items-center justify-center">
             <BookOpen className="w-6 sm:w-7 h-6 sm:h-7 text-emerald-600 ml-2" />
             دروس ارائه شده
@@ -181,7 +167,7 @@ const InstructorDetailPage: React.FC = () => {
             instructorName={instructorDetail?.name}
           />
       </div>
-    </div>
+    </PageShell>
   );
 };
 

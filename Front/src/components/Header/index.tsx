@@ -1,7 +1,14 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { LogIn, LogOut, User as UserIcon, ShieldCheck } from "lucide-react";
+import {
+  LogIn,
+  LogOut,
+  User as UserIcon,
+  ShieldCheck,
+  Search,
+} from "lucide-react";
 import { useAuthStore } from "../../store/auth/useAuthStore";
+import GlobalSearch from "../Search/GlobalSearch";
 
 const headerItems = [
   { label: "برنامه هفتگی", href: "/schedule" },
@@ -17,6 +24,18 @@ const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
@@ -98,7 +117,7 @@ const Header = () => {
 
   return (
     <header
-      className="w-full bg-white shadow-md fixed top-0 right-0 z-50"
+      className="w-full bg-white border-b border-gray-100 shadow-sm fixed top-0 right-0 z-50"
       dir="rtl"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-4 gap-4">
@@ -107,7 +126,7 @@ const Header = () => {
           className="flex items-center gap-3 hover:scale-105 transition-transform flex-shrink-0"
         >
           <img
-            src="assets/icons/jaOstadiIcon.webp"
+            src="/assets/icons/jaOstadiIcon.webp"
             className="w-10 h-10"
             alt="Ja Ostadi"
           />
@@ -123,8 +142,8 @@ const Header = () => {
               to={item.href}
               className={`px-3 lg:px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${
                 isActive(item.href)
-                  ? "bg-blue-50 text-blue-700 shadow"
-                  : "text-gray-700 hover:text-blue-700 hover:bg-gray-100"
+                  ? "bg-[#AB8A58]/15 text-[#7a5f33]"
+                  : "text-gray-700 hover:text-[#7a5f33] hover:bg-gray-100"
               }`}
             >
               {item.label}
@@ -133,6 +152,18 @@ const Header = () => {
         </nav>
 
         <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="جستجو"
+            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 px-3 py-2 text-sm text-gray-500 transition-colors"
+          >
+            <Search className="w-4 h-4" />
+            <span className="hidden lg:inline">جستجو</span>
+            <kbd className="hidden lg:inline rounded bg-white px-1.5 text-xs text-gray-400 border">
+              Ctrl K
+            </kbd>
+          </button>
           {!hasHydrated ? (
             <div className="w-24 h-9 bg-gray-100 rounded-lg animate-pulse" />
           ) : isAuthenticated ? (
@@ -191,16 +222,26 @@ const Header = () => {
           )}
         </div>
 
-        <button
-          ref={toggleButtonRef}
-          className="md:hidden flex flex-col gap-1.5 p-1"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          <span className="w-6 h-0.5 bg-gray-800"></span>
-          <span className="w-6 h-0.5 bg-gray-800"></span>
-          <span className="w-6 h-0.5 bg-gray-800"></span>
-        </button>
+        <div className="md:hidden flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="جستجو"
+            className="p-1 text-gray-800"
+          >
+            <Search className="w-6 h-6" />
+          </button>
+          <button
+            ref={toggleButtonRef}
+            className="flex flex-col gap-1.5 p-1"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            <span className="w-6 h-0.5 bg-gray-800"></span>
+            <span className="w-6 h-0.5 bg-gray-800"></span>
+            <span className="w-6 h-0.5 bg-gray-800"></span>
+          </button>
+        </div>
       </div>
 
       <div
@@ -272,6 +313,7 @@ const Header = () => {
           </div>
         </nav>
       </div>
+      <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 };

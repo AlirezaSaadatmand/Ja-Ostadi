@@ -8,16 +8,26 @@ import type { Department, Semester } from "../../types";
 interface InstructorListProps {
   departments: Department[];
   semesters: Semester[];
+  query?: string;
 }
+
+const normalize = (s: string) =>
+  s.replace(/ي/g, "ی").replace(/ك/g, "ک").replace(/‌/g, " ").trim();
 
 const InstructorList: React.FC<InstructorListProps> = ({
   departments,
   semesters,
+  query = "",
 }) => {
   const navigate = useNavigate();
   const { isLoading, error, getFilteredInstructors } = useInstructorListStore();
 
-  const instructors = getFilteredInstructors(departments, semesters);
+  const normalizedQuery = normalize(query);
+  const instructors = getFilteredInstructors(departments, semesters).filter(
+    (item) =>
+      !normalizedQuery ||
+      normalize(item.instructor.name ?? "").includes(normalizedQuery),
+  );
 
   const handleInstructorClick = (instructorId: number) => {
     navigate(`/instructors/${instructorId}`);
@@ -70,34 +80,21 @@ const InstructorList: React.FC<InstructorListProps> = ({
               onClick={() =>
                 handleInstructorClick(item.relations.instructor_id)
               }
-              className="group bg-white rounded-xl shadow-md p-3 sm:p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-blue-400 hover:bg-gradient-to-br from-white to-blue-50"
+              style={{ animationDelay: `${Math.min(index, 12) * 50}ms` }}
+              className="group animate-fade-up bg-white rounded-2xl shadow-sm p-3 sm:p-7 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:border-[#AB8A58]/50"
             >
-              <div className="mb-2 sm:mb-6">
-                <BookUser className="w-8 h-8 sm:w-14 sm:h-14 text-blue-600 mx-auto" />
+              <div className="mb-2 sm:mb-5 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#AB8A58] to-[#7a5f33] text-white text-lg sm:text-2xl font-bold shadow-md">
+                {item.instructor.name
+                  .replace(/^(دکتر|مهندس|استاد)\s+/, "")
+                  .charAt(0)}
               </div>
-              <h2 className="text-sm sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4">
+              <h2 className="text-sm sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 group-hover:text-[#7a5f33] transition-colors">
                 {item.instructor.name}
               </h2>
-              <div className="text-gray-700 text-xs sm:text-lg space-y-1 sm:space-y-2">
-                <p className="flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 sm:w-6 sm:h-6 text-indigo-500 ml-1 sm:ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                  <span className="font-bold mr-1">
-                    {item.instructor.field}
-                  </span>
-                </p>
-              </div>
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#AB8A58]/10 px-3 py-1 text-xs sm:text-sm text-[#7a5f33]">
+                <BookUser className="w-3.5 h-3.5" />
+                {item.instructor.field}
+              </span>
             </div>
           ))
       )}

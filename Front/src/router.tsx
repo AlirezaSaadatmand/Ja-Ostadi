@@ -10,6 +10,7 @@ import CoursesPage from "./pages/CoursesPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import RoomsPage from "./pages/RoomsPage";
 import { LearningHub } from "./pages/Learning";
+import FoodPage from "./pages/FoodPage";
 import AuthPage from "./pages/AuthPage";
 import AdminPage from "./pages/admin/AdminPage";
 import AdminCommentsPage from "./pages/admin/AdminCommentsPage";
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
   { path: "/courses/:courseId", element: <CourseDetailPage /> },
   { path: "/classes", element: <RoomsPage /> },
   { path: "/learning-hub", element: <LearningHub /> },
+  { path: "/food", element: <FoodPage /> },
   { path: "/auth", element: <AuthPage /> },
   {
     path: "/admin",

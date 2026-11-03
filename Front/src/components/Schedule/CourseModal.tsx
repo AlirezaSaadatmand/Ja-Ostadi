@@ -34,12 +34,12 @@ const CourseModal: React.FC<CourseModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-gray-900/20 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-gray-900/30 backdrop-blur-sm animate-fade-in flex items-center justify-center z-50 p-4"
       dir="rtl"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-2xl animate-scale-in max-w-md w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -76,13 +76,13 @@ const CourseModal: React.FC<CourseModalProps> = ({
                 {course.course.name}
               </h3>
               <div className="flex items-center space-x-4 space-x-reverse text-base text-gray-600">
-                <span className="bg-blue-100 text-blue-800 px-3 py-1.5 rounded">
+                <span className="bg-brand/15 text-brand-dark px-3 py-1.5 rounded">
                   کد: {course.course.number}
                 </span>
                 <span className="bg-green-100 text-green-800 px-3 py-1.5 rounded">
                   گروه: {course.course.group}
                 </span>
-                <span className="bg-purple-100 text-purple-800 px-3 py-1.5 rounded">
+                <span className="bg-brand/15 text-brand-dark px-3 py-1.5 rounded">
                   {course.course.units} واحد
                 </span>
               </div>
@@ -177,21 +177,21 @@ const CourseModal: React.FC<CourseModalProps> = ({
             {isScheduledCourse ? (
               <button
                 onClick={handleRemoveFromSchedule}
-                className="flex-1 bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold"
+                className="flex-1 bg-red-600 text-white px-5 py-3 rounded-xl hover:bg-red-700 transition-colors font-semibold"
               >
                 حذف از برنامه
               </button>
             ) : (
               <button
                 onClick={handleAddToSchedule}
-                className="flex-1 bg-indigo-600 text-white px-5 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
+                className="flex-1 bg-brand text-white px-5 py-3 rounded-xl hover:bg-brand-dark transition-colors font-semibold"
               >
                 افزودن به برنامه
               </button>
             )}
             <button
               onClick={onClose}
-              className="flex-1 bg-gray-200 text-gray-800 px-5 py-3 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+              className="flex-1 bg-gray-200 text-gray-800 px-5 py-3 rounded-xl hover:bg-gray-300 transition-colors font-semibold"
             >
               انصراف
             </button>

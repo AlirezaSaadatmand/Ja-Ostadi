@@ -2,7 +2,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore";
 import DepartmentDetailModal from "../components/Department/DepartmentDetailModal";
-import Header from "../components/Header";
+import PageShell from "../components/common/PageShell";
 import type { DepartmentDetail } from "../types";
 import { Building2 } from "lucide-react";
 
@@ -29,21 +29,8 @@ const DepartmentsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
-      <Header />
-
-      <div className="bg-white shadow-sm border-b lg:mt-20 mt-16">
-        <div className="max-w-7xl mx-auto px-6 py-10 relative">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900">دپارتمان‌ها</h1>
-            <p className="text-gray-600 mt-3 text-xl">
-              لیست دپارتمان‌ها با جزئیات
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-8">
+    <PageShell title="دپارتمان‌ها" subtitle="لیست دپارتمان‌ها با جزئیات">
+      <div>
         {isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
@@ -86,14 +73,15 @@ const DepartmentsPage: React.FC = () => {
 
         {!isLoading && !error && departments.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {departments.map((dept) => (
+            {departments.map((dept, index) => (
               <div
                 key={dept.id}
+                style={{ animationDelay: `${Math.min(index, 12) * 50}ms` }}
                 onClick={() => handleDepartmentClick(dept)}
-                className="group bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-indigo-400 hover:bg-gradient-to-br from-white to-indigo-50"
+                className="group animate-fade-up bg-white rounded-2xl shadow-sm p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:border-[#AB8A58]/50"
               >
-                <div className="mb-6">
-                  <Building2 className="w-14 h-14 text-green-600 mx-auto" />
+                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#AB8A58]/15 text-[#7a5f33] transition-colors group-hover:bg-[#AB8A58] group-hover:text-white">
+                  <Building2 className="w-9 h-9" />
                 </div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                   {dept.name}
@@ -147,7 +135,7 @@ const DepartmentsPage: React.FC = () => {
         onClose={closeModal}
         department={selectedDepartment}
       />
-    </div>
+    </PageShell>
   );
 };
 

@@ -97,32 +97,46 @@ const HomePage: React.FC = () => {
     },
     {
       title: "چی داریم!",
-      description: "اطلاعات و برنامه هفتگی کالینان دانشگاه.",
+      description: "منوی هفتگی سلف دانشگاه و امتیازدهی به غذاها.",
       icon: <UtensilsCrossed className="w-12 h-12 text-[#AB8A58]" />,
       link: "/food",
-      comingSoon: true,
     },
   ];
 
   return (
     <div
-      className="mt-20 min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative"
+      className="mt-20 min-h-screen bg-gradient-to-br from-[#faf6ef] via-white to-[#f3ece0] flex flex-col items-center justify-center p-4 sm:p-8 font-sans relative overflow-hidden"
       dir="rtl"
     >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-[#AB8A58]/15 blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 -right-24 h-96 w-96 rounded-full bg-indigo-400/10 blur-3xl"
+      />
       <Header />
       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
         <ContributorsSection />
       </div>
 
-      <h1 className="my-12 text-3xl  sm:text-4xl pt-20 md:text-5xl lg:text-6xl font-extrabold mb-8 sm:mb-12 text-gray-900 text-center px-4">
-        داشبورد جا استادی دانشگاه فسا‍!
+      <span className="mt-24 inline-flex items-center gap-2 rounded-full border border-[#AB8A58]/30 bg-white/70 px-4 py-1 text-sm text-[#8a6d3f] backdrop-blur">
+        دانشگاه فسا
+      </span>
+
+      <h1 className="mt-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 text-gray-900 text-center px-4 leading-tight">
+        داشبورد{" "}
+        <span className="bg-gradient-to-l from-[#AB8A58] to-[#7a5f33] bg-clip-text text-transparent">
+          جا استادی
+        </span>
       </h1>
 
-      <p className="max-w-xl mb-8 sm:mb-10 text-center text-gray-600 text-base sm:text-lg md:text-xl px-4">
-        از بخش های پایین می تونی به قسمت های مختلف دسترسی داشته باشی.
+      <p className="max-w-xl mb-10 sm:mb-14 text-center text-gray-600 text-base sm:text-lg md:text-xl px-4">
+        از بخش‌های پایین می‌تونی به قسمت‌های مختلف دسترسی داشته باشی.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl w-full mb-8 sm:mb-12 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl w-full mb-8 sm:mb-12 px-4 relative">
         {sections.map(({ title, description, icon, link, comingSoon }) => {
           const Wrapper: React.ElementType = comingSoon ? "div" : "a";
 
@@ -130,10 +144,10 @@ const HomePage: React.FC = () => {
             <Wrapper
               key={title}
               {...(!comingSoon && { href: link })}
-              className={`group bg-white rounded-xl shadow-md flex flex-col items-center text-center transition-shadow duration-300 relative ${
+              className={`group rounded-2xl border border-white/60 bg-white/80 backdrop-blur shadow-sm flex flex-col items-center text-center transition-all duration-300 relative ${
                 comingSoon
                   ? "p-6 sm:p-8 lg:p-10 cursor-not-allowed opacity-70"
-                  : "p-6 sm:p-8 lg:p-5 hover:shadow-xl hover:bg-gray-50 cursor-pointer"
+                  : "p-6 sm:p-8 lg:p-5 hover:-translate-y-1 hover:shadow-xl hover:border-[#AB8A58]/40 cursor-pointer"
               }`}
             >
               {comingSoon && (

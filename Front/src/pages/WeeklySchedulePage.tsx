@@ -14,7 +14,7 @@ import WeeklyTable from "../components/Schedule/WeeklyTable";
 import CourseModal from "../components/Schedule/CourseModal";
 import ScheduledCourseSummary from "../components/Schedule/ScheduledCourseSummary";
 import CourseList from "../components/Schedule/CourseList";
-import Header from "../components/Header";
+import PageShell from "../components/common/PageShell";
 import type { CourseResponse } from "../types";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -110,39 +110,59 @@ const WeeklySchedulePage: React.FC = () => {
     closeModal();
   };
 
-  if (isLoadingTable) {
+  const loadFailed =
+    isLoadingTable &&
+    !isLoadingCourses &&
+    !isLoadingDepartments &&
+    courses.length === 0;
+
+  if (loadFailed) {
     return (
-      <div className="min-h-screen bg-gray-50" dir="rtl">
-        <Header />
+      <PageShell>
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="text-lg font-semibold text-gray-800">
+              دریافت اطلاعات دروس انجام نشد
+            </p>
+            <p className="mt-2 text-gray-600">
+              اتصال به سرور برقرار نیست. برنامه ذخیره‌شده شما حفظ شده است.
+            </p>
+            <button
+              onClick={() => {
+                fetchDepartments();
+                fetchCourses();
+              }}
+              className="mt-5 px-5 py-2 rounded-xl bg-brand text-white font-semibold hover:bg-brand-dark transition"
+            >
+              تلاش مجدد
+            </button>
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
+
+  if (isLoadingTable) {
+    return (
+      <PageShell>
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto"></div>
             <p className="mt-4 text-gray-600">در حال بارگذاری برنامه...</p>
           </div>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
-      <Header />
-
-      <div className="block md:hidden bg-white shadow-sm border-b mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex items-center justify-center">
-          <div className="text-center flex-1">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
-              برنامه هفتگی دانشجو
-            </h1>
-            <p className="text-gray-600 text-lg sm:text-xl">
-              دپارتمان و درس مورد نظر خود را انتخاب کنید
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto px-1 sm:px-6 py-1 sm:py-4 lg:mt-20">
-        <div className="mb-1 sm:mb-4">
+    <PageShell
+      title="برنامه هفتگی دانشجو"
+      subtitle="دپارتمان و درس مورد نظر خود را انتخاب کنید"
+      maxWidth="max-w-6xl"
+    >
+      <div>
+        <div className="mb-3 sm:mb-4">
           <DepartmentList
             departments={Array.isArray(departments) ? departments : []}
             selectedDept={selectedDept}
@@ -170,7 +190,7 @@ const WeeklySchedulePage: React.FC = () => {
             </div>
           </div>
           <div className="lg:w-3/4 flex-grow order-1 lg:order-2">
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden h-full">
+            <div className="bg-white/90 rounded-2xl border border-white/70 shadow-sm overflow-hidden h-full animate-fade-up">
               <WeeklyTable
                 days={days}
                 timeSlots={timeSlots}
@@ -195,7 +215,7 @@ const WeeklySchedulePage: React.FC = () => {
       />
 
       <Toaster />
-    </div>
+    </PageShell>
   );
 };
 

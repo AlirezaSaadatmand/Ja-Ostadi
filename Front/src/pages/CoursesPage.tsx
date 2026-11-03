@@ -4,8 +4,8 @@ import { useSearchParams, Link } from "react-router-dom";
 import { useCoursesPageStore } from "../store/courses/useCoursesPageStore";
 import { useSemesterStore } from "../store/common/useSemesterStore";
 import { useDepartmentsPageStore } from "../store/departments/useDepartmentsPageStore";
-import { BookOpen, Clock } from "lucide-react";
-import Header from "../components/Header";
+import { BookOpen, Clock, User } from "lucide-react";
+import PageShell from "../components/common/PageShell";
 
 const CoursesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -84,174 +84,139 @@ const CoursesPage: React.FC = () => {
     setSelectedDepartmentId(newDeptId);
   };
 
-  return (
-    <div className="min-h-screen bg-gray-100" dir="rtl">
-      <Header />
 
-      <div className="block md:hidden bg-white shadow-sm border-b mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 flex items-center justify-center">
-          <div className="text-center flex-1">
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">
-              دروس دانشگاه
-            </h1>
-            <p className="text-gray-600 text-lg sm:text-xl">
-              لیست دروس بر اساس ترم و دپارتمان
-            </p>
+  const selectClass =
+    "mt-1 block w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm shadow-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 disabled:opacity-60";
+
+  return (
+    <PageShell title="دروس دانشگاه" subtitle="لیست دروس بر اساس ترم و دپارتمان">
+      <div className="mb-8 rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur animate-fade-up sm:p-6">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label
+              htmlFor="semester-filter"
+              className="text-xs font-medium text-gray-700 sm:text-sm"
+            >
+              انتخاب ترم
+            </label>
+            <select
+              id="semester-filter"
+              className={selectClass}
+              value={selectedSemesterId !== null ? selectedSemesterId : ""}
+              onChange={handleSemesterChange}
+              disabled={semesters.length === 0}
+            >
+              {semesters.length === 0 ? (
+                <option value="">در حال بارگذاری ترم‌ها...</option>
+              ) : (
+                semesters.map((semester) => (
+                  <option key={semester.id} value={semester.id}>
+                    {semester.name}
+                  </option>
+                ))
+              )}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="department-filter"
+              className="text-xs font-medium text-gray-700 sm:text-sm"
+            >
+              انتخاب دپارتمان
+            </label>
+            <select
+              id="department-filter"
+              className={selectClass}
+              value={selectedDepartmentId !== null ? selectedDepartmentId : ""}
+              onChange={handleDepartmentChange}
+              disabled={departments.length === 0}
+            >
+              {departments.length === 0 ? (
+                <option value="">در حال بارگذاری دپارتمان‌ها...</option>
+              ) : (
+                departments.map((dept) => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </option>
+                ))
+              )}
+            </select>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 lg:mt-20 sm:mt-0">
-        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
-          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 text-center mb-4 sm:mb-6">
-            فیلتر دروس
-          </h2>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center">
-            <div className="w-full sm:w-1/2 lg:w-1/3">
-              <label
-                htmlFor="semester-filter"
-                className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
-              >
-                انتخاب ترم:
-              </label>
-              <select
-                id="semester-filter"
-                className="mt-1 block w-full pl-2 sm:pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
-                value={selectedSemesterId !== null ? selectedSemesterId : ""}
-                onChange={handleSemesterChange}
-                disabled={semesters.length === 0}
-              >
-                {semesters.length === 0 ? (
-                  <option value="">در حال بارگذاری ترم‌ها...</option>
-                ) : (
-                  semesters.map((semester) => (
-                    <option key={semester.id} value={semester.id}>
-                      {semester.name}
-                    </option>
-                  ))
-                )}
-              </select>
+      {isLoading && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="animate-pulse rounded-2xl bg-white p-6 shadow-sm"
+            >
+              <div className="mb-4 h-6 w-3/4 rounded bg-gray-200"></div>
+              <div className="h-4 w-1/2 rounded bg-gray-200"></div>
             </div>
-
-            <div className="w-full sm:w-1/2 lg:w-1/3">
-              <label
-                htmlFor="department-filter"
-                className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2"
-              >
-                انتخاب دپارتمان:
-              </label>
-              <select
-                id="department-filter"
-                className="mt-1 block w-full pl-2 sm:pl-3 pr-8 sm:pr-10 py-2 text-sm sm:text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
-                value={
-                  selectedDepartmentId !== null ? selectedDepartmentId : ""
-                }
-                onChange={handleDepartmentChange}
-                disabled={departments.length === 0}
-              >
-                {departments.length === 0 ? (
-                  <option value="">در حال بارگذاری دپارتمان‌ها...</option>
-                ) : (
-                  departments.map((dept) => (
-                    <option key={dept.id} value={dept.id}>
-                      {dept.name}
-                    </option>
-                  ))
-                )}
-              </select>
-            </div>
-          </div>
+          ))}
         </div>
+      )}
 
-        {isLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-xl shadow-md p-6 animate-pulse"
-              >
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </div>
-            ))}
-          </div>
-        )}
+      {error && (
+        <div className="py-12 text-center text-red-600">
+          <p className="text-lg">خطا در بارگذاری دروس: {error}</p>
+        </div>
+      )}
 
-        {error && (
-          <div className="col-span-full text-center py-12 text-red-600">
-            <p className="text-lg">خطا در بارگذاری دروس: {error}</p>
-          </div>
-        )}
+      {!isLoading && !error && courses.length === 0 && (
+        <div className="py-12 text-center animate-fade-in">
+          <BookOpen className="mx-auto mb-4 h-20 w-20 text-gray-300" />
+          <p className="text-lg text-gray-500">
+            هیچ درسی با فیلترهای انتخاب شده یافت نشد.
+          </p>
+        </div>
+      )}
 
-        {!isLoading && !error && courses.length === 0 && (
-          <div className="text-center py-12">
-            <BookOpen className="w-20 h-20 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">
-              هیچ درسی با فیلترهای انتخاب شده یافت نشد.
-            </p>
-          </div>
-        )}
-
-        {!isLoading && !error && courses.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {courses.map((course) => (
-              <Link
-                key={course.id}
-                to={`/courses/${course.id}`}
-                className="group bg-white rounded-xl shadow-md p-3 sm:p-6 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-emerald-400 hover:bg-gradient-to-br from-white to-emerald-50"
-              >
-
-                <div className="mb-2 sm:mb-4">
-                  <BookOpen className="w-8 h-8 sm:w-14 sm:h-14 text-emerald-600 mx-auto" />
-                </div>
-                <h2 className="text-sm sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4 leading-tight">
+      {!isLoading && !error && courses.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
+          {courses.map((course, index) => (
+            <Link
+              key={course.id}
+              to={`/courses/${course.id}`}
+              style={{ animationDelay: `${Math.min(index, 12) * 50}ms` }}
+              className="group flex flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 animate-fade-up hover:-translate-y-1 hover:border-brand/50 hover:shadow-xl sm:p-6"
+            >
+              <div className="mb-4 flex items-start gap-3">
+                <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-brand/15 text-brand-dark transition-colors group-hover:bg-brand group-hover:text-white">
+                  <BookOpen className="h-6 w-6" />
+                </span>
+                <h2 className="text-base font-semibold leading-snug text-gray-900 transition-colors group-hover:text-brand-dark sm:text-lg">
                   {course.name}
                 </h2>
-                <div className="text-gray-700 text-xs sm:text-lg space-y-2 sm:space-y-4">
-                  <p className="flex items-center justify-center">
-                    {course.instructor_name ? (
-                      <svg
-                      className="w-3 h-3 sm:w-6 sm:h-6 text-[#059669]"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      viewBox="0 0 24 24"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      >
-                        <circle cx="12" cy="7" r="4" />
-                        <path d="M5.5 21h13a2 2 0 002-2v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1a2 2 0 002 2z" />
-                      </svg>
-                    ) : null}
-                    <span className="font-bold mr-1">
-                      {course.instructor_name
-                        ? course.instructor_name
-                        : "استاد مشخص نشده"}
+              </div>
+              <p className="mb-3 flex items-center gap-2 text-sm text-gray-600">
+                <User className="h-4 w-4 text-brand" />
+                {course.instructor_name || "استاد مشخص نشده"}
+              </p>
+              {course.class_times && course.class_times.length > 0 && (
+                <div className="mt-auto flex flex-wrap gap-1.5">
+                  {course.class_times.map((ct, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1 rounded-full border border-brand/20 bg-brand/10 px-2.5 py-1 text-xs text-brand-dark"
+                    >
+                      <Clock className="h-3.5 w-3.5" />
+                      <span className="font-medium">{ct.day}</span>
+                      <span className="tabular-nums">
+                        {ct.start_time}-{ct.end_time}
+                      </span>
                     </span>
-                  </p>
-                  {course.class_times && course.class_times.length > 0 && (
-                    <div className="w-full flex flex-wrap justify-center gap-1 mb-2 sm:mb-3">
-                      {course.class_times.map((ct, idx) => (
-                        <div
-                          key={idx}
-                          className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full px-2 py-0.5 text-[9px] sm:text-xs"
-                        >
-                          <Clock className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" />
-                          <span className="font-medium">{ct.day}</span>
-                          <span className="tabular-nums">
-                            {ct.start_time}-{ct.end_time}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  ))}
                 </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
+    </PageShell>
   );
 };
 
