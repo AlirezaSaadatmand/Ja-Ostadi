@@ -1,8 +1,9 @@
-import React, { useMemo } from "react";
-import type { CourseInSemester } from "../../types";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarDays, Clock3 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useInstructorDetailStore } from "../../store/instructors/useInstructorDetailStore";
 
-const DEFAULT_TIME_SLOTS = [
+const TIME_SLOTS = [
   { label: "08:00 - 10:00", key: "08:00-10:00", start: "08:00", end: "10:00" },
   { label: "10:00 - 12:00", key: "10:00-12:00", start: "10:00", end: "12:00" },
   { label: "12:00 - 13:30", key: "12:00-13:30", start: "12:00", end: "13:30" },
@@ -11,128 +12,219 @@ const DEFAULT_TIME_SLOTS = [
   { label: "17:30 - 19:30", key: "17:30-19:30", start: "17:30", end: "19:30" },
 ];
 
-const DEFAULT_DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"];
+const DAYS = ["شنبه", "يک شنبه", "دو شنبه", "سه شنبه", "چهار شنبه"];
 
-const timeToMinutes = (time: string) => {
+const toMinutes = (time: string) => {
   const [hours, minutes] = time.split(":").map(Number);
   return hours * 60 + minutes;
 };
 
-const findMatchingSlotKey = (start: string, end: string) => {
-  const normalizedStart = start.padStart(5, "0");
-  const normalizedEnd = end.padStart(5, "0");
-
-  const exactMatch = DEFAULT_TIME_SLOTS.find(
-    (slot) => slot.start === normalizedStart && slot.end === normalizedEnd,
+const WeeklyTableView = () => {
+  const { instructorCoursesBySemester, isLoadingCourses } =
+    useInstructorDetailStore();
+  const [selectedSemesterId, setSelectedSemesterId] = useState<number | null>(
+    null,
   );
-  if (exactMatch) return exactMatch.key;
 
-  const courseStart = timeToMinutes(normalizedStart);
-  const courseEnd = timeToMinutes(normalizedEnd);
+  useEffect(() => {
+    if (
+      instructorCoursesBySemester.length > 0 &&
+      !instructorCoursesBySemester.some(
+        (semester) => semester.semester.id === selectedSemesterId,
+      )
+    ) {
+      setSelectedSemesterId(instructorCoursesBySemester[0].semester.id);
+    }
+  }, [instructorCoursesBySemester, selectedSemesterId]);
 
-  const overlapMatch = DEFAULT_TIME_SLOTS.find((slot) => {
-    const slotStart = timeToMinutes(slot.start);
-    const slotEnd = timeToMinutes(slot.end);
-    return courseStart < slotEnd && courseEnd > slotStart;
-  });
-
-  return overlapMatch?.key;
-};
-
-type Cell = {
-  course: CourseInSemester;
-  timeEntry: NonNullable<CourseInSemester["time"]>[number];
-};
-
-const WeeklyTableView: React.FC = () => {
-  const { instructorCoursesBySemester } = useInstructorDetailStore();
+  const selectedSemester = instructorCoursesBySemester.find(
+    (semester) => semester.semester.id === selectedSemesterId,
+  );
 
   const tableData = useMemo(() => {
-    const semester = instructorCoursesBySemester.find(
-      (s) => s.semester.name === "اول - 1405",
-    );
+    const map = new Map<
+      string,
+      {
+        courseId: number;
+        courseName: string;
+        room: string;
+        startTime: string;
+        endTime: string;
+      }
+    >();
 
-    const map: Record<string, Cell> = {};
-    if (!semester || !semester.courses) return map;
+    selectedSemester?.courses.forEach((course) => {
+      course.time?.forEach((time) => {
+        const courseStart = toMinutes(time.start_time);
+        const courseEnd = toMinutes(time.end_time);
 
-    semester.courses.forEach((course) => {
-      if (!course.time) return;
-      course.time.forEach((t) => {
-        const slotKey = findMatchingSlotKey(t.start_time, t.end_time);
-        if (!slotKey) return;
-        map[`${t.day}-${slotKey}`] = { course, timeEntry: t };
+        TIME_SLOTS.forEach((slot) => {
+          if (
+            courseStart < toMinutes(slot.end) &&
+            courseEnd > toMinutes(slot.start)
+          ) {
+            map.set(`${time.day}-${slot.key}`, {
+              courseId: course.id,
+              courseName: course.name,
+              room: time.room,
+              startTime: time.start_time,
+              endTime: time.end_time,
+            });
+          }
+        });
       });
     });
 
     return map;
-  }, [instructorCoursesBySemester]);
+  }, [selectedSemester]);
 
-  const currentSemester =
-    instructorCoursesBySemester.find((s) => s.semester.name === "اول - 1405")
-      ?.semester.name || "برنامه هفتگی";
+  const classCount =
+    selectedSemester?.courses.reduce(
+      (total, course) => total + (course.time?.length ?? 0),
+      0,
+    ) ?? 0;
 
   return (
-    <div className="p-2 sm:p-4 lg:p-8 w-full" dir="rtl">
-      <div className="mb-4 text-center">
-        <h3 className="text-base sm:text-lg lg:text-2xl font-semibold text-gray-900">
-          {currentSemester}
-        </h3>
-        <p className="text-gray-600 mt-1 text-xs sm:text-sm lg:text-base">
-          مشاهده برنامه کلاس‌ها
-        </p>
-      </div>
+    <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <div className="flex flex-col gap-4 border-b border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700">
+            <CalendarDays className="h-6 w-6" />
+          </span>
+          <div>
+            <h2 className="text-lg font-extrabold text-slate-900 sm:text-xl">
+              برنامهٔ هفتگی استاد
+            </h2>
+            <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+              {classCount} جلسه
+              {selectedSemester ? ` · ${selectedSemester.semester.name}` : ""}
+            </p>
+          </div>
+        </div>
 
-      <div className="overflow-x-auto w-full text-center">
-        <table className="w-full table-fixed border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="p-2 text-right font-semibold text-gray-700 border-b border-gray-200 text-xs sm:text-sm">
-                روز / ساعت
-              </th>
-              {DEFAULT_TIME_SLOTS.map((slot) => (
-                <th
-                  key={slot.key}
-                  className="p-1 sm:p-2 text-center font-semibold text-gray-700 border-b border-gray-200 text-[10px] sm:text-sm"
-                >
-                  {slot.label}
-                </th>
+        {instructorCoursesBySemester.length > 1 && (
+          <label className="flex min-h-10 items-center gap-2 text-sm text-slate-600">
+            <span className="shrink-0 font-semibold">نیمسال:</span>
+            <select
+              value={selectedSemesterId ?? ""}
+              onChange={(event) =>
+                setSelectedSemesterId(Number(event.target.value))
+              }
+              className="min-h-10 min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 sm:min-w-48"
+            >
+              {instructorCoursesBySemester.map((semester) => (
+                <option key={semester.semester.id} value={semester.semester.id}>
+                  {semester.semester.name}
+                </option>
               ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {DEFAULT_DAYS.map((day) => (
-              <tr key={day} className="hover:bg-gray-50 transition-colors">
-                <td className="p-1 sm:p-2 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-[10px] sm:text-sm">
-                  {day}
-                </td>
-
-                {DEFAULT_TIME_SLOTS.map((slot) => {
-                  const cell = tableData[`${day}-${slot.key}`];
-                  return (
-                    <td
-                      key={`${day}-${slot.key}`}
-                      className="h-16 sm:h-20 border-b border-gray-200 border-l relative"
-                    >
-                      {cell ? (
-                        <div className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center">
-                          <div className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate sm:pb1 lg:pb-2 text-center">
-                            {cell.course.name}
-                          </div>
-                          <div className="text-[8px] sm:text-xs text-indigo-700 truncate text-center">
-                            {cell.timeEntry.room || ""}
-                          </div>
-                        </div>
-                      ) : null}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </select>
+          </label>
+        )}
       </div>
-    </div>
+
+      {isLoadingCourses ? (
+        <div
+          aria-label="در حال بارگذاری برنامهٔ هفتگی"
+          className="animate-pulse p-4 sm:p-6"
+        >
+          <div className="h-6 w-40 rounded bg-slate-200" />
+          <div className="mt-4 h-64 rounded-2xl bg-slate-100" />
+        </div>
+      ) : !selectedSemester || classCount === 0 ? (
+        <div className="px-5 py-10 text-center sm:py-12">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-400">
+            <Clock3 className="h-7 w-7" />
+          </span>
+          <p className="mt-4 text-sm leading-7 text-slate-500">
+            {selectedSemester
+              ? "برای این نیمسال زمان‌بندی کلاسی ثبت نشده است."
+              : "برنامهٔ هفتگی برای این استاد در دسترس نیست."}
+          </p>
+        </div>
+      ) : (
+        <>
+          <p className="px-4 pt-4 text-xs text-slate-400 sm:hidden">
+            برای دیدن همهٔ ساعت‌ها، جدول را به طرفین بکشید.
+          </p>
+          <div
+            className="overflow-x-auto overscroll-x-contain p-4 sm:p-6"
+            role="region"
+            aria-label="جدول هفتگی استاد، قابل پیمایش افقی"
+            tabIndex={0}
+          >
+            <table className="w-full min-w-[850px] table-fixed border-collapse text-right">
+              <thead>
+                <tr className="bg-slate-50">
+                  <th
+                    scope="col"
+                    className="sticky right-0 z-10 w-28 border-b border-l border-slate-200 bg-slate-50 px-3 py-4 text-sm font-bold text-slate-600"
+                  >
+                    روز / ساعت
+                  </th>
+                  {TIME_SLOTS.map((slot) => (
+                    <th
+                      key={slot.key}
+                      scope="col"
+                      className="border-b border-l border-slate-200 px-2 py-4 text-center text-xs font-bold text-slate-600"
+                    >
+                      <span dir="ltr" className="inline-block tabular-nums">
+                        {slot.label}
+                      </span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {DAYS.map((day, dayIndex) => (
+                  <tr
+                    key={day}
+                    className={
+                      dayIndex % 2 === 0 ? "bg-white" : "bg-slate-50/50"
+                    }
+                  >
+                    <th
+                      scope="row"
+                      className="sticky right-0 z-10 h-24 border-b border-l border-slate-200 bg-inherit px-3 py-3 text-sm font-extrabold text-slate-700"
+                    >
+                      {day}
+                    </th>
+                    {TIME_SLOTS.map((slot) => {
+                      const course = tableData.get(`${day}-${slot.key}`);
+                      return (
+                        <td
+                          key={`${day}-${slot.key}`}
+                          className="h-24 border-b border-l border-slate-100 p-1.5"
+                        >
+                          {course && (
+                            <Link
+                              to={`/courses/${course.courseId}`}
+                              className="flex h-full min-w-0 flex-col justify-center rounded-xl border border-indigo-100 bg-indigo-50 px-2 py-2 text-center transition hover:border-indigo-300 hover:bg-indigo-100"
+                            >
+                              <span className="line-clamp-2 text-xs font-extrabold leading-5 text-indigo-900">
+                                {course.courseName}
+                              </span>
+                              <span className="mt-1 truncate text-[11px] text-indigo-700">
+                                {course.room || "مکان ثبت نشده"}
+                              </span>
+                              <span
+                                dir="ltr"
+                                className="mt-1 text-[10px] tabular-nums text-slate-500"
+                              >
+                                {course.startTime}–{course.endTime}
+                              </span>
+                            </Link>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </section>
   );
 };
 
