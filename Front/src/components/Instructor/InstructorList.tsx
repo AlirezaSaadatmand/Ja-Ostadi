@@ -1,7 +1,7 @@
 import type React from "react";
-
-import { GraduationCap, BookUser } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, BookUser, Search, UserRound } from "lucide-react";
 import { useInstructorListStore } from "../../store/instructors/useInstructorListStore";
 import type { Department, Semester } from "../../types";
 
@@ -14,94 +14,134 @@ const InstructorList: React.FC<InstructorListProps> = ({
   departments,
   semesters,
 }) => {
-  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
   const { isLoading, error, getFilteredInstructors } = useInstructorListStore();
 
-  const instructors = getFilteredInstructors(departments, semesters);
+  const filteredInstructors = getFilteredInstructors(departments, semesters);
+  const instructors = useMemo(() => {
+    const query = searchQuery.trim().toLocaleLowerCase();
+    const namedInstructors = filteredInstructors.filter((item) =>
+      item.instructor?.name?.trim(),
+    );
 
-  const handleInstructorClick = (instructorId: number) => {
-    navigate(`/instructors/${instructorId}`);
-  };
+    if (!query) return namedInstructors;
+
+    return namedInstructors.filter((item) =>
+      `${item.instructor.name} ${item.instructor.field}`
+        .toLocaleLowerCase()
+        .includes(query),
+    );
+  }, [filteredInstructors, searchQuery]);
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="bg-white rounded-xl shadow-md p-3 sm:p-6 animate-pulse"
-          >
-            <div className="h-10 w-10 sm:h-16 sm:w-16 bg-gray-200 rounded-full mx-auto mb-2 sm:mb-4"></div>
-            <div className="h-4 sm:h-6 bg-gray-200 rounded w-3/4 mx-auto mb-2 sm:mb-4"></div>
-            <div className="h-3 sm:h-4 bg-gray-200 rounded w-1/2 mx-auto mb-1 sm:mb-2"></div>
-            <div className="h-3 sm:h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
-          </div>
-        ))}
-      </div>
+      <>
+        <div className="relative mb-4">
+          <Search className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            type="search"
+            disabled
+            aria-label="جست‌وجوی استاد"
+            placeholder="نام استاد یا رشته..."
+            className="min-h-12 w-full rounded-xl border border-slate-200 bg-slate-100 py-3 pr-10 pl-4 text-sm text-slate-900 placeholder:text-slate-400"
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 6 }, (_, index) => (
+            <div
+              key={index}
+              className="min-h-48 animate-pulse rounded-2xl border border-slate-200 bg-white p-5"
+            >
+              <div className="mb-5 flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-slate-200" />
+                <div className="flex-1">
+                  <div className="mb-2 h-4 w-3/4 rounded bg-slate-200" />
+                  <div className="h-3 w-1/2 rounded bg-slate-100" />
+                </div>
+              </div>
+              <div className="h-10 rounded-xl bg-slate-100" />
+            </div>
+          ))}
+        </div>
+      </>
     );
   }
 
-  if (error) {
-    return (
-      <div className="col-span-full text-center py-12 text-red-600">
-        <p className="text-lg">خطا در بارگذاری اساتید: {error}</p>
-      </div>
-    );
-  }
+  if (error) return null;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+    <>
+      <div className="relative mb-4">
+        <Search className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          aria-label="جست‌وجوی استاد"
+          placeholder="نام استاد یا رشته را جست‌وجو کنید..."
+          className="min-h-12 w-full rounded-xl border border-slate-200 bg-white py-3 pr-10 pl-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+        />
+      </div>
+
       {instructors.length === 0 ? (
-        <div className="col-span-full text-center py-12">
-          <GraduationCap className="w-12 h-12 sm:w-20 sm:h-20 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500 text-sm sm:text-lg">
-            هیچ استادی یافت نشد.
+        <div className="rounded-3xl border border-slate-200 bg-white px-5 py-12 text-center shadow-sm sm:py-16">
+          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-50 text-sky-500">
+            <BookUser className="h-8 w-8" />
+          </span>
+          <h3 className="mt-5 text-lg font-extrabold text-slate-900">
+            {filteredInstructors.length > 0
+              ? "استادی با این عبارت پیدا نشد"
+              : "استادی برای این فیلترها پیدا نشد"}
+          </h3>
+          <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-slate-500">
+            {filteredInstructors.length > 0
+              ? "نام استاد یا رشتهٔ دیگری را جست‌وجو کنید."
+              : "دپارتمان، نیمسال یا روش نمایش دیگری را انتخاب کنید."}
           </p>
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="mt-5 rounded-xl border border-indigo-200 px-4 py-2 text-sm font-bold text-indigo-700 transition hover:bg-indigo-50"
+            >
+              پاک‌کردن جست‌وجو
+            </button>
+          )}
         </div>
       ) : (
-        instructors
-          .filter(
-            (item) =>
-              item.instructor?.name && item.instructor.name.trim() !== "",
-          )
-          .map((item, index) => (
-            <div
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {instructors.map((item, index) => (
+            <Link
               key={`${item.relations.instructor_id}-${index}`}
-              onClick={() =>
-                handleInstructorClick(item.relations.instructor_id)
-              }
-              className="group bg-white rounded-xl shadow-md p-3 sm:p-8 flex flex-col items-center text-center border border-gray-200 transition-all duration-300 cursor-pointer hover:shadow-xl hover:border-blue-400 hover:bg-gradient-to-br from-white to-blue-50"
+              to={`/instructors/${item.relations.instructor_id}`}
+              className="group flex min-h-52 min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition duration-200 hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_14px_32px_rgba(14,116,144,0.1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 motion-reduce:transform-none sm:p-6"
             >
-              <div className="mb-2 sm:mb-6">
-                <BookUser className="w-8 h-8 sm:w-14 sm:h-14 text-blue-600 mx-auto" />
+              <div className="mb-5 flex items-start justify-between gap-3">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700 transition group-hover:bg-sky-600 group-hover:text-white">
+                  <UserRound className="h-6 w-6" />
+                </span>
+                <span className="mt-2 h-1.5 w-10 rounded-full bg-sky-500" />
               </div>
-              <h2 className="text-sm sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4">
+
+              <h3 className="break-words text-lg font-extrabold leading-7 text-slate-900">
                 {item.instructor.name}
-              </h2>
-              <div className="text-gray-700 text-xs sm:text-lg space-y-1 sm:space-y-2">
-                <p className="flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 sm:w-6 sm:h-6 text-indigo-500 ml-1 sm:ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                  <span className="font-bold mr-1">
-                    {item.instructor.field}
-                  </span>
-                </p>
-              </div>
-            </div>
-          ))
+              </h3>
+              <p className="mt-2 flex min-w-0 items-center gap-2 text-sm text-slate-600">
+                <BookUser className="h-4 w-4 shrink-0 text-slate-400" />
+                <span className="truncate">
+                  {item.instructor.field || "رشته ثبت نشده"}
+                </span>
+              </p>
+
+              <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-bold text-indigo-700 transition group-hover:gap-2.5">
+                مشاهده پروفایل استاد
+                <ArrowLeft className="h-4 w-4" />
+              </span>
+            </Link>
+          ))}
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
