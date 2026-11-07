@@ -23,6 +23,8 @@ import config from "../config/config";
 const CoursesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [areUrlFiltersInitialized, setAreUrlFiltersInitialized] =
+    useState(false);
 
   const {
     courses,
@@ -63,19 +65,32 @@ const CoursesPage: React.FC = () => {
     if (urlDeptId && !isNaN(Number(urlDeptId))) {
       setSelectedDepartmentId(Number(urlDeptId));
     }
+    setAreUrlFiltersInitialized(true);
   }, [searchParams, setSelectedSemesterId, setSelectedDepartmentId]);
 
   useEffect(() => {
+    if (!areUrlFiltersInitialized) return;
     if (semesters.length > 0 && selectedSemesterId === null) {
       setSelectedSemesterId(semesters[0].id);
     }
-  }, [semesters, selectedSemesterId, setSelectedSemesterId]);
+  }, [
+    areUrlFiltersInitialized,
+    semesters,
+    selectedSemesterId,
+    setSelectedSemesterId,
+  ]);
 
   useEffect(() => {
+    if (!areUrlFiltersInitialized) return;
     if (departments.length > 0 && selectedDepartmentId === null) {
       setSelectedDepartmentId(departments[0].id);
     }
-  }, [departments, selectedDepartmentId, setSelectedDepartmentId]);
+  }, [
+    areUrlFiltersInitialized,
+    departments,
+    selectedDepartmentId,
+    setSelectedDepartmentId,
+  ]);
 
   useEffect(() => {
     if (selectedSemesterId !== null && selectedDepartmentId !== null) {
@@ -84,6 +99,7 @@ const CoursesPage: React.FC = () => {
   }, [selectedSemesterId, selectedDepartmentId, fetchCourses]);
 
   useEffect(() => {
+    if (!areUrlFiltersInitialized) return;
     const newSearchParams = new URLSearchParams(searchParams.toString());
     if (selectedSemesterId !== null) {
       newSearchParams.set("semId", selectedSemesterId.toString());
@@ -96,7 +112,13 @@ const CoursesPage: React.FC = () => {
       newSearchParams.delete("deptId");
     }
     setSearchParams(newSearchParams, { replace: true });
-  }, [selectedSemesterId, selectedDepartmentId, setSearchParams, searchParams]);
+  }, [
+    areUrlFiltersInitialized,
+    selectedSemesterId,
+    selectedDepartmentId,
+    setSearchParams,
+    searchParams,
+  ]);
 
   const handleSemesterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSemId = e.target.value ? Number(e.target.value) : null;
