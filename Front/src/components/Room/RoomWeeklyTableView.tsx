@@ -1,4 +1,5 @@
 import React from "react";
+import { Clock3 } from "lucide-react";
 import type { RoomScheduleCourse } from "../../types";
 import { DAYS, TIME_SLOTS } from "../../store/usefull/useRoomScheduleStore";
 
@@ -7,44 +8,74 @@ interface Props {
 }
 
 const toMinutes = (time: string) => {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
 };
 
 const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
   return (
-    <div className="p-2 sm:p-4 lg:p-8 w-full" dir="rtl">
-      <div className="overflow-x-auto w-full text-center">
-        <table className="w-full table-fixed border-collapse bg-white rounded-lg shadow-sm">
+    <div className="w-full" dir="rtl">
+      <div className="flex flex-col gap-1 border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5">
+        <h2 className="text-lg font-extrabold text-slate-900 sm:text-xl">
+          جدول هفتگی کلاس
+        </h2>
+        <p className="text-xs leading-6 text-slate-500 sm:text-sm">
+          درس‌ها و زمان‌های استفاده از این کلاس را در طول هفته ببینید.
+        </p>
+        <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-slate-400 sm:hidden">
+          <span className="h-1 w-5 rounded-full bg-slate-300" />
+          برای دیدن همهٔ ساعت‌ها، جدول را به طرفین بکشید.
+        </p>
+      </div>
+
+      <div
+        className="overflow-x-auto overscroll-x-contain"
+        role="region"
+        aria-label="جدول هفتگی کلاس، قابل پیمایش افقی"
+        tabIndex={0}
+      >
+        <table className="w-full min-w-[850px] table-fixed border-collapse text-right">
           <thead>
-            <tr className="bg-gray-50">
-              <th className="p-2 text-right font-semibold text-gray-700 border-b border-gray-200 text-xs sm:text-sm">
+            <tr className="bg-slate-50">
+              <th
+                scope="col"
+                className="sticky right-0 z-10 w-28 border-b border-l border-slate-200 bg-slate-50 px-3 py-4 text-sm font-bold text-slate-600"
+              >
                 روز / ساعت
               </th>
               {TIME_SLOTS.map((slot) => (
                 <th
                   key={slot.key}
-                  className="p-1 sm:p-2 text-center font-semibold text-gray-700 border-b border-gray-200 text-[10px] sm:text-sm"
+                  scope="col"
+                  className="border-b border-l border-slate-200 px-2 py-4 text-center text-xs font-bold text-slate-600"
                 >
-                  {slot.label}
+                  <span dir="ltr" className="inline-block tabular-nums">
+                    {slot.label}
+                  </span>
                 </th>
               ))}
             </tr>
           </thead>
 
           <tbody>
-            {DAYS.map((day) => (
-              <tr key={day} className="hover:bg-gray-50 transition-colors">
-                <td className="h-18 sm:h-22 p-1 sm:p-2 font-medium text-gray-600 bg-gray-50/50 border-b border-gray-200 text-[10px] sm:text-sm">
+            {DAYS.map((day, dayIndex) => (
+              <tr
+                key={day}
+                className={dayIndex % 2 === 0 ? "bg-white" : "bg-slate-50/50"}
+              >
+                <th
+                  scope="row"
+                  className="sticky right-0 z-10 h-24 border-b border-l border-slate-200 bg-inherit px-3 py-3 text-sm font-extrabold text-slate-700"
+                >
                   {day}
-                </td>
+                </th>
 
                 {TIME_SLOTS.map((slot) => {
-                  const course = roomSchedule.find((c) =>
-                    c.time.some((t) => {
-                      if (t.day !== day) return false;
-                      const courseStart = toMinutes(t.start_time);
-                      const courseEnd = toMinutes(t.end_time);
+                  const course = roomSchedule.find((item) =>
+                    item.time.some((time) => {
+                      if (time.day !== day) return false;
+                      const courseStart = toMinutes(time.start_time);
+                      const courseEnd = toMinutes(time.end_time);
                       const slotStart = toMinutes(slot.start);
                       const slotEnd = toMinutes(slot.end);
                       return courseStart < slotEnd && courseEnd > slotStart;
@@ -54,16 +85,24 @@ const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
                   return (
                     <td
                       key={`${day}-${slot.key}`}
-                      className="h-20 sm:h-24 border-b border-gray-200 border-l relative"
+                      className="h-24 border-b border-l border-slate-100 p-1.5"
                     >
                       {course && (
-                        <div className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center">
-                          <div className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate text-center">
+                        <div className="flex h-full min-w-0 flex-col justify-center rounded-xl border border-indigo-100 bg-indigo-50 px-2 py-2 text-center">
+                          <span className="line-clamp-2 text-xs font-extrabold leading-5 text-indigo-900">
                             {course.courseName}
-                          </div>
-                          <div className="text-[8px] sm:text-xs text-indigo-700 truncate text-center lg:pt-1">
-                            {course.instructor}
-                          </div>
+                          </span>
+                          <span className="mt-1 truncate text-[11px] text-indigo-700">
+                            {course.instructor || "استاد ثبت نشده"}
+                          </span>
+                          <span className="mt-1 inline-flex items-center justify-center gap-1 text-[10px] tabular-nums text-slate-500">
+                            <Clock3 className="h-3 w-3" />
+                            {course.time.find((time) => time.day === day)
+                              ?.start_time || slot.start}
+                            –
+                            {course.time.find((time) => time.day === day)
+                              ?.end_time || slot.end}
+                          </span>
                         </div>
                       )}
                     </td>

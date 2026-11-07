@@ -1,7 +1,15 @@
 import type React from "react";
-import type { DepartmentDetail } from "../../types";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2 } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  Building2,
+  GraduationCap,
+  Users,
+  X,
+} from "lucide-react";
+import type { DepartmentDetail } from "../../types";
 
 interface DepartmentDetailModalProps {
   isOpen: boolean;
@@ -15,6 +23,17 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({
   department,
 }) => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen || !department) return null;
 
@@ -30,112 +49,100 @@ const DepartmentDetailModal: React.FC<DepartmentDetailModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-gray-900/20 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/45 p-4 backdrop-blur-sm"
       dir="rtl"
       onClick={onClose}
     >
-      <div
-        className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="department-dialog-title"
+        className="relative my-auto w-full max-w-lg overflow-hidden rounded-3xl border border-white/60 bg-white shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
       >
-        <div className="p-7 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">
-              جزئیات دپارتمان
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-l from-indigo-700 via-violet-500 to-emerald-400" />
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="بستن جزئیات دپارتمان"
+          className="absolute left-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          <X className="h-5 w-5" />
+        </button>
 
-        <div className="p-7 text-center">
-          <div className="mb-6">
-            <Building2 className="w-20 h-20 text-green-600 mx-auto mb-4" />
-            <h3 className="text-3xl font-bold text-gray-900">
-              {department.name}
-            </h3>
-          </div>
-
-          <div className="space-y-4 text-lg text-gray-700">
-            <p className="flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-indigo-500 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-              <span className="font-bold mr-1">
-                {department.instructors_count}
-              </span>{" "}
-              استاد
-            </p>
-            <p className="flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-emerald-500 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                />
-              </svg>
-              <span className="font-bold mr-1">{department.courses_count}</span>{" "}
-              درس
-            </p>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-7 border-t border-gray-200 bg-gray-50">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={handleViewCourses}
-              className="flex-1 bg-indigo-600 text-white px-5 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
-            >
-              مشاهده دروس
-            </button>
-            <button
-              onClick={handleViewInstructors}
-              className="flex-1 bg-green-600 text-white px-5 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
-            >
-              مشاهده اساتید
-            </button>
-          </div>
-          <button
-            onClick={onClose}
-            className="mt-4 w-full bg-gray-200 text-gray-800 px-5 py-3 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+        <div className="bg-gradient-to-bl from-indigo-50 via-white to-white px-5 pb-6 pt-8 sm:px-8 sm:pt-10">
+          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700 shadow-sm">
+            <Building2 className="h-8 w-8" />
+          </span>
+          <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-bold text-indigo-700 shadow-sm">
+            <GraduationCap className="h-4 w-4" />
+            اطلاعات دپارتمان
+          </p>
+          <h2
+            id="department-dialog-title"
+            className="mt-2 break-words pl-10 text-2xl font-extrabold leading-relaxed text-slate-900 sm:text-3xl"
           >
-            بستن
-          </button>
+            {department.name}
+          </h2>
         </div>
-      </div>
+
+        <div className="px-5 pb-6 sm:px-8">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-emerald-700">
+                <Users className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-xl font-extrabold text-slate-900">
+                  {department.instructors_count}
+                </p>
+                <p className="mt-0.5 text-xs text-slate-600">استاد</p>
+              </div>
+            </div>
+            <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-violet-100 bg-violet-50/70 p-4">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-violet-700">
+                <BookOpen className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-xl font-extrabold text-slate-900">
+                  {department.courses_count}
+                </p>
+                <p className="mt-0.5 text-xs text-slate-600">درس</p>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-5 text-sm leading-7 text-slate-500">
+            برای مشاهدهٔ فهرست درس‌ها یا استادان این دپارتمان، یکی از گزینه‌های
+            زیر را انتخاب کنید.
+          </p>
+
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={handleViewCourses}
+              className="inline-flex min-h-12 items-center justify-between gap-3 rounded-xl bg-indigo-700 px-4 py-3 text-sm font-bold text-white transition hover:bg-indigo-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700"
+            >
+              <span className="inline-flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                مشاهدهٔ درس‌ها
+              </span>
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={handleViewInstructors}
+              className="inline-flex min-h-12 items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700"
+            >
+              <span className="inline-flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                مشاهدهٔ استادان
+              </span>
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

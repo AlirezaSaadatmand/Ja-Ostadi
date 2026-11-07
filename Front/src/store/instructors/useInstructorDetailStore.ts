@@ -9,8 +9,10 @@ import api from "../../utils/axios";
 interface InstructorDetailStore {
   instructorDetail: InstructorDetail | null;
   instructorCoursesBySemester: InstructorCoursesBySemester[];
-  isLoading: boolean;
-  error: string | null;
+  isLoadingDetail: boolean;
+  isLoadingCourses: boolean;
+  detailError: string | null;
+  coursesError: string | null;
 
   fetchInstructorDetail: (id: number) => Promise<void>;
   fetchInstructorCoursesBySemester: (instructorId: number) => Promise<void>;
@@ -21,11 +23,17 @@ export const useInstructorDetailStore = create<InstructorDetailStore>(
   (set) => ({
     instructorDetail: null,
     instructorCoursesBySemester: [],
-    isLoading: false,
-    error: null,
+    isLoadingDetail: false,
+    isLoadingCourses: false,
+    detailError: null,
+    coursesError: null,
 
     fetchInstructorDetail: async (id: number) => {
-      set({ isLoading: true, error: null, instructorDetail: null });
+      set({
+        isLoadingDetail: true,
+        detailError: null,
+        instructorDetail: null,
+      });
       try {
         const response = await api.get(
           `${config.apiUrl}/instructors/${id}/detail`,
@@ -35,15 +43,19 @@ export const useInstructorDetailStore = create<InstructorDetailStore>(
       } catch (error) {
         console.error(`Error fetching instructor detail for ID ${id}:`, error);
         set({
-          error: error instanceof Error ? error.message : String(error),
+          detailError: error instanceof Error ? error.message : String(error),
         });
       } finally {
-        set({ isLoading: false });
+        set({ isLoadingDetail: false });
       }
     },
 
     fetchInstructorCoursesBySemester: async (instructorId: number) => {
-      set({ isLoading: true, error: null, instructorCoursesBySemester: [] });
+      set({
+        isLoadingCourses: true,
+        coursesError: null,
+        instructorCoursesBySemester: [],
+      });
       try {
         const response = await api.get(
           `${config.apiUrl}/instructors/courses/${instructorId}`,
@@ -58,10 +70,10 @@ export const useInstructorDetailStore = create<InstructorDetailStore>(
           error,
         );
         set({
-          error: error instanceof Error ? error.message : String(error),
+          coursesError: error instanceof Error ? error.message : String(error),
         });
       } finally {
-        set({ isLoading: false });
+        set({ isLoadingCourses: false });
       }
     },
 
@@ -69,7 +81,8 @@ export const useInstructorDetailStore = create<InstructorDetailStore>(
       set({
         instructorDetail: null,
         instructorCoursesBySemester: [],
-        error: null,
+        detailError: null,
+        coursesError: null,
       });
     },
   }),

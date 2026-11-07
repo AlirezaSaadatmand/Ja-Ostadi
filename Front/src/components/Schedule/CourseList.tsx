@@ -1,5 +1,6 @@
 import type React from "react";
 import { useMemo, useState } from "react";
+import { BookOpen, Search, X } from "lucide-react";
 import type { CourseResponse } from "../../types";
 
 interface CourseListProps {
@@ -30,21 +31,21 @@ const CourseList: React.FC<CourseListProps> = ({
     if (!term) return courses;
 
     return courses.filter((course) =>
-      normalizeText(course.course.name).includes(term)
+      normalizeText(course.course.name).includes(term),
     );
   }, [courses, searchTerm]);
 
   if (isLoading) {
     return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-5 bg-gray-200 rounded w-1/2 mb-4"></div>
-        <div className="h-9 bg-gray-200 rounded mb-4"></div>
-        <div className="grid grid-flow-col grid-rows-2 gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
-          {[...Array(6)].map((_, i) => (
+      <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+        <div className="mb-5 h-6 w-40 animate-pulse rounded-lg bg-slate-100" />
+        <div className="mb-5 h-11 animate-pulse rounded-xl bg-slate-100" />
+        <div className="flex gap-3 overflow-hidden pb-2">
+          {[...Array(6)].map((_, index) => (
             <div
-              key={i}
-              className="h-28 w-56 sm:h-28 sm:w-56  bg-gray-200 rounded flex-shrink-0"
-            ></div>
+              key={index}
+              className="h-28 w-56 shrink-0 animate-pulse rounded-2xl bg-slate-100"
+            />
           ))}
         </div>
       </div>
@@ -54,117 +55,83 @@ const CourseList: React.FC<CourseListProps> = ({
   const isSearching = searchTerm.trim().length > 0;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-3 sm:p-5">
-      <h3 className="text-l sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center justify-center">
-        <svg
-          className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 text-emerald-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-          />
-        </svg>
-        دروس موجود (
-        {isSearching
-          ? `${filteredCourses.length} از ${courses.length}`
-          : courses.length}
-        )
-      </h3>
+    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+      <div className="mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+            <BookOpen className="h-5 w-5" />
+          </span>
+          <div>
+            <h3 className="font-bold text-slate-900">درس‌های این دپارتمان</h3>
+            <p className="mt-0.5 text-xs text-slate-500">
+              {isSearching
+                ? `${filteredCourses.length} درس از ${courses.length} درس`
+                : `${courses.length} درس قابل انتخاب`}
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <div className="relative mb-3 sm:mb-4">
+      <div className="relative mb-4 sm:mb-5">
         <input
           type="text"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="جستجوی نام درس..."
-          aria-label="جستجوی نام درس"
-          className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pr-9 pl-9 text-sm text-gray-900 placeholder-gray-400 transition focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-100"
+          onChange={(event) => setSearchTerm(event.target.value)}
+          placeholder="جست‌وجوی نام درس..."
+          aria-label="جست‌وجوی نام درس"
+          className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-10 text-sm text-slate-900 placeholder-slate-400 transition focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100"
         />
-        <svg
-          className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
-          />
-        </svg>
+        <Search className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         {isSearching && (
           <button
             type="button"
             onClick={() => setSearchTerm("")}
-            aria-label="پاک کردن جستجو"
-            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-400 transition hover:bg-gray-200 hover:text-gray-600"
+            aria-label="پاک کردن جست‌وجو"
+            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
           >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <X className="h-4 w-4" />
           </button>
         )}
       </div>
 
       {filteredCourses.length === 0 ? (
-        <div className="p-6 sm:p-8 text-center col-span-full">
-          <svg
-            className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-            />
-          </svg>
-          <p className="text-gray-500">
+        <div className="col-span-full rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center sm:py-10">
+          <BookOpen className="mx-auto mb-3 h-10 w-10 text-slate-300" />
+          <p className="text-sm text-slate-500">
             {isSearching
               ? "هیچ درسی با این نام یافت نشد"
               : "هیچ درسی یافت نشد"}
           </p>
         </div>
       ) : (
-        <div className="grid grid-flow-col grid-rows-2 gap-2 sm:gap-4 pb-2 overflow-x-auto scrollbar-hide auto-cols-max">
+        <div className="grid grid-flow-col grid-rows-2 auto-cols-[minmax(15rem,19rem)] gap-3 overflow-x-auto pb-2">
           {filteredCourses.map((course) => (
-            <div
+            <button
               key={course.course.id}
-              className="p-3 sm:p-5 rounded-lg bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-200 cursor-pointer"
+              type="button"
               onClick={() => onCourseClick(course)}
+              className="group rounded-2xl border border-slate-200 bg-white p-4 text-right transition hover:border-indigo-200 hover:bg-indigo-50/50 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1 text-right ml-1 sm:ml-2">
-                  <span className="font-semibold text-gray-900 text-sm sm:text-base block">
+              <span className="flex items-start justify-between gap-3">
+                <span className="min-w-0">
+                  <span className="block truncate font-bold text-slate-900 group-hover:text-indigo-800">
                     {course.course.name}
                   </span>
-                  <span className="text-xs sm:text-sm text-gray-500 block mt-0.5 sm:mt-1">
-                    استاد: {course.instructor.name}
+                  <span className="mt-1 block truncate text-xs text-slate-500">
+                    {course.instructor.name}
                   </span>
-                </div>
-                <span className="text-xs sm:text-sm bg-blue-100 text-blue-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
+                </span>
+                <span className="shrink-0 rounded-lg bg-indigo-50 px-2 py-1 text-xs font-bold text-indigo-700">
                   {course.course.units} واحد
                 </span>
-              </div>
-            </div>
+              </span>
+              <span className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+                <span>گروه {course.course.group}</span>
+                <span className="font-semibold text-indigo-700">
+                  مشاهده جزئیات
+                </span>
+              </span>
+            </button>
           ))}
         </div>
       )}
