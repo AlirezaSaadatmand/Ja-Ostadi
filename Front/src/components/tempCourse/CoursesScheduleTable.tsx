@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { X } from "lucide-react";
 import type { TempCourse } from "../../types";
+import MobileTableViewport from "../common/MobileTableViewport";
 
 interface Props {
   courses: TempCourse[];
@@ -51,7 +52,7 @@ const CoursesScheduleTable: React.FC<Props> = ({
   }, [courses]);
 
   return (
-    <div className="bg-white rounded-2xl shadow overflow-x-auto">
+    <div className="bg-white rounded-2xl shadow">
       <div className="flex justify-between items-center p-6 border-b bg-gray-50">
         <h3 className="font-bold text-lg">جدول برنامه هفتگی</h3>
 
@@ -63,65 +64,73 @@ const CoursesScheduleTable: React.FC<Props> = ({
         </button>
       </div>
 
-      <table className="w-full text-sm text-center border-collapse">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="p-4 border text-base">زمان</th>
-            {DAYS.map((day) => (
-              <th key={day} className="p-2 border text-base">
-                {day}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {TIME_SLOTS.map((slot) => (
-            <tr key={slot.key}>
-              <td className="p-4 border font-semibold bg-gray-50 text-base">
-                {slot.label}
-              </td>
-
-              {DAYS.map((day) => {
-                const cellCourses = schedule[`${day}-${slot.key}`];
-
-                return (
-                  <td
-                    key={`${day}-${slot.key}`}
-                    className="border align-top min-w-[120px] h-[100px] p-1"
-                  >
-                    <div className="flex flex-col gap-1">
-                      {cellCourses?.map((course) => (
-                        <div
-                          key={course.id}
-                          className="relative bg-[#AB8A58]/10 text-sm pt-2 pb-2 rounded-xl border border-[#AB8A58]/20"
-                        >
-                          <button
-                            onClick={() => onRemoveCourse(course.id)}
-                            className="absolute top-1 left-1 bg-white rounded-full p-1 shadow hover:bg-red-50"
-                          >
-                            <X size={14} className="text-red-500" />
-                          </button>
-
-                          <div className="font-semibold text-sm">
-                            {course.courseName}
-                          </div>
-
-                          <div>گروه {course.group}</div>
-
-                          <div className="text-gray-600 text-xs mt-1">
-                            {course.instructor}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                );
-              })}
+      <MobileTableViewport label="جدول برنامه هفتگی دروس موقت" minWidth={1080}>
+        <table className="w-full text-sm text-center border-collapse">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="p-4 border text-base">زمان</th>
+              {DAYS.map((day) => (
+                <th key={day} className="p-2 border text-base">
+                  {day}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {TIME_SLOTS.map((slot) => (
+              <tr key={slot.key}>
+                <td className="p-4 border font-semibold bg-gray-50 text-base">
+                  {slot.label}
+                </td>
+
+                {DAYS.map((day) => {
+                  const cellCourses = schedule[`${day}-${slot.key}`];
+
+                  return (
+                    <td
+                      key={`${day}-${slot.key}`}
+                      className="border align-top min-w-[120px] h-[100px] p-1"
+                    >
+                      <div className="flex flex-col gap-1">
+                        {cellCourses?.map((course) => (
+                          <div
+                            key={course.id}
+                            className="relative bg-[#AB8A58]/10 text-sm pt-2 pb-2 rounded-xl border border-[#AB8A58]/20"
+                          >
+                            <button
+                              onClick={() => onRemoveCourse(course.id)}
+                              className="absolute top-1 left-1 bg-white rounded-full p-1 shadow hover:bg-red-50"
+                            >
+                              <X size={14} className="text-red-500" />
+                            </button>
+
+                            <div
+                              data-table-text
+                              className="font-semibold text-sm"
+                            >
+                              {course.courseName}
+                            </div>
+
+                            <div data-table-text>گروه {course.group}</div>
+
+                            <div
+                              data-table-text
+                              className="text-gray-600 text-xs mt-1"
+                            >
+                              {course.instructor}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </MobileTableViewport>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import type { CourseInSemester } from "../../types";
 import { useInstructorDetailStore } from "../../store/instructors/useInstructorDetailStore";
+import MobileTableViewport from "../common/MobileTableViewport";
 
 const DEFAULT_TIME_SLOTS = [
   { label: "08:00 - 10:00", key: "08:00-10:00", start: "08:00", end: "10:00" },
@@ -82,7 +83,11 @@ const WeeklyTableView: React.FC = () => {
         </p>
       </div>
 
-      <div className="overflow-x-auto w-full text-center">
+      <MobileTableViewport
+        label="برنامه هفتگی استاد"
+        minWidth={1120}
+        className="text-center"
+      >
         <table className="w-full table-fixed border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
           <thead>
             <tr className="bg-gray-50">
@@ -115,11 +120,20 @@ const WeeklyTableView: React.FC = () => {
                       className="h-16 sm:h-20 border-b border-gray-200 border-l relative"
                     >
                       {cell ? (
-                        <div className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center">
-                          <div className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate sm:pb1 lg:pb-2 text-center">
+                        <div
+                          data-table-cell-content
+                          className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center"
+                        >
+                          <div
+                            data-table-text
+                            className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate sm:pb1 lg:pb-2 text-center"
+                          >
                             {cell.course.name}
                           </div>
-                          <div className="text-[8px] sm:text-xs text-indigo-700 truncate text-center">
+                          <div
+                            data-table-text
+                            className="text-[8px] sm:text-xs text-indigo-700 truncate text-center"
+                          >
                             {cell.timeEntry.room || ""}
                           </div>
                         </div>
@@ -131,7 +145,7 @@ const WeeklyTableView: React.FC = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </MobileTableViewport>
     </div>
   );
 };

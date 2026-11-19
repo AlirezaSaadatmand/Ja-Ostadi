@@ -1,6 +1,7 @@
 import React from "react";
 import type { RoomScheduleCourse } from "../../types";
 import { DAYS, TIME_SLOTS } from "../../store/usefull/useRoomScheduleStore";
+import MobileTableViewport from "../common/MobileTableViewport";
 
 interface Props {
   roomSchedule: RoomScheduleCourse[];
@@ -14,7 +15,11 @@ const toMinutes = (time: string) => {
 const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
   return (
     <div className="p-2 sm:p-4 lg:p-8 w-full" dir="rtl">
-      <div className="overflow-x-auto w-full text-center">
+      <MobileTableViewport
+        label="برنامه هفتگی کلاس"
+        minWidth={1120}
+        className="text-center"
+      >
         <table className="w-full table-fixed border-collapse bg-white rounded-lg shadow-sm">
           <thead>
             <tr className="bg-gray-50">
@@ -57,11 +62,20 @@ const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
                       className="h-20 sm:h-24 border-b border-gray-200 border-l relative"
                     >
                       {course && (
-                        <div className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center">
-                          <div className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate text-center">
+                        <div
+                          data-table-cell-content
+                          className="absolute inset-0.5 bg-indigo-100 border border-indigo-300 rounded-md p-0.5 sm:p-1 flex flex-col justify-center"
+                        >
+                          <div
+                            data-table-text
+                            className="text-[9px] sm:text-xs font-semibold text-indigo-900 truncate text-center"
+                          >
                             {course.courseName}
                           </div>
-                          <div className="text-[8px] sm:text-xs text-indigo-700 truncate text-center lg:pt-1">
+                          <div
+                            data-table-text
+                            className="text-[8px] sm:text-xs text-indigo-700 truncate text-center lg:pt-1"
+                          >
                             {course.instructor}
                           </div>
                         </div>
@@ -73,7 +87,7 @@ const RoomWeeklyTableView: React.FC<Props> = ({ roomSchedule }) => {
             ))}
           </tbody>
         </table>
-      </div>
+      </MobileTableViewport>
     </div>
   );
 };

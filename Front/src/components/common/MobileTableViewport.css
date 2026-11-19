@@ -1,0 +1,127 @@
+.mobile-table-viewport {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mobile-table-controls {
+  display: none;
+}
+.mobile-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+.mobile-table-scroll:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+@media screen and (max-width: 639px) {
+  .mobile-table-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .mobile-table-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #c7d2fe;
+    border-radius: 10px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .mobile-table-toggle:hover {
+    background: #e0e7ff;
+  }
+  .mobile-table-toggle:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+  }
+  .mobile-table-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
+  .mobile-table-hint {
+    color: #6b7280;
+    font-size: 12px;
+  }
+  .mobile-table-scroll {
+    overscroll-behavior-x: contain;
+  }
+
+  .mobile-table-viewport[data-mobile-table-mode="fit"] .mobile-table-scroll {
+    overflow-x: hidden;
+  }
+
+  .mobile-table-viewport[data-mobile-table-mode="fit"] table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .mobile-table-viewport[data-mobile-table-mode="fit"] :is(th, td) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-table-viewport[data-mobile-table-mode="expanded"] table {
+    width: 100%;
+    min-width: var(--mobile-table-min-width);
+    table-layout: fixed;
+  }
+
+  .mobile-table-viewport[data-mobile-table-mode="expanded"] :is(th, td) {
+    padding: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-table-viewport[data-mobile-table-mode="expanded"]
+    [data-table-cell-content] {
+    position: relative;
+    inset: auto;
+    min-height: 88px;
+    height: auto;
+    margin: 2px;
+    padding: 8px;
+  }
+
+  .mobile-table-viewport[data-mobile-table-mode="expanded"]
+    :is([data-table-text], .truncate) {
+    overflow: visible;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+  }
+
+  .mobile-table-viewport[data-mobile-table-mode="expanded"]
+    [data-table-row-label] {
+    right: 0;
+    left: auto;
+  }
+}
+
+@media print {
+  .mobile-table-controls {
+    display: none;
+  }
+}

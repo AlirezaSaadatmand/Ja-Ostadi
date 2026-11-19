@@ -1,6 +1,7 @@
-import { forwardRef, useRef, useState } from "react";
+import { forwardRef, useState } from "react";
 import type { CourseResponse } from "../../types";
 import type { TableCell } from "../../store/schedule/useScheduleTableStore";
+import MobileTableViewport from "../common/MobileTableViewport";
 
 interface WeeklyTableProps {
   days: string[];
@@ -31,7 +32,6 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
     },
     ref,
   ) => {
-    const wrapperRef = useRef<HTMLDivElement>(null);
     const [isRotated, setIsRotated] = useState(false);
 
     const getCourseForSlot = (day: string, timeSlotKey: string) => {
@@ -89,11 +89,20 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                     className="border-b border-gray-200 h-16 sm:h-20 lg:h-24 transition-colors relative border-l group"
                   >
                     {course ? (
-                      <div className="absolute inset-0.5 lg:inset-1 bg-indigo-100 border border-indigo-300 rounded lg:rounded-xl p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center">
-                        <div className="text-[8px] lg:text-sm font-semibold text-indigo-900 truncate leading-tight">
+                      <div
+                        data-table-cell-content
+                        className="absolute inset-0.5 lg:inset-1 bg-indigo-100 border border-indigo-300 rounded lg:rounded-xl p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center"
+                      >
+                        <div
+                          data-table-text
+                          className="text-[8px] lg:text-sm font-semibold text-indigo-900 truncate leading-tight"
+                        >
                           {course.course.name}
                         </div>
-                        <div className="text-[7px] lg:text-sm text-indigo-700 truncate leading-tight sm:block">
+                        <div
+                          data-table-text
+                          className="text-[7px] lg:text-sm text-indigo-700 truncate leading-tight sm:block"
+                        >
                           {course.instructor.name}
                         </div>
                         <button
@@ -165,11 +174,20 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
                     className="border-b border-gray-200 h-16 sm:h-20 lg:h-24 transition-colors relative border-l group"
                   >
                     {course ? (
-                      <div className="absolute inset-0.5 lg:inset-1 bg-indigo-100 border border-indigo-300 rounded lg:rounded-xl p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center">
-                        <div className="text-[8px] lg:text-sm font-semibold text-indigo-900 truncate leading-tight">
+                      <div
+                        data-table-cell-content
+                        className="absolute inset-0.5 lg:inset-1 bg-indigo-100 border border-indigo-300 rounded lg:rounded-xl p-0.5 sm:p-1 lg:p-2 flex flex-col justify-center"
+                      >
+                        <div
+                          data-table-text
+                          className="text-[8px] lg:text-sm font-semibold text-indigo-900 truncate leading-tight"
+                        >
                           {course.course.name}
                         </div>
-                        <div className="text-[7px] lg:text-sm text-indigo-700 truncate leading-tight sm:block">
+                        <div
+                          data-table-text
+                          className="text-[7px] lg:text-sm text-indigo-700 truncate leading-tight sm:block"
+                        >
                           {course.instructor.name}
                         </div>
                         <button
@@ -290,15 +308,17 @@ const WeeklyTable = forwardRef<HTMLDivElement, WeeklyTableProps>(
           </p>
         </div>
 
-        <div
-          ref={wrapperRef}
-          className="lg:overflow-x-auto flex justify-center"
-          dir="rtl"
+        <MobileTableViewport
+          label="برنامه هفتگی"
+          minWidth={Math.max(
+            900,
+            ((isRotated ? days.length : timeSlots.length) + 1) * 170,
+          )}
         >
           <div ref={ref} className="w-full">
             {isRotated ? renderRotatedTable() : renderNormalTable()}
           </div>
-        </div>
+        </MobileTableViewport>
       </div>
     );
   },

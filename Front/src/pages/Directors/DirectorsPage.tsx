@@ -7,6 +7,7 @@ import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore";
 import Header from "../../components/Header";
 import CoursesScheduleTable from "../../components/tempCourse/CoursesScheduleTable";
 import ConflictingCoursesSection from "../../components/tempCourse/ConflictingCoursesSection";
+import MobileTableViewport from "../../components/common/MobileTableViewport";
 
 import type { TempCourse } from "../../types";
 
@@ -127,7 +128,11 @@ const DirectorsPage: React.FC = () => {
         </div>
 
         {/* COURSES TABLE */}
-        <div className="bg-white rounded-2xl shadow overflow-x-auto">
+        <MobileTableViewport
+          label="فهرست دروس موقت"
+          minWidth={1150}
+          className="bg-white rounded-2xl shadow p-3 sm:p-0"
+        >
           <table className="w-full text-sm text-center">
             <thead className="bg-gray-50">
               <tr>
@@ -163,7 +168,7 @@ const DirectorsPage: React.FC = () => {
                       <td className="p-3 font-medium">{course.courseName}</td>
                       <td className="p-3">{course.group}</td>
                       <td className="p-3">{course.instructor}</td>
-                      <td className="p-3 text-xs">
+                      <td data-table-text className="p-3 text-xs">
                         {course.firstDay} {course.firstTime}
                         {course.secondDay && (
                           <>
@@ -190,7 +195,7 @@ const DirectorsPage: React.FC = () => {
                 })}
             </tbody>
           </table>
-        </div>
+        </MobileTableViewport>
 
         <ConflictingCoursesSection courses={filteredCourses} />
 

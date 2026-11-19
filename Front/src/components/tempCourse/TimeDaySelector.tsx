@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTempCourseStore } from "../../store/tempCourse/useTempCourseStore";
+import MobileTableViewport from "../common/MobileTableViewport";
 
 const TIME_SLOTS = [
   { label: "08:00 - 10:00", key: "08:00-10:00", start: "08:00", end: "10:00" },
@@ -62,7 +63,7 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
     <div className="bg-white rounded-xl shadow-md p-4 mt-6">
       <h3 className="font-bold text-gray-800 mb-4">{title}</h3>
 
-      <div className="overflow-x-auto">
+      <MobileTableViewport label={title} minWidth={1120}>
         <table className="w-full table-fixed border-collapse text-center">
           <thead>
             <tr>
@@ -78,7 +79,10 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
           <tbody>
             {DAYS.map((day) => (
               <tr key={day}>
-                <td className="p-2 text-sm font-medium text-gray-700 sticky left-0 bg-white z-10">
+                <td
+                  data-table-row-label
+                  className="p-2 text-sm font-medium text-gray-700 sticky left-0 bg-white z-10"
+                >
                   {day}
                 </td>
 
@@ -144,19 +148,25 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
                                 key={index}
                                 className="text-xs bg-white p-2 rounded border border-gray-200 shadow-sm"
                               >
-                                <div className="font-semibold text-gray-800 truncate">
+                                <div
+                                  data-table-text
+                                  className="font-semibold text-gray-800 truncate"
+                                >
                                   {course.courseName}
                                 </div>
-                                <div className="text-gray-600 truncate">
+                                <div
+                                  data-table-text
+                                  className="text-gray-600 truncate"
+                                >
                                   {course.instructor}
                                 </div>
                                 <div className="flex justify-between text-gray-500 mt-1">
-                                  <span className="text-xs">
+                                  <span data-table-text className="text-xs">
                                     {course.firstDay === day
                                       ? course.firstRoom
                                       : course.secondRoom}
                                   </span>
-                                  <span className="text-xs">
+                                  <span data-table-text className="text-xs">
                                     {course.group}
                                   </span>
                                 </div>
@@ -176,7 +186,7 @@ const TimeDaySelector: React.FC<Props> = ({ value, onSelect, title }) => {
             ))}
           </tbody>
         </table>
-      </div>
+      </MobileTableViewport>
 
       <div className="mt-4 text-sm text-gray-600 flex items-center gap-2">
         <div className="w-3 h-3 bg-red-500 rounded-full"></div>
