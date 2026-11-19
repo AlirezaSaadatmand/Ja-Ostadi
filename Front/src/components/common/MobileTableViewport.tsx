@@ -39,18 +39,16 @@ const MobileTableViewport = ({
           onClick={toggleMode}
           aria-pressed={isExpanded}
           aria-controls={viewportId}
-          aria-label={`${isExpanded ? "نمایش متناسب با صفحه" : "نمایش کامل جدول"}؛ ${label}`}
+          aria-describedby={isExpanded ? `${viewportId}-hint` : undefined}
+          aria-label={`${isExpanded ? "نمایش فشرده" : "جدول کامل"}؛ ${label}`}
         >
           {isExpanded ? (
             <Shrink aria-hidden="true" />
           ) : (
             <ArrowLeftRight aria-hidden="true" />
           )}
-          {isExpanded ? "نمایش متناسب با صفحه" : "نمایش کامل جدول"}
+          <span>{isExpanded ? "نمایش فشرده" : "جدول کامل"}</span>
         </button>
-        {isExpanded && (
-          <p className="mobile-table-hint">جدول را به چپ و راست بکشید.</p>
-        )}
       </div>
       <div
         id={viewportId}
@@ -62,6 +60,15 @@ const MobileTableViewport = ({
       >
         {children}
       </div>
+      {isExpanded && (
+        <p
+          id={`${viewportId}-hint`}
+          className="mobile-table-hint"
+          data-pdf-exclude
+        >
+          برای دیدن همهٔ ستون‌ها، جدول را به چپ و راست بکشید.
+        </p>
+      )}
     </div>
   );
 };

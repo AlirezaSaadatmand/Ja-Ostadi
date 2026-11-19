@@ -7,6 +7,9 @@
 .mobile-table-controls {
   display: none;
 }
+.mobile-table-hint {
+  display: none;
+}
 .mobile-table-scroll {
   width: 100%;
   max-width: 100%;
@@ -22,11 +25,10 @@
 @media screen and (max-width: 639px) {
   .mobile-table-controls {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 12px;
+    justify-content: flex-end;
+    padding-inline: 8px;
+    margin-bottom: 8px;
   }
 
   .mobile-table-toggle {
@@ -34,31 +36,47 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
+    min-width: 112px;
     min-height: 44px;
-    padding: 10px 12px;
-    border: 1px solid #c7d2fe;
-    border-radius: 10px;
-    background: #eef2ff;
-    color: #4338ca;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 999px;
+    background: #fff;
+    color: #4b5563;
     font-size: 12px;
     font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+    cursor: pointer;
   }
 
   .mobile-table-toggle:hover {
-    background: #e0e7ff;
+    background: #f9fafb;
+    border-color: #9ca3af;
+  }
+  .mobile-table-toggle[aria-pressed="true"] {
+    border-color: #c7d2fe;
+    background: #eef2ff;
+    color: #4338ca;
   }
   .mobile-table-toggle:focus-visible {
     outline: 2px solid #6366f1;
     outline-offset: 2px;
   }
   .mobile-table-toggle svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.8;
   }
   .mobile-table-hint {
+    display: block;
+    margin-top: 8px;
+    padding-inline: 8px;
     color: #6b7280;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.8;
+    text-align: right;
   }
   .mobile-table-scroll {
     overscroll-behavior-x: contain;
@@ -121,7 +139,8 @@
 }
 
 @media print {
-  .mobile-table-controls {
+  .mobile-table-controls,
+  .mobile-table-hint {
     display: none;
   }
 }
