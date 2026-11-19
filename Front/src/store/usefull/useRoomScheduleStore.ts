@@ -27,51 +27,84 @@ interface RoomStore {
   setSelectedRoom: (room: RoomItem | null) => void;
 }
 
-export const useRoomStore = create<RoomStore>((set) => ({
-  rooms: [],
-  roomSchedule: [],
-  selectedRoom: null,
-  isLoading: false,
-  error: null,
+export const useRoomStore = create<RoomStore>((set, get) => {
+  let roomsRequestId = 0;
+  let scheduleRequestId = 0;
+  let roomsLoading = false;
+  let scheduleLoading = false;
 
-  setSelectedRoom: (room) => set({ selectedRoom: room }),
+  return {
+    rooms: [],
+    roomSchedule: [],
+    selectedRoom: null,
+    isLoading: false,
+    error: null,
 
-  fetchRooms: async () => {
-    set({ isLoading: true, error: null, rooms: [] });
+    setSelectedRoom: (room) => set({ selectedRoom: room }),
 
-    try {
-      const response = await api.get(`${config.apiUrl}/schedule/rooms`);
-      const data = Array.isArray(response.data.data) ? response.data.data : [];
+    fetchRooms: async () => {
+      const requestId = ++roomsRequestId;
+      roomsLoading = true;
+      set({ isLoading: true, error: null, rooms: [] });
 
-      set({ rooms: data });
-    } catch (error) {
-      console.error("Error fetching rooms:", error);
-      set({ error: error instanceof Error ? error.message : String(error) });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+      try {
+        const response = await api.get(`${config.apiUrl}/schedule/rooms`);
+        if (requestId !== roomsRequestId) return;
+        const data = Array.isArray(response.data.data)
+          ? response.data.data
+          : [];
 
-  fetchRoomSchedule: async (roomId) => {
-    set({ isLoading: true, error: null, roomSchedule: [] });
+        set({ rooms: data });
+      } catch (error) {
+        if (requestId !== roomsRequestId) return;
+        console.error("Error fetching rooms:", error);
+        set({ error: error instanceof Error ? error.message : String(error) });
+      } finally {
+        if (requestId === roomsRequestId) {
+          roomsLoading = false;
+          set({ isLoading: scheduleLoading });
+        }
+      }
+    },
 
-    try {
-      const response = await api.get(
-        `${config.apiUrl}/schedule/rooms/${roomId}`,
-      );
-      const data = Array.isArray(response.data.data) ? response.data.data : [];
+    fetchRoomSchedule: async (roomId) => {
+      const requestId = ++scheduleRequestId;
+      scheduleLoading = true;
+      set({
+        isLoading: true,
+        error: null,
+        roomSchedule: [],
+        selectedRoom:
+          get().rooms.find(
+            (room) => room.id.toString() === roomId.toString(),
+          ) || null,
+      });
 
-      const store = useRoomStore.getState();
-      const selectedRoom =
-        store.rooms.find((room) => room.id.toString() === roomId.toString()) ||
-        null;
+      try {
+        const response = await api.get(
+          `${config.apiUrl}/schedule/rooms/${roomId}`,
+        );
+        if (requestId !== scheduleRequestId) return;
+        const data = Array.isArray(response.data.data)
+          ? response.data.data
+          : [];
 
-      set({ roomSchedule: data, selectedRoom });
-    } catch (error) {
-      console.error(`Error fetching schedule for room ${roomId}:`, error);
-      set({ error: error instanceof Error ? error.message : String(error) });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-}));
+        const selectedRoom =
+          get().rooms.find(
+            (room) => room.id.toString() === roomId.toString(),
+          ) || null;
+
+        set({ roomSchedule: data, selectedRoom });
+      } catch (error) {
+        if (requestId !== scheduleRequestId) return;
+        console.error(`Error fetching schedule for room ${roomId}:`, error);
+        set({ error: error instanceof Error ? error.message : String(error) });
+      } finally {
+        if (requestId === scheduleRequestId) {
+          scheduleLoading = false;
+          set({ isLoading: roomsLoading });
+        }
+      }
+    },
+  };
+});

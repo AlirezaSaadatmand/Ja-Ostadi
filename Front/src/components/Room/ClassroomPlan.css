@@ -1,0 +1,218 @@
+.classroom-plan {
+  overflow: hidden;
+  border: 1px solid #dce3d7;
+  border-radius: 12px;
+}
+
+.classroom-plan .map-heading {
+  padding: 16px;
+  border-bottom: 1px solid #dce3d7;
+  background: #fff;
+  color: #344b2b;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.classroom-plan .map-stage {
+  position: relative;
+  height: clamp(320px, 42vw, 540px);
+  background-color: #fbfcf8;
+  background-image: radial-gradient(#d6ddce 0.65px, transparent 0.65px);
+  background-size: 18px 18px;
+}
+
+.classroom-plan .floor-plan {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+
+.classroom-plan .floor-plan:focus-visible {
+  outline: 2px solid #72943a;
+  outline-offset: -3px;
+}
+
+.classroom-plan .floor-plan.dragging {
+  cursor: grabbing;
+}
+.classroom-plan .plan-outline {
+  fill: #f6f8f0;
+  stroke: #394740;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.classroom-plan .corridor-line {
+  fill: none;
+  stroke: #c7d1c0;
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  opacity: 0.8;
+}
+.classroom-plan .room {
+  cursor: pointer;
+  outline: none;
+}
+.classroom-plan .room[aria-disabled="true"] {
+  cursor: default;
+}
+.classroom-plan .room-floor {
+  fill: #d7ed72;
+  stroke: #465444;
+  stroke-width: 1.25;
+  transition:
+    fill 0.15s,
+    stroke 0.15s;
+}
+.classroom-plan .room.unavailable .room-floor {
+  fill: #e4e9dd;
+  stroke: #82917b;
+}
+.classroom-plan .room:hover .room-floor,
+.classroom-plan .room:focus-visible .room-floor {
+  fill: #c9e45e;
+  stroke: #72943a;
+  stroke-width: 2.6;
+}
+.classroom-plan .room.selected .room-floor {
+  fill: #b8d64e;
+  stroke: #344c26;
+  stroke-width: 3;
+}
+.classroom-plan .room-number {
+  fill: #344b2b;
+  font:
+    600 16px Tahoma,
+    Arial,
+    sans-serif;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+.classroom-plan .door {
+  fill: none;
+  stroke: #81916c;
+  stroke-width: 0.8;
+  pointer-events: none;
+}
+.classroom-plan .service-floor {
+  fill: #edf1e7;
+  stroke: #82917b;
+  stroke-width: 0.9;
+}
+.classroom-plan .stairs {
+  fill: #f0f4e8;
+  stroke: #7d8d73;
+  stroke-width: 1;
+}
+.classroom-plan .stair-line {
+  stroke: #98a78e;
+  stroke-width: 0.65;
+}
+
+.classroom-plan .map-controls {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid #dce3d7;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 15px #2939290d;
+}
+
+.classroom-plan .map-controls button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 7px;
+  background: #fff;
+  color: #344b2b;
+  cursor: pointer;
+}
+
+.classroom-plan .map-controls button:hover {
+  background: #edf3db;
+}
+.classroom-plan .map-controls button:focus-visible {
+  outline: 2px solid #72943a;
+  outline-offset: 2px;
+}
+.classroom-plan .map-controls button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.classroom-plan .map-controls svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.6;
+}
+
+.classroom-plan .map-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-top: 1px solid #dce3d7;
+  background: #fff;
+  color: #52614a;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.classroom-plan .map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.classroom-plan .map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.classroom-plan .map-legend i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #82917b;
+  border-radius: 3px;
+}
+.classroom-plan .available-key {
+  background: #d7ed72;
+}
+.classroom-plan .selected-key {
+  background: #b8d64e;
+  border-color: #344c26 !important;
+}
+.classroom-plan .unavailable-key {
+  background: #e4e9dd;
+}
+
+@media (max-width: 600px) {
+  .classroom-plan .map-controls {
+    right: 12px;
+    bottom: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classroom-plan .room-floor {
+    transition: none;
+  }
+}
+
+@media print {
+  .classroom-plan .map-controls {
+    display: none;
+  }
+  .classroom-plan .map-stage {
+    background: #fff;
+  }
+}
